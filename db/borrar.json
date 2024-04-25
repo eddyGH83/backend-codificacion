@@ -1,0 +1,414 @@
+// ADMINISTRADOR
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Diccionarios",
+    "icon": "pi pi-fw pi-book",
+    "items": [
+        {
+            "label": "Catálogos",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/catalogos"
+            ]
+        },
+        {
+            "label": "Corrector",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/corrector"
+            ]
+        },
+        {
+            "label": "Matriz OcAcEc",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/matriz-ocupacion-actividad-economica"
+            ]
+        }
+    ]
+},
+{
+    "label": "Asignación",
+    "icon": "pi pi-fw pi-arrows-h",
+    "items": [
+        {
+            "label": "Asignar Carga - Cod.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-codificacion"
+            ]
+        },
+        {
+            "label": "Asignar Carga - Sup.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-supervision"
+            ]
+        }
+    ]
+},
+{
+    "label": "Codificación",
+    "icon": "pi pi-fw pi-check-square",
+    "items": [
+        {
+            "label": "Codificación",
+            "icon": "pi pi-fw pi-check",
+            "routerLink": [
+                "/codificacion"
+            ]
+        }
+    ]
+},
+{
+    "label": "Supervisión",
+    "icon": "pi pi-fw pi-eye",
+    "items": [
+        {
+            "label": "Supervisar Codificación",
+            "icon": "pi pi-fw pi-check",
+            "routerLink": [
+                "/codificacion/supervisar-codificacion"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestion de datos",
+    "icon": "pi pi-fw pi-database",
+    "items": [
+        {
+            "label": "ODBC",
+            "icon": "pi pi-fw pi-sort-alt",
+            "routerLink": [
+                "/odbc"
+            ]
+        }
+    ]
+},
+{
+    "label": "Reportes",
+    "icon": "pi pi-fw pi-search",
+    "items": [
+        {
+            "label": "Reportes",
+            "icon": "pi pi-fw pi-table",
+            "routerLink": [
+                "/reportes"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestion de usuarios",
+    "icon": "pi pi-fw pi-cog",
+    "items": [
+        {
+            "label": "Usuarios",
+            "icon": "pi pi-fw pi-user-edit",
+            "routerLink": [
+                "/usuarios"
+            ]
+        }
+    ]
+}
+// CODIFICADOR
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Codificación",
+    "icon": "pi pi-fw pi-check-square",
+    "items": [
+        {
+            "label": "Codificación",
+            "icon": "pi pi-fw pi-check",
+            "routerLink": [
+                "/codificacion"
+            ]
+        }
+    ]
+}
+// SUPERVISOR DE CODIFICACION
+
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Asignación",
+    "icon": "pi pi-fw pi-arrows-h",
+    "items": [
+        {
+            "label": "Asignar Carga - Cod.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-codificacion"
+            ]
+        }
+    ]
+},
+{
+    "label": "Supervisión",
+    "icon": "pi pi-fw pi-eye",
+    "items": [
+        {
+            "label": "Supervisar Codificación",
+            "icon": "pi pi-fw pi-check",
+            "routerLink": [
+                "/codificacion/supervisar-codificacion"
+            ]
+        }
+    ]
+},
+{
+    "label": "Reportes",
+    "icon": "pi pi-fw pi-search",
+    "items": [
+        {
+            "label": "Reportes",
+            "icon": "pi pi-fw pi-table",
+            "routerLink": [
+                "/reportes"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestión de usuarios",
+    "icon": "pi pi-fw pi-cog",
+    "items": [
+        {
+            "label": "Usuarios",
+            "icon": "pi pi-fw pi-user-edit",
+            "routerLink": [
+                "/usuarios"
+            ]
+        }
+    ]
+}
+
+
+
+
+
+// JEFE DE TURNO (De acuerdo al reuqerimiento)
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Asignación",
+    "icon": "pi pi-fw pi-arrows-h",
+    "items": [
+        {
+            "label": "Asignar Carga - Cod.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-codificacion"
+            ]
+        },
+        {
+            "label": "Asignar Carga - Sup.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-supervision"
+            ]
+        }
+    ]
+},
+{
+    "label": "Reportes",
+    "icon": "pi pi-fw pi-search",
+    "items": [
+        {
+            "label": "Reportes",
+            "icon": "pi pi-fw pi-table",
+            "routerLink": [
+                "/reportes"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestion de usuarios",
+    "icon": "pi pi-fw pi-cog",
+    "items": [
+        {
+            "label": "Usuarios",
+            "icon": "pi pi-fw pi-user-edit",
+            "routerLink": [
+                "/usuarios"
+            ]
+        }
+    ]
+}
+
+// RESPONSABLE DE CODIFICACION
+// ESPECIALISTA DE CODIFICACION (De acuerdo al reuqerimiento)
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Diccionarios",
+    "icon": "pi pi-fw pi-book",
+    "items": [
+        {
+            "label": "Catálogos",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/catalogos"
+            ]
+        },
+        {
+            "label": "Corrector",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/corrector"
+            ]
+        },
+        {
+            "label": "Matriz OcAcEc",
+            "icon": "pi pi-fw pi-bookmark",
+            "routerLink": [
+                "/diccionarios/matriz-ocupacion-actividad-economica"
+            ]
+        }
+    ]
+},
+{
+    "label": "Asignación",
+    "icon": "pi pi-fw pi-arrows-h",
+    "items": [
+        {
+            "label": "Asignar Carga - Cod.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-codificacion"
+            ]
+        },
+        {
+            "label": "Asignar Carga - Sup.",
+            "icon": "pi pi-fw pi-sort-numeric-down",
+            "routerLink": [
+                "/codificacion/asignar-carga-supervision"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestión de datos",
+    "icon": "pi pi-fw pi-database",
+    "items": [
+        {
+            "label": "ODBC",
+            "icon": "pi pi-fw pi-sort-alt",
+            "routerLink": [
+                "/odbc"
+            ]
+        }
+    ]
+},
+{
+    "label": "Reportes",
+    "icon": "pi pi-fw pi-search",
+    "items": [
+        {
+            "label": "Reportes",
+            "icon": "pi pi-fw pi-table",
+            "routerLink": [
+                "/reportes"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestion de usuarios",
+    "icon": "pi pi-fw pi-cog",
+    "items": [
+        {
+            "label": "Usuarios",
+            "icon": "pi pi-fw pi-user-edit",
+            "routerLink": [
+                "/usuarios"
+            ]
+        }
+    ]
+}
+// TECNICO CONTINGENCIA
+{
+    "label": "Dashboard",
+    "icon": "pi pi-fw pi-microsoft",
+    "items": [
+        {
+            "label": "Dashboard",
+            "icon": "pi pi-fw pi-microsoft",
+            "routerLink": [
+                "/dashboard"
+            ]
+        }
+    ]
+},
+{
+    "label": "Gestion de datos",
+    "icon": "pi pi-fw pi-database",
+    "items": [
+        {
+            "label": "ODBC",
+            "icon": "pi pi-fw pi-sort-alt",
+            "routerLink": [
+                "/odbc"
+            ]
+        }
+    ]
+}
