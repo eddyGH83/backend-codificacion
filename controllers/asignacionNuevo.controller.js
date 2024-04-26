@@ -1704,6 +1704,30 @@ const updateCorrector = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
+// Devuelve codificadores de un supervisor
+const devuelveCodificadores = async (req, res) => {
+	const{id_usuario}=req.body;
+	
+	const query = {
+		text: `
+		SELECT 
+			id_usuario,
+			nombres,
+			login,
+			estado 
+		FROM codificacion.cod_usuario
+		WHERE estado ='A' and cod_supvsr = '2'`,
+		};
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
+};
+
 
 module.exports = {
 	/* postCargasTrabajo, */
@@ -1779,5 +1803,6 @@ module.exports = {
 	devuelveCorrector,
 	validarCorrector,
 	insertCorrector,
-	updateCorrector
+	updateCorrector,
+	devuelveCodificadores
 };
