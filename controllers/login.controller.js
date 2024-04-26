@@ -60,9 +60,7 @@ const devuelveMenu = async (req, res) => {
     })
 }
 
-/* 
-Hola
-*/
+
 
 
 module.exports = {

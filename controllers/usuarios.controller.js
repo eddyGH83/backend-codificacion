@@ -14,6 +14,15 @@ const devuelveUsuarios = async (req, res) => {
 	let { rol_id, login, id_usuario } = req.body
 	//console.table(req.body);
 
+	/* 
+		1	ADMINISTRADOR DEL SISTEMA					ADM
+		2	RESPONSABLE ESPECIALISTA DE CODIFICACIÓN	RESP/ESP
+		3	JEFE DE TURNO								JT
+		4	SUPERVISOR DE CODIFICACIÓN					SUP
+		5	TÉCNICO EN CODIFICACIÓN						COD
+		6	TÉCNICO DE CONTINGENCIA						CONT
+	*/
+
 	let query = ''
 
 	// Sup codificacion
@@ -27,7 +36,6 @@ const devuelveUsuarios = async (req, res) => {
 		};
 	}
 
-
 	// Jefe de turno || Sup/Resp de codificacion
 	if (rol_id == 3 || rol_id == 2) {
 		query = {
@@ -38,8 +46,6 @@ const devuelveUsuarios = async (req, res) => {
 			`,
 		};
 	}
-
-
 
 	await con
 		.query(query)
@@ -52,11 +58,17 @@ const devuelveUsuarios = async (req, res) => {
 };
 
 
-
-
-
 const devuelveSupervisores = async (req, res) => {
 	let query = ''
+
+	/* 
+	1	ADMINISTRADOR DEL SISTEMA					ADM
+	2	RESPONSABLE ESPECIALISTA DE CODIFICACIÓN	RESP/ESP
+	3	JEFE DE TURNO								JT
+	4	SUPERVISOR DE CODIFICACIÓN					SUP
+	5	TÉCNICO EN CODIFICACIÓN						COD
+	6	TÉCNICO DE CONTINGENCIA						CONT
+*/
 
 	query = {
 		text: `
@@ -65,7 +77,6 @@ const devuelveSupervisores = async (req, res) => {
 			on u.rol_id=r.rol_id where u.estado = 'A' AND r.rol_id ='4' order by id_usuario DESC
 			`,
 	};
-
 
 	await con
 		.query(query)
