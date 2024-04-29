@@ -425,9 +425,9 @@ select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else
  */
 const codificadores = async (req, res) => {
 	let id = req.params.id;
-	console.log(id)
+	console.log("ffffffffffffffffffffffffffffffffffffffffffff",id)
 	const query = {
-		text: `SELECT * FROM ${esquema}.cod_usuario WHERE rol_id=6 AND estado ILIKE 'A' and cod_supvsr = ${id}`,
+		text: `SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}`,
 	};
 	await con
 		.query(query)
