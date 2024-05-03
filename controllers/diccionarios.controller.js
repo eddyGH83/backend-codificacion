@@ -70,7 +70,6 @@ const devuelveDescripcionPorCodigo = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
-
 const validarRegistros = async (req, res) => {
 	let params = req.body;
 	const query = {
@@ -93,9 +92,7 @@ const validarRegistros = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
-
-
-const insertarCatalogo = async (req, res) => {
+const insertarCatalogo_ = async (req, res) => {
 	let id = req.params.id;
 	let params = req.body;
 	const query = {
@@ -118,7 +115,58 @@ const insertarCatalogo = async (req, res) => {
 };
 
 
+const insertarCatalogo = async (req, res) => {
+	let id = req.params.id;
+	let {
+		codigo,
+		descripcion,
+		catalogo,
+		user
+	} = req.body;
 
+	const sql = await (await con.query(`
+		select count(1) from codificacion.cod_catalogo 
+		where codigo='${codigo}' and 
+		descripcion ilike '${descripcion}' and estado ilike 'ACTIVO' and catalogo ilike '${catalogo}'
+	`)).rows;
+
+
+	// Validar si el registro ya existe
+	if (sql[0].count > 0) {
+		return res.status(400).json({
+			success: false,
+			message: 'El registro ya existe'
+		});
+	} else {
+		// Insertar registro
+		const sql = await (await con.query(`
+			insert into codificacion.cod_catalogo (catalogo, codigo, descripcion, estado, usucre, feccre, descripcion_unida) values (${catalogo}, ${codigo}, ${descripcion}, 'ACTIVO', ${user}, now(), REGEXP_REPLACE(unaccent(lower(${descripcion})) ,'[^\w]{1,}','','g'))
+		`)).rows;
+		return res.status(200).json({
+			success: true,
+			message: 'Registro insertado correctamente'
+		});
+	}
+
+
+	/* const query = {
+		text: `insert into ${esquema}.cod_catalogo (catalogo, codigo, descripcion, estado, usucre, feccre, descripcion_unida) values ($1, $2, $3, 'ACTIVO', $4, now(), REGEXP_REPLACE(unaccent(lower($3)) ,'[^\w]{1,}','','g'))`,
+		values: [
+			params.catalogo,
+			params.codigo,
+			params.descripcion,
+			params.user
+		],
+	};
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack)); */
+};
 
 const updateCatalogo = async (req, res) => {
 	let id = req.params.id;
