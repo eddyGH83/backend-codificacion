@@ -192,23 +192,6 @@ const updateEstadoCatalogo = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////MATRIZ
 /**
  * 
@@ -257,59 +240,85 @@ const validarMatriz = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 	console.log(query)
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+
+
+
 const insertarMatriz = async (req, res) => {
 	let params = req.body;
-	console.log(params)
-	const query = {
-		text: `insert into ${esquema}.cod_matriz 
-		(codigo_ocupacion, descripcion_ocupacion, codigo_acteco, descripcion_acteco, usucre, feccre, estado,cat_ocupacion, cat_acteco, desc_ocu_norm, desc_acteco_norm) values 
-		('${params.codigo_ocupacion}', '${params.descripcion_ocupacion}', '${params.codigo_acteco}', '${params.descripcion_acteco}', '${params.user}', now(), 'ACTIVO', 
-		'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'),  
-		REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g'))`,
-	};
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+	console.table(params);
+
+	const sql = await (await con.query(`
+		select count(1) from codificacion.cod_matriz 
+		where codigo_ocupacion='${params.codigo_ocupacion}' and codigo_acteco ilike '${params.codigo_acteco}' 
+		and descripcion_ocupacion ilike '${params.descripcion_ocupacion}' and descripcion_acteco ilike '${params.descripcion_acteco}' and
+		estado ilike 'ACTIVO'
+	`)).rows;
+
+	// Validar si el registro ya existe
+	if (sql[0].count > 0) {
+		return res.status(200).json({
+			success: false,
+			message: 'El registro ya existe.'
+		});
+	} else {
+		// Insertar registro
+		await (await con.query(`
+			insert into codificacion.cod_matriz 
+			(codigo_ocupacion, descripcion_ocupacion, codigo_acteco, descripcion_acteco, usucre, feccre, estado,cat_ocupacion, cat_acteco, desc_ocu_norm, desc_acteco_norm) values 
+			('${params.codigo_ocupacion}', '${params.descripcion_ocupacion}', '${params.codigo_acteco}', '${params.descripcion_acteco}', '${params.user}', now(), 'ACTIVO', 
+			'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'),  
+			REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g'))
+		`));
+		return res.status(200).json({
+			success: true,
+			message: 'Registro insertado correctamente.'
+		});
+	}
+
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+
 const updateMatriz = async (req, res) => {
 	let id = req.params.id;
 	let params = req.body;
-	const query = {
-		text: `UPDATE ${esquema}.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
-		codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
-		desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'), desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g') 
-		WHERE id_cod_matriz=${id}`,
-	};
-	console.log(query)
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+
+
+	console.table(params);
+
+	const sql = await (await con.query(`
+		select count(1) from codificacion.cod_matriz 
+		where codigo_ocupacion='${params.codigo_ocupacion}' and codigo_acteco ilike '${params.codigo_acteco}' 
+		and descripcion_ocupacion ilike '${params.descripcion_ocupacion}' and descripcion_acteco ilike '${params.descripcion_acteco}' and
+		estado ilike 'ACTIVO'
+	`)).rows;
+
+	// Validar si el registro ya existe
+	if (sql[0].count > 0) {
+		return res.status(200).json({
+			success: false,
+			message: 'El registro ya existe.'
+		});
+	} else {
+		// Insertar registro
+		await (await con.query(`
+			UPDATE codificacion.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
+			codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
+			desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'), desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g') 
+			WHERE id_cod_matriz=${id}
+		`));
+		return res.status(200).json({
+			success: true,
+			message: 'Registro modificado correctamente.'
+		});
+	}
+
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+
 const updateEstadoMatriz = async (req, res) => {
 	let id = req.params.id;
 	let params = req.body;
@@ -374,60 +383,70 @@ const validarCorrector = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+
 const insertCorrector = async (req, res) => {
-	let params = req.body;
-	const query = {
-		text: `insert into ${esquema}.cod_err_corr (erradas, corregidas, usucre, feccre) values ($1, $2, $3, now())`,
-		values: [
-			params.erradas,
-			params.corregidas,
-			params.user
-		],
-	};
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+	const { erradas, corregidas, user } = req.body;
+
+	//  validar si el registro ya existe
+	const sql = await (await con.query(`	  
+		select count(1) from codificacion.cod_err_corr 
+		where erradas ilike '${erradas}' and corregidas ilike '${corregidas}'
+	`)).rows;
+
+	// Validar si el registro ya existe
+	if (sql[0].count > 0) {
+		return res.status(200).json({
+			success: false,
+			message: 'El registro ya existe.'
+		});
+	} else {
+		// Insertar registro
+		await (await con.query(`
+			insert into codificacion.cod_err_corr (erradas, corregidas, usucre, feccre) values ('${erradas}', '${corregidas}', '${user}', now())
+		`));
+		return res.status(200).json({
+			success: true,
+			message: 'Registro insertado correctamente.'
+		});
+	}
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+
+
 const updateCorrector = async (req, res) => {
 	let id = req.params.id;
-	let params = req.body;
-	const query = {
-		text: `UPDATE ${esquema}.cod_err_corr SET erradas=$1, corregidas=$2, usumod=$3, femod=now() WHERE id=${id}`,
-		values: [
-			params.erradas,
-			params.corregidas,
-			params.user,
-		],
-	};
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+
+	const { erradas, corregidas, user } = req.body;
+
+	//  validar si el registro ya existe
+	const sql = await (await con.query(`	  
+		select count(1) from codificacion.cod_err_corr 
+		where erradas ilike '${erradas}' and corregidas ilike '${corregidas}'
+	`)).rows;
+
+	// Validar si el registro ya existe
+	if (sql[0].count > 0) {
+		return res.status(200).json({
+			success: false,
+			message: 'El registro ya existe.'
+		});
+	} else {
+		// Modificar registro
+		await (await con.query(`
+			UPDATE codificacion.cod_err_corr SET erradas='${erradas}', corregidas='${corregidas}', usumod='${user}', femod=now() WHERE id=${id}
+			`));
+		return res.status(200).json({
+			success: true,
+			message: 'Registro modificado correctamente.'
+		});
+	}
+
 };
-/**
- * DevByGAR
- * @param {*} req 
- * @param {*} res 
- */
+
+
 
 const updateEstadoDiccCorr = async (req, res) => {
 	let id = req.params.id;
