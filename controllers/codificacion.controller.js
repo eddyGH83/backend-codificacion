@@ -193,7 +193,7 @@ const codificacionNormalizadaUpd = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const preguntasPorDepartamentoCod = async (req, res) => {
+const preguntasPorDepartamentoCod_ = async (req, res) => {
 	const query = {
 		text: `select departamento, nombre, max(case when estado ='ELABORADO' then cuenta else 0 end) count, 
 		id_pregunta, pregunta,codigo_pregunta 
@@ -247,6 +247,131 @@ or (ceco.estado='ASIGNADO' and ceca.estado='ASIGNADO')
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+
+const preguntasPorDepartamentoCod = async (req, res) => {
+
+	const query = {
+		text: `
+		
+		`
+	};
+
+
+	var  registros = [
+		{
+			depto: "LA PAZ",
+			nroPreg: "20",
+			variable: "Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?",
+			totalCarga: 45
+
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "32",
+			variable: "¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?",
+			totalCarga: 23
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "33",
+			variable: "Idioma 1",
+			totalCarga: 0
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "33",
+			variable: "Idioma 2",
+			totalCarga: 21
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "33",
+			variable: "Idioma 3",
+			totalCarga: 92
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "34",
+			variable: "¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?",
+			totalCarga: 12
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "35",
+			variable: "¿Dónde nació?",
+			totalCarga: 0
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "36",
+			variable: "¿Dónde vive habitualmente?",
+			totalCarga: 27
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "37",
+			variable: "¿Dónde vivía el año 2019?",
+			totalCarga: 12
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "48",
+			variable: "Las últimas 4 semanas:",
+			totalCarga: 42
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "49-51",
+			variable: "Ocupación - Actividad Económica",
+			totalCarga: 62
+		},
+		{
+			depto: "LA PAZ",
+			nroPreg: "52",
+			variable: "Principalmente, el lugar donde trabaja está ubicado:",
+			totalCarga: 82
+		},
+	]
+
+	res.status(200).json(registros)
+
+	/* console.log(query)
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack)); */
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * 
  * @param {*} req 
@@ -331,15 +456,15 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 			x.id_informante = y.id_informante
 			`)).rows;
 
-			prnc = parseInt(prn[0].count,10);
-			pr = ', Pregunta 50: actividad principal'; 
+			prnc = parseInt(prn[0].count, 10);
+			pr = ', Pregunta 50: actividad principal';
 
-		}else{
+		} else {
 			const prn = await (await con.query(`
 				select count(*) from codificacion.cod_encuesta_codificacion where id_pregunta = ${cod_variables[i].id_pregunta} and estado = 'CODIFICADO'  and usucodificador = 'AUTOMATICO_NORMALIZADO'
 			`)).rows;
 			prnc = prn[0].count;
-		}		
+		}
 
 		result.push({
 			"departamento": "03",
@@ -425,7 +550,7 @@ select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else
  */
 const codificadores = async (req, res) => {
 	let id = req.params.id;
-	console.log("ffffffffffffffffffffffffffffffffffffffffffff",id)
+	console.log("ffffffffffffffffffffffffffffffffffffffffffff", id)
 	const query = {
 		text: `SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}`,
 	};
@@ -826,9 +951,9 @@ const updateAsignadoSup__ = async (req, res) => {
 	query = ''
 	if (id == 125) {
 		parametro.forEach(params => {
-        console.log("params.usucre ::"+params.usucre+"  estado::"+params.estado+"  count::"+params.count);
-		"update hksdfs set "
-			
+			console.log("params.usucre ::" + params.usucre + "  estado::" + params.estado + "  count::" + params.count);
+			"update hksdfs set "
+
 		});
 	} else {
 		parametro.forEach(params => {
@@ -1032,7 +1157,7 @@ const preguntasPorUsuDual = async (req, res) => {
 			for (var i = 0; i <= result.length - 1; i++) {
 				// Completamos con la pregunta 127
 				var result27 = await (await con.query(`select  * from ${esquema}.cod_encuesta_codificacion  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta =127`)).rows;
-				
+
 				result[i].aid_enc = result27[0].id_encuesta;
 				result[i].aid_preg = result27[0].id_pregunta;
 				result[i].aid_resp = result27[0].respuesta;
@@ -1041,8 +1166,8 @@ const preguntasPorUsuDual = async (req, res) => {
 				result[i].aid_code = result27[0].codigocodif;
 				result[i].ausucod = result27[0].usucodificador;
 				result[i].aid_inf = result27[0].id_informante;
-				result[i].aestado = result27[0].estado;			
-				result[i].nombre_depto = 'COCHABAMBA';						
+				result[i].aestado = result27[0].estado;
+				result[i].nombre_depto = 'COCHABAMBA';
 				// Estado
 
 				// Descripcion 127
@@ -1063,7 +1188,7 @@ const preguntasPorUsuDual = async (req, res) => {
 		} catch (error) {
 			console.log("|devuelvePreguntaUsrSup|125,127|Back-End| " + error);
 		}
-	} 
+	}
 };
 
 
@@ -1452,24 +1577,24 @@ const devuelvePreguntasSup = async (req, res) => {
 	const supervisor = await (await con.query(`select id_usuario  from codificacion.cod_usuario where login = '${params.usucre}'`)).rows;
 	// Averigua sus codificadores
 	const codificadores = await (await con.query(`select  login from codificacion.cod_usuario where cod_supvsr = ${supervisor[0].id_usuario}`)).rows;
-	
-	//var cods = '';
-	
-	
 
-	
+	//var cods = '';
+
+
+
+
 	// Recorre las preguntas:
 	for (var i = 0; i <= cod_variables.length - 1; i++) {
 		var prnc = 0;
 		var cat = '';
 		var pr = '';
 
-		
+
 		carga = 0;
-		
+
 		if (cod_variables[i].id_pregunta == 125) { //  125 => (125, 127)
 			pr = '';
-		// Carga: AUTOMATICA_NORMDOBLE + AUTOMATICA_NORMALIZADA
+			// Carga: AUTOMATICA_NORMDOBLE + AUTOMATICA_NORMALIZADA
 			const prn = await (await con.query(`
 				select 
 				count(*)
@@ -1503,7 +1628,7 @@ const devuelvePreguntasSup = async (req, res) => {
 			x.id_informante = y.id_informante
 
 		`)).rows;
-		carga = prn2[0].count;
+			carga = prn2[0].count;
 
 
 
@@ -1648,9 +1773,9 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 	} = req.body;
 
 	//var limite = 50
-	if (limite ) {
+	if (limite) {
 		console.log("Existe");
-	}else{
+	} else {
 		limite = 0;
 
 	}
@@ -1734,27 +1859,27 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 				// Edad
 				var varEdad = await (await con.query(`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=69`)).rows;
 				//console.log(typeof varEdad[0].respuesta3);
-				if(varEdad[0].respuesta3!==null){result[i].edad = varEdad[0].respuesta3}
-				
+				if (varEdad[0].respuesta3 !== null) { result[i].edad = varEdad[0].respuesta3 }
 
-				 // Nivel Educativo
+
+				// Nivel Educativo
 				var varNivelEducativo = await (await con.query(`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=113`)).rows;
-				if (varNivelEducativo[0].respuesta3 !==null) {result[i].nivelEducativo = preg113[parseInt(varNivelEducativo[0].respuesta3 - 1, 10)]}
+				if (varNivelEducativo[0].respuesta3 !== null) { result[i].nivelEducativo = preg113[parseInt(varNivelEducativo[0].respuesta3 - 1, 10)] }
 				//console.log(typeof varNivelEducativo[0].respuesta3);
 
 				// Curso
 				var varCurso = await (await con.query(`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=114`)).rows;
-				if (varCurso[0].respuesta3 !==null) {result[i].curso = preg114[parseInt(varCurso[0].respuesta3 - 1, 10)]}
+				if (varCurso[0].respuesta3 !== null) { result[i].curso = preg114[parseInt(varCurso[0].respuesta3 - 1, 10)] }
 				// console.log(typeof varCurso[0].respuesta3);
 
 				// Cultivos Agricolas ... 
 				try {
 					var varDestCultivoCria = await (await con.query(`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=122`)).rows;
-					if (varDestCultivoCria[0].respuesta3!=="") {result[i].destCultivoCria = preg122[parseInt(varDestCultivoCria[0].respuesta3 - 1, 10)]}
+					if (varDestCultivoCria[0].respuesta3 !== "") { result[i].destCultivoCria = preg122[parseInt(varDestCultivoCria[0].respuesta3 - 1, 10)] }
 				} catch (error) {
-					console.log("error:"+error);
+					console.log("error:" + error);
 				}
-				
+
 				/* console.log(
 					`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=122`
 				); */
@@ -1762,7 +1887,7 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 
 				// ¿En este trabajo...?
 				var varCategoriaOcup = await (await con.query(`select respuesta3 from public.enc_encuesta  where id_informante=${parseInt(result[i].oid_inf, 10)} and id_pregunta=126`)).rows;
-				if (varCategoriaOcup[0].respuesta3  ) {result[i].categoriaOcup = preg126[parseInt(varCategoriaOcup[0].respuesta3 - 1, 10)]}
+				if (varCategoriaOcup[0].respuesta3) { result[i].categoriaOcup = preg126[parseInt(varCategoriaOcup[0].respuesta3 - 1, 10)] }
 
 
 				//console.log("oid_enc:  "+result[i].oid_enc);
