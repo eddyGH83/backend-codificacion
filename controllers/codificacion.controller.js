@@ -253,12 +253,81 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 
 	const query = {
 		text: `
-		
+			SELECT 
+				'La Paz' AS depto,
+				'20' AS nro_preg,
+				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
+				0 AS total_carga	
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'32' AS nro_preg,
+				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 1' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 2' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 3' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'34' AS nro_preg,
+				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'35' AS nro_preg,
+				'¿Dónde nació?' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'36' AS nro_preg,
+				'¿Dónde vive habitualmente?' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'37' AS nro_preg,
+				'¿Dónde vivía el año 2019?' AS variable,
+				0 AS total_carga
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'48' AS nro_preg,
+				'Las últimas 4 semanas:' AS variable,
+				0 AS total_carga
+			UNION	
+			SELECT 
+				'La Paz' AS depto,
+				'49-51' AS nro_preg,
+				'Ocupación - Actividad Económica' AS variable,
+				count (1) AS total_carga FROM codificacion.cod_p49_p51
+			UNION
+			SELECT 
+				'La Paz' AS depto,
+				'52' AS nro_preg,
+				'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
+				0 AS total_carga		
 		`
 	};
 
-
-	var  registros = [
+	/* var  registros = [
 		{
 			depto: "LA PAZ",
 			nroPreg: "20",
@@ -332,11 +401,11 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 			variable: "Principalmente, el lugar donde trabaja está ubicado:",
 			totalCarga: 82
 		},
-	]
+	] */
 
-	res.status(200).json(registros)
+	//res.status(200).json(registros)
 
-	/* console.log(query)
+	//console.log(query)
 	await con
 		.query(query)
 		.then((result) =>
@@ -344,26 +413,9 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				datos: result,
 			})
 		)
-		.catch((e) => console.error(e.stack)); */
+		.catch((e) => console.error(e.stack));
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -779,16 +831,18 @@ const updateInicializarUsrSup = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
-const updateAsignado = async (req, res) => {
+
+
+
+
+
+
+const updateAsignado_ = async (req, res) => {
 	let id = req.params.id;
 	let parametro = req.body;
 	query = ''
-	if (id == 125) {
+
+	/* if (id == 125) {
 		parametro.forEach(params => {
 			const consulta = `update ${esquema}.cod_encuesta_codificacion cecupd
 			set estado='ASIGNADO', usucre='${params.usucre}' from
@@ -821,22 +875,76 @@ const updateAsignado = async (req, res) => {
 				and ${esquema}.cod_encuesta_codificacion.id_pregunta=${id}; `
 			query += consulta
 		});
-	}
+	} */
 	//console.log(query)
-	await con
+	/* await con
 		.query(query)
 		.then((result) =>
 			res.status(200).json({
 				datos: result,
 			})
 		)
-		.catch((e) => console.error(e.stack));
+		.catch((e) => console.error(e.stack)); */
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+const updateAsignado = async (req, res) => {
+	let id = req.params.id;
+	let parametro = req.body;
+	query = ''
+
+	
+	/* if (id == 125) {
+		parametro.forEach(params => {
+			const consulta = `update ${esquema}.cod_encuesta_codificacion cecupd
+			set estado='ASIGNADO', usucre='${params.usucre}' from
+			(select distinct ceco.id_informante oc_id_inf, ceco.id_encuesta oc_id_enc, ceco.id_pregunta oc_id_preg, ceco.departamento,ceco.estado,
+			ceca.id_informante ac_id_inf, ceca.id_encuesta ac_id_enc, ceca.id_pregunta ac_id_preg, ceca.departamento, ceca.estado
+			from ${esquema}.cod_encuesta_codificacion ceco
+				inner join ${esquema}.cod_encuesta_codificacion ceca
+				on ceco.id_informante = ceca.id_informante
+			where ceco.id_pregunta = 125 and ceca.id_pregunta=127 and ceco.departamento = '${params.departamento}' and 
+			 (ceco.estado='ELABORADO' or ceca.estado = 'ELABORADO') limit ${params.count}) x 
+			WHERE case when cecupd.id_pregunta=125 then 
+				cecupd.id_informante = x.oc_id_inf and cecupd.id_encuesta = x.oc_id_enc 
+				and cecupd.id_pregunta=x.oc_id_preg else 
+				cecupd.id_informante = x.ac_id_inf and cecupd.id_encuesta = x.ac_id_enc 
+				and cecupd.id_pregunta=x.ac_id_preg
+			end and cecupd.id_pregunta in (125,127) ; `
+			//end and cecupd.id_pregunta in (125,127) and codigocodif is null; `
+			query += consulta
+		});
+	} else {
+		parametro.forEach(params => {
+			const consulta = `WITH cte AS (select * from ${esquema}.cod_encuesta_codificacion where estado ilike 'ELABORADO'
+				and id_pregunta not in (125,127) and id_pregunta=${id} and departamento='${params.departamento}' limit ${params.count})
+				update ${esquema}.cod_encuesta_codificacion
+				set estado='${params.estado}',usucre='${params.usucre}'
+				from cte c join ${esquema}.cod_variables b on c.id_pregunta=b.id_pregunta
+				where c.id_informante = ${esquema}.cod_encuesta_codificacion.id_informante
+				and c.id_encuesta = ${esquema}.cod_encuesta_codificacion.id_encuesta
+				and ${esquema}.cod_encuesta_codificacion.estado='ELABORADO'
+				and ${esquema}.cod_encuesta_codificacion.id_pregunta=${id}; `
+			query += consulta
+		});
+	} */
+	//console.log(query)
+	/* await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack)); */
+};
+
+
+
+
+
+
+
 const updateVerificado = async (req, res) => {
 	let user = req.params.user;
 	let parametro = req.body;

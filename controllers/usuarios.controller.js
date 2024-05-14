@@ -65,8 +65,8 @@ const devuelveSupervisores = async (req, res) => {
 
 	query = {
 		text: `
-			SELECT u.id_usuario, 'Sup. ' || u.nombres || ' ' || u.apellidos || ' | ' || u.turno nombres  FROM codificacion.cod_usuario u 
-			inner join codificacion.cod_rol r 
+			SELECT u.id_usuario, 'Sup. ' || u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido || ' | t. ' || u.turno nombres  FROM codificacion.cod_usuario u
+			inner join codificacion.cod_rol r
 			on u.rol_id=r.rol_id where u.estado = 'A' AND r.rol_id ='4' order by id_usuario DESC
 			`,
 	};
@@ -144,7 +144,6 @@ const devuelveSupervisor = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
-
 /**
  * 
  * @param {*} req 
@@ -195,7 +194,8 @@ const registraUsuario = async (req, res) => {
 	var {
 		id_usuario,
 		nombres,
-		apellidos,
+		pr_apellido,
+		sg_apellido,
 		login,
 		telefono,
 		rol_id,
@@ -203,60 +203,31 @@ const registraUsuario = async (req, res) => {
 		turno,
 		cod_supvsr
 	} = req.body;
+
 	console.table(req.body);
 
-	if (telefono == undefined) {
-		telefono = ''
+	var cond = false;
+
+
+
+
+	// rol_id = 5; // Técnico en codificación
+	if (rol_id == 5) {
+		var n = '';
+		var nomUsu = nombres.trim().charAt(0) + n + pr_apellido.trim() + 'cod';
+		/* while (cond == true) {
+			// Verificamos si el usuario ya existe
+		} */
 	}
 
-	const qr = await (await con.query(`
-		select count(1) from codificacion.cod_usuario 
-		where login='${login}' and 
-		estado = 'A'
-	`)).rows;
 
 
-	if (qr[0].count > 0) {
-		res.status(200).json({
-			success: false,
-			message: 'El usuario ya existe'
-		})
-	} else {
 
-
-		// ADD USUARIO ROL 6, 4, 3 (TECNICO DE CONTINGENCIA, SUPERVISOR DE CODIFICACION, JEFE DE TURNO)
-		if (rol_id==6 || rol_id == 4 || rol_id ==3) {
-			// 
-			await (await con.query(`
-			INSERT INTO codificacion.cod_usuario (nombres, apellidos, password, login, telefono, rol_id, usucre, turno, cod_supvsr)  
-			VALUES (UPPER('${nombres}'),UPPER('${apellidos}'), md5('123456'),LOWER('${login}'),'${telefono}', ${rol_id}, '${usucre}', '${turno}', ${cod_supvsr})
-			`));
-		}
-
-
-		// ADD USUARIO ROL 5 (TECNICO EN CODIFICACION) 				
-		if (rol_id == 5) {
-
-			// Obtener el turno del usuario creador (supervisor)
-			const trn= await (await con.query(`
-				select turno from codificacion.cod_usuario where id_usuario = ${id_usuario};
-			`)).rows;	
-
-			// 
-			await (await con.query(`
-				INSERT INTO codificacion.cod_usuario (nombres, apellidos, password, login, telefono, rol_id, usucre, turno, cod_supvsr)  
-				VALUES (UPPER('${nombres}'),UPPER('${apellidos}'), md5('123456'),LOWER('${login}'),'${telefono}', ${rol_id}, '${usucre}', '${trn[0].turno}', ${cod_supvsr})
-			`));
-		}
-
-
-		// RESPUESTA
-		res.status(200).json({
-			success: true,
-			message: 'Usuario Adicionado'
-		})
-	}
-
+	res.status(200).json({
+		success: true,
+		message: 'Usuario registrado correctamente.'
+	})
+	return
 }
 
 
@@ -339,6 +310,7 @@ const modificaUsuario = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
 /**
  * 
  * @param {*} req 
@@ -421,8 +393,9 @@ const mostrarDatosUsuario = async (req, res) => {
 	const query = {
 		text: `
 		select
-			u.nombres,
-			u.apellidos,
+		u.nombres,
+		u.pr_apellido,
+		u.sg_apellido,
 			u.login,
 			u.telefono,
 			r.rol_descripcion,
