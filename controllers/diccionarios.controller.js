@@ -11,8 +11,21 @@ const devuelveCatalogo = async (req, res) => {
 
 	//console.log("dfgdfgdgdfgdgdfgdg");
 	const query = {
-		text: `SELECT * FROM ${esquema}.cod_catalogo WHERE catalogo ILIKE $1 
-		AND estado ILIKE 'ACTIVO' order by id_catalogo desc `,
+		text: `
+		SELECT 
+			id_catalogo,
+			catalogo,
+			codigo,
+			descripcion,
+			usucre,
+			to_char(feccre, 'DD-MM-YYYY') as feccre,
+			usumod,
+			to_char(fecmod, 'DD-MM-YYYY') as fecmod
+		FROM codificacion.cod_catalogo WHERE catalogo ILIKE $1 
+				AND estado ILIKE 'ACTIVO' order by id_catalogo DESC
+		
+		--SELECT * FROM ${esquema}.cod_catalogo WHERE catalogo ILIKE $1 
+		--AND estado ILIKE 'ACTIVO' order by id_catalogo desc `,
 		values: [
 			params.catalogo,
 		],
@@ -26,6 +39,10 @@ const devuelveCatalogo = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+
+
+
 
 const devuelveCatalogoPorCodigo = async (req, res) => {
 	let params = req.body;
@@ -200,7 +217,19 @@ const updateEstadoCatalogo = async (req, res) => {
  */
 const devuelveMatriz = async (req, res) => {
 	const query = {
-		text: `SELECT * FROM ${esquema}.cod_matriz WHERE estado ILIKE 'ACTIVO' order by id_cod_matriz desc `,
+		text: `
+		SELECT 
+			id_cod_matriz,
+			codigo_ocupacion,
+			descripcion_ocupacion,
+			codigo_acteco,
+			descripcion_acteco,
+			to_char(feccre, 'DD-MM-YYYY') as feccre,
+			usucre,
+			to_char(fecmod, 'DD-MM-YYYY') as fecmod,
+			usumod	
+		FROM codificacion.cod_matriz WHERE estado ILIKE 'ACTIVO' order by id_cod_matriz desc 
+		`,
 	};
 	await con
 		.query(query)
@@ -348,7 +377,17 @@ const updateEstadoMatriz = async (req, res) => {
 const devuelveCorrector = async (req, res) => {
 	let params = req.body;
 	const query = {
-		text: `SELECT * FROM ${esquema}.cod_err_corr where estado='ACTIVO' order by id desc`,
+		text: `
+		SELECT 
+		id,
+		erradas,
+		corregidas,
+		to_char(feccre, 'DD-MM-YYYY') as feccre,
+		usucre,
+		to_char(femod, 'DD-MM-YYYY') as femod,
+		usumod
+		FROM ${esquema}.cod_err_corr where estado='ACTIVO' order by id D--ESC
+		`,
 	};
 	await con
 		.query(query)

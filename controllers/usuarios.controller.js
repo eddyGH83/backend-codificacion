@@ -206,28 +206,60 @@ const registraUsuario = async (req, res) => {
 
 	console.table(req.body);
 
-	var cond = false;
+	var cond = true;
+
+
+	var nombre = 'eddy roque de la cruz'
+	// quitar espacios en blanco de la variable nombre, usando el metodo replace
+	nombre = nombre.replace(/\s/g, '');
+	nombre = nombre.trim();
 
 
 
 
-	// rol_id = 5; // Técnico en codificación
+
+
+	// rol_id = 5; // Técnico en codificación 
 	if (rol_id == 5) {
-		var n = '';
-		var nomUsu = nombres.trim().charAt(0) + n + pr_apellido.trim() + 'cod';
-		/* while (cond == true) {
-			// Verificamos si el usuario ya existe
-		} */
+		var n = 0; var cn = ''
+
+		// Verificamos si el usuario ya existe
+		while (cond) {
+
+			if (n == 0) { cn = ''; } else { cn = n.toString(); }
+
+			var nomUsu = nombres.replace(/\s/g, '').charAt(0) + pr_apellido.replace(/\s/g, '') + cn + 'cod';
+			const qr = await (await con.query(`select count(1) from codificacion.cod_usuario where login=LOWER('${nomUsu}')`)).rows;
+
+			if (qr[0].count == 0) {
+				cond = false;
+
+				// Averiguamos el turno del supervisor
+				const qr2 = await (await con.query(`select turno from codificacion.cod_usuario where id_usuario=${cod_supvsr}`)).rows;
+
+				// Insetamos el usuario
+				const query = `insert into codificacion.cod_usuario (nombres, pr_apellido, sg_apellido, password, login, telefono, rol_id, usucre, turno, cod_supvsr) 
+				values (UPPER ('${nombres}'),UPPER('${pr_apellido}'),UPPER('${sg_apellido}'), md5('123456'),LOWER('${nomUsu}'),'${telefono}', ${rol_id}, '${usucre}', '${qr2[0].turno}', ${cod_supvsr})`
+				await con
+					.query(query)
+					.then(result => res.status(200).json({
+						success: true,
+						message: 'Usuario registrado correctamente.'
+					}))
+					.catch(e => console.error(e.stack))
+			} else {
+				n++;
+			}
+		}
 	}
 
 
 
 
-	res.status(200).json({
-		success: true,
-		message: 'Usuario registrado correctamente.'
-	})
-	return
+
+
+
+
 }
 
 
@@ -282,33 +314,48 @@ const validarUsuario = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
+
 const modificaUsuario = async (req, res) => {
-	var params = req.body;
 	let id = req.params.id;
-	console.log(params)
-	const query = {
-		text: `UPDATE ${esquema}.cod_usuario SET nombres = $1, apellidos = $2, login = $3, rol_id = $4, 
-		telefono = $5, usumod=$6, turno=$7, cod_supvsr=$8, fecmod=now() 
-		WHERE id_usuario = ${id}`,
-		values: [
-			params.nombres,
-			params.apellidos,
-			params.login,
-			params.rol_id,
-			params.telefono,
-			params.usumod,
-			params.turno,
-			params.cod_supvsr,
-		],
-	};
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+	var params = req.body;
+
+	console.log("id: ", id);
+	console.table(params)
+
+
+	// rol_id = 5; // Técnico en codificación
+	if (params.rol_id === 5) {
+		const query = {
+			text: `UPDATE ${esquema}.cod_usuario SET nombres = UPPER($1), pr_apellido = UPPER($2), sg_apellido = UPPER($3), telefono = $4, usumod=$5, fecmod=now() 
+			WHERE id_usuario = ${id}`,
+			values: [
+				params.nombres,
+				//params.apellidos,
+				params.pr_apellido,
+				params.sg_apellido,
+				//params.login,
+				//params.rol_id,
+				params.telefono,
+				params.usumod,
+				//params.turno,
+				//params.cod_supvsr,
+			],
+		};
+
+		await con
+			.query(query)
+			.then((result) =>
+				res.status(200).json({
+					success: true,
+					message: 'Usuario modificado correctamente.'
+				})
+			)
+			.catch((e) => console.error(e.stack));
+
+	}
+
+
+
 };
 
 /**
