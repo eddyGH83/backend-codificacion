@@ -21,9 +21,17 @@ const devuelveUsuarios = async (req, res) => {
 	if (rol_id == 4) {
 		query = {
 			text: `
-			SELECT * FROM codificacion.cod_usuario u 
+			SELECT 
+				u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+				r.rol_codigo
+			FROM codificacion.cod_usuario u 
 			inner join codificacion.cod_rol r 
 			on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${id_usuario} and r.rol_id = 5  order by id_usuario DESC
+
+			--SELECT * FROM codificacion.cod_usuario u 
+			--inner join codificacion.cod_rol r 
+			--on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${id_usuario} and r.rol_id = 5  order by id_usuario DESC
 			`,
 		};
 	}

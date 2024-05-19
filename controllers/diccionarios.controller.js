@@ -271,18 +271,28 @@ const validarMatriz = async (req, res) => {
 };
 
 
-
-
-
 const insertarMatriz = async (req, res) => {
 	let params = req.body;
 	console.table(params);
 
+	// Validar si el registro ya existe
 	const sql = await (await con.query(`
 		select count(1) from codificacion.cod_matriz 
 		where codigo_ocupacion='${params.codigo_ocupacion}' and codigo_acteco ilike '${params.codigo_acteco}' 
 		and descripcion_ocupacion ilike '${params.descripcion_ocupacion}' and descripcion_acteco ilike '${params.descripcion_acteco}' and
 		estado ilike 'ACTIVO'
+	`)).rows;
+
+	// Validar si los códigos de ocupación y actividad económica existen en los catálogos
+	const sql_cat_cob = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_catalogo
+	WHERE catalogo = 'cat_cob' AND codigo ='${params.codigo_ocupacion}'	
+	`)).rows;
+
+	const sql_cat_caeb = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_catalogo
+	WHERE catalogo = 'cat_caeb' AND codigo ='${params.codigo_acteco}'
+	
 	`)).rows;
 
 	// Validar si el registro ya existe
@@ -292,18 +302,28 @@ const insertarMatriz = async (req, res) => {
 			message: 'El registro ya existe.'
 		});
 	} else {
-		// Insertar registro
-		await (await con.query(`
-			insert into codificacion.cod_matriz 
-			(codigo_ocupacion, descripcion_ocupacion, codigo_acteco, descripcion_acteco, usucre, feccre, estado,cat_ocupacion, cat_acteco, desc_ocu_norm, desc_acteco_norm) values 
-			('${params.codigo_ocupacion}', '${params.descripcion_ocupacion}', '${params.codigo_acteco}', '${params.descripcion_acteco}', '${params.user}', now(), 'ACTIVO', 
-			'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'),  
-			REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g'))
-		`));
-		return res.status(200).json({
-			success: true,
-			message: 'Registro insertado correctamente.'
-		});
+		// Validar si los códigos de ocupación y actividad económica existen en los catálogos
+		if (sql_cat_cob[0].count == 0 && sql_cat_caeb[0].count == 0) {
+			return res.status(200).json({
+				success: false,
+				message: 'Los códigos de ocupación y actividad económica no existen en los catálogos.'
+			});
+		} else {
+			// Insertar registro
+			await (await con.query(`
+				insert into codificacion.cod_matriz 
+				(codigo_ocupacion, descripcion_ocupacion, codigo_acteco, descripcion_acteco, usucre, feccre, estado,cat_ocupacion, cat_acteco, desc_ocu_norm, desc_acteco_norm) values 
+				('${params.codigo_ocupacion}', '${params.descripcion_ocupacion}', '${params.codigo_acteco}', '${params.descripcion_acteco}', '${params.user}', now(), 'ACTIVO', 
+				'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'),  
+				REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g'))
+			`));
+			return res.status(200).json({
+				success: true,
+				message: 'Registro insertado correctamente.'
+			});
+
+		}
+
 	}
 
 };
@@ -386,7 +406,7 @@ const devuelveCorrector = async (req, res) => {
 		usucre,
 		to_char(femod, 'DD-MM-YYYY') as femod,
 		usumod
-		FROM ${esquema}.cod_err_corr where estado='ACTIVO' order by id D--ESC
+		FROM ${esquema}.cod_err_corr where estado='ACTIVO' order by id DESC
 		`,
 	};
 	await con
@@ -422,7 +442,6 @@ const validarCorrector = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
-
 
 
 const insertCorrector = async (req, res) => {

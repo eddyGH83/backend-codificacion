@@ -253,77 +253,169 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 
 	const query = {
 		text: `
-			SELECT 
+			SELECT
+				1 orden,
+				'p20esp' tabla_id,
 				'La Paz' AS depto,
 				'20' AS nro_preg,
 				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
-				0 AS total_carga	
+				count(*) AS total_carga
+			FROM codificacion.cod_p20esp WHERE estado = 'ELABORADO'
+
 			UNION
-			SELECT 
+
+			SELECT
+				2 orden,
+				'p32esp' tabla_id,
 				'La Paz' AS depto,
 				'32' AS nro_preg,
 				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
-				0 AS total_carga
+				count(1) AS total_carga
+			FROM codificacion.cod_p32esp WHERE estado = 'ELABORADO'
+
 			UNION
-			SELECT 
+
+			SELECT
+				3 orden,
+				'p331' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
 				'Idioma 1' AS variable,
-				0 AS total_carga
+				count(1) AS total_carga
+			FROM codificacion.cod_p331 WHERE estado = 'ELABORADO'
+
 			UNION
-			SELECT 
+			
+			SELECT
+				4 orden,
+				'p332' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
 				'Idioma 2' AS variable,
-				0 AS total_carga
+				count(1) AS total_carga
+			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
+
 			UNION
-			SELECT 
+
+			SELECT
+				5 orden,
+				'p332' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
 				'Idioma 3' AS variable,
-				0 AS total_carga
+				count(1) AS total_carga
+			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
+
 			UNION
+
 			SELECT 
+				6 orden,
+				'p341' tabla_id,
 				'La Paz' AS depto,
 				'34' AS nro_preg,
 				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
-				0 AS total_carga
+				count(1) AS total_carga
+			FROM codificacion.cod_p341 WHERE estado = 'ELABORADO'
+
 			UNION
+
 			SELECT 
+				7 orden,
+				'p352a' tabla_id,
 				'La Paz' AS depto,
 				'35' AS nro_preg,
-				'¿Dónde nació?' AS variable,
-				0 AS total_carga
+				'¿Dónde nació? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p352a WHERE estado = 'ELABORADO'
+
 			UNION
+
 			SELECT 
+				8 orden,
+				'p353' tabla_id,
+				'La Paz' AS depto,
+				'35' AS nro_preg,
+				'¿Dónde nació? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p353 WHERE estado = 'ELABORADO'
+
+			UNION
+
+			SELECT 
+				9 orden,
+				'p362a' tabla_id,
 				'La Paz' AS depto,
 				'36' AS nro_preg,
-				'¿Dónde vive habitualmente?' AS variable,
-				0 AS total_carga
+				'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p362a WHERE estado = 'ELABORADO'
+
 			UNION
+
 			SELECT 
+				10 orden,
+				'p363' tabla_id,
+				'La Paz' AS depto,
+				'36' AS nro_preg,
+				'¿Dónde vive habitualmente? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p363 WHERE estado = 'ELABORADO'
+
+			UNION
+
+			SELECT
+				11 orden,
+				'p372a' tabla_id,
 				'La Paz' AS depto,
 				'37' AS nro_preg,
-				'¿Dónde vivía el año 2019?' AS variable,
-				0 AS total_carga
+				'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p372a WHERE estado = 'ELABORADO'
+
 			UNION
+
 			SELECT 
+				12 orden,
+				'p373' tabla_id,
+				'La Paz' AS depto,
+				'37' AS nro_preg,
+				'¿Dónde vivía el año 2019? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p373 WHERE estado = 'ELABORADO'
+
+			UNION
+
+			SELECT
+				13 orden,
+				'p48esp' tabla_id,
 				'La Paz' AS depto,
 				'48' AS nro_preg,
 				'Las últimas 4 semanas:' AS variable,
-				0 AS total_carga
-			UNION	
+				count(1) AS total_carga
+			FROM codificacion.cod_p48esp WHERE estado = 'ELABORADO'
+
+			UNION
+
 			SELECT 
+				14 orden,
+				'p49_p51' tabla_id,
 				'La Paz' AS depto,
 				'49-51' AS nro_preg,
 				'Ocupación - Actividad Económica' AS variable,
-				count (1) AS total_carga FROM codificacion.cod_p49_p51
+				count (1) AS total_carga 
+			FROM codificacion.cod_p49_p51 WHERE estado = 'ELABORADO'				
+
 			UNION
-			SELECT 
-				'La Paz' AS depto,
-				'52' AS nro_preg,
-				'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
-				0 AS total_carga		
+			
+			SELECT
+				15 orden,
+				'p52esp' AS tabla_id,						
+			    'La Paz' AS depto,
+			    '52' AS nro_preg,
+			    'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
+			    count(1) AS total_carga
+			FROM codificacion.cod_p52esp WHERE estado = 'ELABORADO'
+			ORDER BY orden asc
 		`
 	};
 
@@ -602,9 +694,25 @@ select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else
  */
 const codificadores = async (req, res) => {
 	let id = req.params.id;
-	console.log("ffffffffffffffffffffffffffffffffffffffffffff", id)
+	// console.log("ffffffffffffffffffffffffffffffffffffffffffff", id)
 	const query = {
-		text: `SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}`,
+		text: `
+		SELECT
+		    id_usuario,
+		    nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
+		    nombres,
+		    pr_apellido,
+		    sg_apellido,
+		    turno,
+		    cod_supvsr,
+		    rol_id,
+		    login,
+			0 total,
+    		false activo
+		FROM codificacion.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
+
+		--SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
+		`,
 	};
 	await con
 		.query(query)
@@ -889,60 +997,30 @@ const updateAsignado_ = async (req, res) => {
 
 
 const updateAsignado = async (req, res) => {
-	let id = req.params.id;
+	let tabla_id = req.params.id;
 	let parametro = req.body;
-	query = ''
 
-	
-	/* if (id == 125) {
-		parametro.forEach(params => {
-			const consulta = `update ${esquema}.cod_encuesta_codificacion cecupd
-			set estado='ASIGNADO', usucre='${params.usucre}' from
-			(select distinct ceco.id_informante oc_id_inf, ceco.id_encuesta oc_id_enc, ceco.id_pregunta oc_id_preg, ceco.departamento,ceco.estado,
-			ceca.id_informante ac_id_inf, ceca.id_encuesta ac_id_enc, ceca.id_pregunta ac_id_preg, ceca.departamento, ceca.estado
-			from ${esquema}.cod_encuesta_codificacion ceco
-				inner join ${esquema}.cod_encuesta_codificacion ceca
-				on ceco.id_informante = ceca.id_informante
-			where ceco.id_pregunta = 125 and ceca.id_pregunta=127 and ceco.departamento = '${params.departamento}' and 
-			 (ceco.estado='ELABORADO' or ceca.estado = 'ELABORADO') limit ${params.count}) x 
-			WHERE case when cecupd.id_pregunta=125 then 
-				cecupd.id_informante = x.oc_id_inf and cecupd.id_encuesta = x.oc_id_enc 
-				and cecupd.id_pregunta=x.oc_id_preg else 
-				cecupd.id_informante = x.ac_id_inf and cecupd.id_encuesta = x.ac_id_enc 
-				and cecupd.id_pregunta=x.ac_id_preg
-			end and cecupd.id_pregunta in (125,127) ; `
-			//end and cecupd.id_pregunta in (125,127) and codigocodif is null; `
-			query += consulta
-		});
-	} else {
-		parametro.forEach(params => {
-			const consulta = `WITH cte AS (select * from ${esquema}.cod_encuesta_codificacion where estado ilike 'ELABORADO'
-				and id_pregunta not in (125,127) and id_pregunta=${id} and departamento='${params.departamento}' limit ${params.count})
-				update ${esquema}.cod_encuesta_codificacion
-				set estado='${params.estado}',usucre='${params.usucre}'
-				from cte c join ${esquema}.cod_variables b on c.id_pregunta=b.id_pregunta
-				where c.id_informante = ${esquema}.cod_encuesta_codificacion.id_informante
-				and c.id_encuesta = ${esquema}.cod_encuesta_codificacion.id_encuesta
-				and ${esquema}.cod_encuesta_codificacion.estado='ELABORADO'
-				and ${esquema}.cod_encuesta_codificacion.id_pregunta=${id}; `
-			query += consulta
-		});
-	} */
-	//console.log(query)
-	/* await con
+	var tabla = 'cod_' + tabla_id;
+	var id = 'id_' + tabla_id;
+
+	query = ''
+	parametro.forEach(params => {
+		const consulta = `
+				WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' limit ${params.count})
+				update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
+				where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
+		query += consulta
+	});
+
+	await con
 		.query(query)
 		.then((result) =>
 			res.status(200).json({
 				datos: result,
 			})
 		)
-		.catch((e) => console.error(e.stack)); */
+		.catch((e) => console.error(e.stack));
 };
-
-
-
-
-
 
 
 const updateVerificado = async (req, res) => {
@@ -2425,30 +2503,175 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 
 */
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
 const devuelvePreguntasCodificado = async (req, res) => {
 	var params = req.body;
 	const query = {
-		text:
-			`select a.id_pregunta, b.pregunta, b.catalogo, b.area, count(*)
-		from ${esquema}.cod_encuesta_codificacion a, ${esquema}.cod_variables b
-		where a.id_pregunta=b.id_pregunta and a.id_pregunta in (select id_pregunta from ${esquema}.cod_variables where estado = 'ACTIVO') 
-		and a.id_pregunta not in  (125,127)  and a.estado ILIKE 'ASIGNADO' and usucre ilike $1 group by a.id_pregunta, b.pregunta, b.catalogo, b.area
-		union all
-select 125 id_pregunta, 'Preguntas 48-50: Ocupación - Actividad Económica' pregunta, 'cat_cob, cat_caeb' catalogo, '' area, count(*) cuenta from  
-(select distinct ceco.id_informante, ceco.id_encuesta, ceco.id_pregunta, ceco.usucre ,ceco.departamento,
-ceca.id_informante, ceca.id_encuesta, ceca.id_pregunta, ceca.usucre,ceca.departamento
-from ${esquema}.cod_encuesta_codificacion ceco
-	inner join ${esquema}.cod_encuesta_codificacion ceca
-	on ceco.id_informante = ceca.id_informante
-where ceco.id_pregunta =125 and ceca.id_pregunta=127  
-and ceca.estado ilike 'ASIGNADO' and ceca.usucre ilike $1
-and ceco.estado ilike 'ASIGNADO' and ceco.usucre ilike $1) x
-having count(*)>0`,
+		text:`
+		SELECT
+			1 orden,
+			'p20esp' tabla_id,
+			'La Paz' AS depto,
+			'20' AS nro_preg,
+			'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
+			count(*) AS total_carga
+		FROM codificacion.cod_p20esp WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			2 orden,
+			'p32esp' tabla_id,
+			'La Paz' AS depto,
+			'32' AS nro_preg,
+			'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p32esp WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			3 orden,
+			'p331' tabla_id,
+			'La Paz' AS depto,
+			'33' AS nro_preg,
+			'Idioma 1' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p331 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			4 orden,
+			'p332' tabla_id,
+			'La Paz' AS depto,
+			'33' AS nro_preg,
+			'Idioma 2' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			5 orden,
+			'p332' tabla_id,
+			'La Paz' AS depto,
+			'33' AS nro_preg,
+			'Idioma 3' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			6 orden,
+			'p341' tabla_id,
+			'La Paz' AS depto,
+			'34' AS nro_preg,
+			'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p341 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			7 orden,
+			'p352a' tabla_id,
+			'La Paz' AS depto,
+			'35' AS nro_preg,
+			'¿Dónde nació? ¿Municipio?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p352a WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			8 orden,
+			'p353' tabla_id,
+			'La Paz' AS depto,
+			'35' AS nro_preg,
+			'¿Dónde nació? ¿País?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p353 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			9 orden,
+			'p362a' tabla_id,
+			'La Paz' AS depto,
+			'36' AS nro_preg,
+			'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p362a WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			10 orden,
+			'p363' tabla_id,
+			'La Paz' AS depto,
+			'36' AS nro_preg,
+			'¿Dónde vive habitualmente? ¿País?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p363 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			11 orden,
+			'p372a' tabla_id,
+			'La Paz' AS depto,
+			'37' AS nro_preg,
+			'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p372a WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			12 orden,
+			'p373' tabla_id,
+			'La Paz' AS depto,
+			'37' AS nro_preg,
+			'¿Dónde vivía el año 2019? ¿País?' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p373 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			13 orden,
+			'p48esp' tabla_id,
+			'La Paz' AS depto,
+			'48' AS nro_preg,
+			'Las últimas 4 semanas:' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p48esp WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			14 orden,
+			'p49_p51' tabla_id,
+			'La Paz' AS depto,
+			'49-51' AS nro_preg,
+			'Ocupación - Actividad Económica' AS variable,
+			count (1) AS total_carga
+		FROM codificacion.cod_p49_p51 WHERE estado = 'ASIGNADO' AND usucre = $1
+
+		UNION
+
+		SELECT
+			15 orden,
+			'p52esp' AS tabla_id,
+			'La Paz' AS depto,
+			'52' AS nro_preg,
+			'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
+			count(1) AS total_carga
+		FROM codificacion.cod_p52esp WHERE estado = 'ASIGNADO' AND usucre = $1
+		ORDER BY orden asc
+		`,
 		values: [
 			params.usucre,
 		],
@@ -2462,6 +2685,41 @@ having count(*)>0`,
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+const devuelvePreguntasCodificado_ = async (req, res) => {
+	var params = req.body;
+	const query = {
+		text:`
+			select a.id_pregunta, b.pregunta, b.catalogo, b.area, count(*)
+			from ${esquema}.cod_encuesta_codificacion a, ${esquema}.cod_variables b
+			where a.id_pregunta=b.id_pregunta and a.id_pregunta in (select id_pregunta from ${esquema}.cod_variables where estado = 'ACTIVO') 
+			and a.id_pregunta not in  (125,127)  and a.estado ILIKE 'ASIGNADO' and usucre ilike $1 group by a.id_pregunta, b.pregunta, b.catalogo, b.area
+			union all
+			select 125 id_pregunta, 'Preguntas 48-50: Ocupación - Actividad Económica' pregunta, 'cat_cob, cat_caeb' catalogo, '' area, count(*) cuenta from  
+			(select distinct ceco.id_informante, ceco.id_encuesta, ceco.id_pregunta, ceco.usucre ,ceco.departamento,
+			ceca.id_informante, ceca.id_encuesta, ceca.id_pregunta, ceca.usucre,ceca.departamento
+			from ${esquema}.cod_encuesta_codificacion ceco
+				inner join ${esquema}.cod_encuesta_codificacion ceca
+				on ceco.id_informante = ceca.id_informante
+			where ceco.id_pregunta =125 and ceca.id_pregunta=127  
+			and ceca.estado ilike 'ASIGNADO' and ceca.usucre ilike $1
+			and ceco.estado ilike 'ASIGNADO' and ceco.usucre ilike $1) x
+			having count(*)>0
+		`,
+		values: [
+			params.usucre,
+		],
+	};
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
+};
+
 
 module.exports = {
 	cargarDatos,
