@@ -253,12 +253,15 @@ const repOdbc = async (req, res) => {
 };
 ////////////////////REPORTES DEL 1 AL 11
 
+
+
 /**
  * 
  * @param {*} req 
  * @param {*} res 
  */
 const reporte1 = async (req, res) => {
+	
 	const query = {
 		text: `select catalogo,codigo, acep_desc, campo_desc, sum(tot) from
 		(select cc.catalogo,cc.codigo, cc.descripcion acep_desc, cec.respuesta campo_desc, count(cec.respuesta) tot
@@ -280,6 +283,9 @@ const reporte1 = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+
+
 /**
  * 
  * @param {*} req 

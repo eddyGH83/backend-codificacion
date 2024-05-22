@@ -251,6 +251,18 @@ or (ceco.estado='ASIGNADO' and ceca.estado='ASIGNADO')
 
 const preguntasPorDepartamentoCod = async (req, res) => {
 
+	const { depto } = req.body;
+
+
+	console.log('-----------------------depto', depto);
+
+	if (depto === 'OTROS') {
+		sql_depto = 'and departamento is null';
+	} else {
+		sql_depto = `and departamento = '${depto}'`;
+	}
+
+
 	const query = {
 		text: `
 			SELECT
@@ -260,7 +272,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'20' AS nro_preg,
 				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
 				count(*) AS total_carga
-			FROM codificacion.cod_p20esp WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p20esp WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -271,7 +283,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'32' AS nro_preg,
 				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p32esp WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p32esp WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -282,7 +294,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'33' AS nro_preg,
 				'Idioma 1' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p331 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p331 WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 			
@@ -293,7 +305,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'33' AS nro_preg,
 				'Idioma 2' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -304,7 +316,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'33' AS nro_preg,
 				'Idioma 3' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -315,7 +327,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'34' AS nro_preg,
 				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p341 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p341 WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -326,7 +338,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p352a WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p352a WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -337,7 +349,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p353 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p353 WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -348,7 +360,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p362a WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p362a WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -359,7 +371,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p363 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p363 WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -370,7 +382,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p372a WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p372a WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -381,7 +393,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p373 WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p373 WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -392,7 +404,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'48' AS nro_preg,
 				'Las últimas 4 semanas:' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p48esp WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p48esp WHERE estado = 'ELABORADO'  ${sql_depto}
 
 			UNION
 
@@ -403,7 +415,8 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'49-51' AS nro_preg,
 				'Ocupación - Actividad Económica' AS variable,
 				count (1) AS total_carga 
-			FROM codificacion.cod_p49_p51 WHERE estado = 'ELABORADO'				
+			FROM codificacion.cod_p49_p51 
+			WHERE (estado_ocu = 'ELABORADO' or estado_act = 'ELABORADO') ${sql_depto}
 
 			UNION
 			
@@ -414,7 +427,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 			    '52' AS nro_preg,
 			    'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
 			    count(1) AS total_carga
-			FROM codificacion.cod_p52esp WHERE estado = 'ELABORADO'
+			FROM codificacion.cod_p52esp WHERE estado = 'ELABORADO'  ${sql_depto}
 			ORDER BY orden asc
 		`
 	};
@@ -723,6 +736,62 @@ const codificadores = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+const codificadoresConCarga = async (req, res) => {
+	//let id = req.params.id;
+
+	const { id, pregunta } = req.body;
+	// console.log("codificadores Con Carga ")
+
+
+	// averiguamos todos los codificadores de un supervisor
+	const queryCod = `
+	SELECT
+		id_usuario, nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,login
+	FROM codificacion.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = 2
+	`
+	// ejecutamos la consulta
+	const codificadores = (await con.query(queryCod)).rows;
+
+	// por cada codificador averiguamos cuantas encuestas tiene asignadas
+	for (let i = 0; i < codificadores.length; i++) {
+		const queryEnc = `
+		select count(1) from codificacion.cod_${pregunta} WHERE estado = 'ASIGNADO' and usucre = '${codificadores[i].login}'
+		--SELECT count(*) FROM codificacion.cod_encuesta_codificacion WHERE estado = 'ASIGNADO' AND id_pregunta = ${pregunta} AND usucre = '${codificadores[i].login}'
+		`
+		codificadores[i].total_asignado = (await con.query(queryEnc)).rows[0].count;
+	}
+
+
+	console.table(codificadores);
+
+
+
+	/* 	const query = {
+			text: `
+			SELECT
+				id_usuario,
+				nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
+				nombres,
+				pr_apellido,
+				sg_apellido,
+				turno,
+				cod_supvsr,
+				rol_id,
+				login,
+				0 total,
+				false activo
+			FROM codificacion.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
+	
+			--SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
+			`,
+		}; */
+	res.status(200).json({
+		datos: codificadores,
+	})
+};
+
+
 /**
  * 
  * @param {*} req 
@@ -1000,27 +1069,45 @@ const updateAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
 
-	var tabla = 'cod_' + tabla_id;
-	var id = 'id_' + tabla_id;
+	// Si el parametro es un array y su longitud es 0, se retorna un error
+	if (parametro.length > 0) {
+		console.table(parametro[0].departamento);
 
-	query = ''
-	parametro.forEach(params => {
-		const consulta = `
-				WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' limit ${params.count})
-				update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
-				where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
-		query += consulta
-	});
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
 
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+		query = ''
+
+		parametro.forEach(params => {
+			const consulta = `
+					WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
+					update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
+					where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
+			query += consulta
+		});
+
+		await con
+			.query(query)
+			.then((result) =>
+				res.status(200).json({
+					datos: result,
+				})
+			)
+			.catch((e) => console.error(e.stack));
+	} else {
+		res.status(200).json({ message: 'No se ha enviado ningun parametro' });
+	}
+
+
+
+
+
+
+
 };
+
+
+
 
 
 const updateVerificado = async (req, res) => {
@@ -2507,7 +2594,7 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 const devuelvePreguntasCodificado = async (req, res) => {
 	var params = req.body;
 	const query = {
-		text:`
+		text: `
 		SELECT
 			1 orden,
 			'p20esp' tabla_id,
@@ -2658,7 +2745,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'49-51' AS nro_preg,
 			'Ocupación - Actividad Económica' AS variable,
 			count (1) AS total_carga
-		FROM codificacion.cod_p49_p51 WHERE estado = 'ASIGNADO' AND usucre = $1
+		FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' and  estado_act = 'ASIGNADO')  AND usucre = $1
 
 		UNION
 
@@ -2689,7 +2776,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 const devuelvePreguntasCodificado_ = async (req, res) => {
 	var params = req.body;
 	const query = {
-		text:`
+		text: `
 			select a.id_pregunta, b.pregunta, b.catalogo, b.area, count(*)
 			from ${esquema}.cod_encuesta_codificacion a, ${esquema}.cod_variables b
 			where a.id_pregunta=b.id_pregunta and a.id_pregunta in (select id_pregunta from ${esquema}.cod_variables where estado = 'ACTIVO') 
@@ -2729,6 +2816,7 @@ module.exports = {
 	preguntasPorDepartamentoCod,
 	preguntasPorDepartamentoSup,
 	codificadores,
+	codificadoresConCarga,
 	supervisores,
 	reasignar,
 	reasignarsup,

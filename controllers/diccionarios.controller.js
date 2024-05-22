@@ -291,8 +291,7 @@ const insertarMatriz = async (req, res) => {
 
 	const sql_cat_caeb = await (await con.query(`
 	SELECT count(1) FROM codificacion.cod_catalogo
-	WHERE catalogo = 'cat_caeb' AND codigo ='${params.codigo_acteco}'
-	
+	WHERE catalogo = 'cat_caeb' AND codigo ='${params.codigo_acteco}'	
 	`)).rows;
 
 	// Validar si el registro ya existe
@@ -329,19 +328,27 @@ const insertarMatriz = async (req, res) => {
 };
 
 
-
 const updateMatriz = async (req, res) => {
 	let id = req.params.id;
 	let params = req.body;
 
-
-	console.table(params);
-
+	// Validar si el registro ya existe
 	const sql = await (await con.query(`
 		select count(1) from codificacion.cod_matriz 
 		where codigo_ocupacion='${params.codigo_ocupacion}' and codigo_acteco ilike '${params.codigo_acteco}' 
 		and descripcion_ocupacion ilike '${params.descripcion_ocupacion}' and descripcion_acteco ilike '${params.descripcion_acteco}' and
 		estado ilike 'ACTIVO'
+	`)).rows;
+
+	// Validar si los códigos de ocupación y actividad económica existen en los catálogos
+	const sql_cat_cob = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_catalogo
+	WHERE catalogo = 'cat_cob' AND codigo ='${params.codigo_ocupacion}'	
+	`)).rows;
+
+	const sql_cat_caeb = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_catalogo
+	WHERE catalogo = 'cat_caeb' AND codigo ='${params.codigo_acteco}'	
 	`)).rows;
 
 	// Validar si el registro ya existe
@@ -351,21 +358,30 @@ const updateMatriz = async (req, res) => {
 			message: 'El registro ya existe.'
 		});
 	} else {
-		// Insertar registro
-		await (await con.query(`
-			UPDATE codificacion.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
-			codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
-			desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'), desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g') 
-			WHERE id_cod_matriz=${id}
-		`));
-		return res.status(200).json({
-			success: true,
-			message: 'Registro modificado correctamente.'
-		});
+		// Validar si los códigos de ocupación y actividad económica existen en los catálogos
+		if (sql_cat_cob[0].count == 0 && sql_cat_caeb[0].count == 0) {
+			return res.status(200).json({
+				success: false,
+				message: 'Los códigos de ocupación y actividad económica no existen en los catálogos.'
+			});
+		} else {
+			// Insertar registro
+			await (await con.query(`
+				UPDATE codificacion.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
+				codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
+				desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'), desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g') 
+				WHERE id_cod_matriz=${id}
+			`));
+
+			return res.status(200).json({
+				success: true,
+				message: 'Registro modificado correctamente.'
+			});
+		}
+
 	}
 
 };
-
 
 
 const updateEstadoMatriz = async (req, res) => {
