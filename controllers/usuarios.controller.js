@@ -73,7 +73,7 @@ const devuelveSupervisores = async (req, res) => {
 
 	query = {
 		text: `
-			SELECT u.id_usuario, 'Sup. ' || u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido || ' | t. ' || u.turno nombres  FROM codificacion.cod_usuario u
+			SELECT u.id_usuario, 'Sup. ' || u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido || ' | t. ' || u.turno nombre_completo  FROM codificacion.cod_usuario u
 			inner join codificacion.cod_rol r
 			on u.rol_id=r.rol_id where u.estado = 'A' AND r.rol_id ='4' order by id_usuario DESC
 			`,
@@ -203,6 +203,51 @@ const registraUsuario = async (req, res) => {
 		id_usuario,
 		nombres,
 		pr_apellido,
+		sg_apellido,		
+		telefono,
+		rol_id,		
+	} = req.body;	
+
+	var cond = true;
+
+	var nombre = 'eddy roque de la cruz'
+	// quitar espacios en blanco de la variable nombre, usando el metodo replace
+	nombre = nombre.replace(/\s/g, '');
+	nombre = nombre.trim();
+
+	// rol_id = 4 // Supervisor de codificación
+	if (rol_id == 4) {
+		console.log('------Supervisor de codificación');
+		console.table(req.body);
+		//respuesta 
+		res.status(200).json({
+			success: false,
+			message: 'Rol no permitido.'
+		})
+
+		return;
+	}
+
+	// rol_id = 5; // Técnico en codificación 
+	if (rol_id == 5) {
+		console.log('-------Técnico en codificación');
+		console.table(req.body);
+		// respuesta
+		res.status(200).json({
+			success: false,
+			message: 'Rol no permitido.'
+		})
+		return;
+	}
+
+}
+
+
+const registraUsuario__ = async (req, res) => {
+	var {
+		id_usuario,
+		nombres,
+		pr_apellido,
 		sg_apellido,
 		login,
 		telefono,
@@ -216,15 +261,10 @@ const registraUsuario = async (req, res) => {
 
 	var cond = true;
 
-
 	var nombre = 'eddy roque de la cruz'
 	// quitar espacios en blanco de la variable nombre, usando el metodo replace
 	nombre = nombre.replace(/\s/g, '');
 	nombre = nombre.trim();
-
-
-
-
 
 
 	// rol_id = 5; // Técnico en codificación 
@@ -262,16 +302,7 @@ const registraUsuario = async (req, res) => {
 	}
 
 
-
-
-
-
-
-
 }
-
-
-
 
 
 

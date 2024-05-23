@@ -600,10 +600,10 @@ const reporte12 = async (req, res) => {
 	
 	const query = {
 		text: `
-		select respuesta_ocu, respuesta_act, count frecuencia from codificacion.cod_p49_p51
+		select respuesta_ocu, respuesta_act, count(*) frecuencia from codificacion.cod_p49_p51
         where estado_ocu='ELABORADO' and estado_act='ELABORADO'
         group by respuesta_ocu, respuesta_act
-        having count>=5
+        having count(*)>=5
         order by frecuencia desc
 		`,
 	};
