@@ -1070,39 +1070,107 @@ const updateAsignado = async (req, res) => {
 	let parametro = req.body;
 
 	// Si el parametro es un array y su longitud es 0, se retorna un error
-	if (parametro.length > 0) {
-		console.table(parametro[0].departamento);
-
-		var tabla = 'cod_' + tabla_id;
-		var id = 'id_' + tabla_id;
-
-		query = ''
-
-		parametro.forEach(params => {
-			const consulta = `
-					WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
-					update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
-					where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
-			query += consulta
+	if (parametro.length == 0) {
+		// Mesaje de retorno
+		res.status(200).json({
+			success: false,
+			message: 'No hay cantidad para asignar.'
 		});
-
-		await con
-			.query(query)
-			.then((result) =>
-				res.status(200).json({
-					datos: result,
-				})
-			)
-			.catch((e) => console.error(e.stack));
-	} else {
-		res.status(200).json({ message: 'No se ha enviado ningun parametro' });
+		return;
 	}
 
 
+	// Verifica si es algun departamento u otro
+	if (parametro[0].departamento !== 'OTROS') {
+		// Total de carga
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
 
 
+		// Veririfica disponibilidad de carga
+		const queryDisp = `
+		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+		const result = await (await con.query(queryDisp)).rows;
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			// Mensaje de retorno
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query = '';
+
+		parametro.forEach(params => {
+			const consulta = `
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
+						update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
+			query += consulta
+		});
+		await con.query(query)
 
 
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+
+	} else {
+		// Total de carga
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
+
+
+		// Veririfica disponibilidad de carga
+		const queryDisp = `
+		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'ELABORADO' and departamento is null;`
+		const result = await (await con.query(queryDisp)).rows;
+
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			// Mensaje de retorno
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query = '';
+
+		parametro.forEach(params => {
+			const consulta = `
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento is null limit ${params.count})
+						update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
+			query += consulta
+		});
+		await con.query(query)
+
+
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+
+	}
 
 };
 

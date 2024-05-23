@@ -594,6 +594,31 @@ const reporte11 = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+const reporte12 = async (req, res) => {
+	console.log("--------------reporte12------------");
+	
+	const query = {
+		text: `
+		select respuesta_ocu, respuesta_act, count frecuencia from codificacion.cod_p49_p51
+        where estado_ocu='ELABORADO' and estado_act='ELABORADO'
+        group by respuesta_ocu, respuesta_act
+        having count>=5
+        order by frecuencia desc
+		`,
+	};
+
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
+};
+
+
 module.exports = {
 	repCodificados,
 	repHoyAyerMes,
@@ -611,5 +636,6 @@ module.exports = {
 	reporte9,
 	reporte10,
 	reporte11,
+	reporte12
 
 };
