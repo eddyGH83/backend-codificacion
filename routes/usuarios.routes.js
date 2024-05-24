@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 
 const { devuelveUsuarios, 
+        devuelveJefesTurno,
         devuelveRoles,
         registraUsuario,
         modificaUsuario,
@@ -18,6 +19,7 @@ const { devuelveUsuarios,
     } = require('../controllers/usuarios.controller');
 
 router.post('/devuelveUsuarios', devuelveUsuarios);
+router.get('/devuelveJefesTurno', devuelveJefesTurno);
 router.post('/devuelveRoles', devuelveRoles);
 router.post('/registraUsuario', registraUsuario);//validarUsuario
 router.post('/validarUsuario', validarUsuario);
@@ -31,6 +33,5 @@ router.get('/devuelveSupervisores', devuelveSupervisores);
 router.post('/actualizaNroCelular', actualizaNroCelular);
 router.post('/mostrarDatosUsuario', mostrarDatosUsuario);
 router.post('/modificarPass', modificarPass);
-
 
 module.exports = router;
