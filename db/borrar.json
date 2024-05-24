@@ -123,7 +123,7 @@ imports: [RouterModule.forChild([
     },
     {
         "label": "Gestion de usuarios",
-        "icon": "pi pi-fw pi-cog",
+        "icon": "pi pi-fw pi-us",
         "items": [
             {
                 "label": "Usuarios",
@@ -231,7 +231,7 @@ imports: [RouterModule.forChild([
     },
     {
         "label": "Gestion de usuarios",
-        "icon": "pi pi-fw pi-cog",
+        "icon": "pi pi-fw pi-us",
         "items": [
             {
                 "label": "Usuarios",
@@ -293,7 +293,7 @@ imports: [RouterModule.forChild([
     },
     {
         "label": "Gestion de usuarios",
-        "icon": "pi pi-fw pi-cog",
+        "icon": "pi pi-fw pi-us",
         "items": [
             {
                 "label": "Usuarios",
@@ -361,13 +361,71 @@ imports: [RouterModule.forChild([
     },
     {
         "label": "Gestión de usuarios",
-        "icon": "pi pi-fw pi-cog",
+        "icon": "pi pi-fw pi-us",
         "items": [
             {
                 "label": "Usuarios",
                 "icon": "pi pi-fw pi-user-edit",
                 "routerLink": [
                     "/usuarios/admin-sup"
+                ]
+            }
+        ]
+    }
+]
+/* 05 */
+[
+    {
+        "label": "Dashboard",
+        "icon": "pi pi-fw pi-microsoft",
+        "items": [
+            {
+                "label": "Dashboard",
+                "icon": "pi pi-fw pi-microsoft",
+                "routerLink": [
+                    "/dashboard"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Codificación",
+        "icon": "pi pi-fw pi-check-square",
+        "items": [
+            {
+                "label": "Codificación",
+                "icon": "pi pi-fw pi-check",
+                "routerLink": [
+                    "/codificacion"
+                ]
+            }
+        ]
+    }
+]
+/* 06 */
+[
+    {
+        "label": "Dashboard",
+        "icon": "pi pi-fw pi-microsoft",
+        "items": [
+            {
+                "label": "Dashboard",
+                "icon": "pi pi-fw pi-microsoft",
+                "routerLink": [
+                    "/dashboard"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Gestion de datos",
+        "icon": "pi pi-fw pi-database",
+        "items": [
+            {
+                "label": "ODBC",
+                "icon": "pi pi-fw pi-sort-alt",
+                "routerLink": [
+                    "/odbc"
                 ]
             }
         ]

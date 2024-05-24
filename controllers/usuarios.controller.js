@@ -17,44 +17,96 @@ const devuelveUsuarios = async (req, res) => {
 
 	let query = ''
 
-	// Sup codificacion
+	// Sup codificacion: solo mostrará sus técnicos en codificación
 	if (rol_id == 4) {
-		query = {
-			text: `
-			SELECT 
-				u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
-				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
-				r.rol_codigo
-			FROM codificacion.cod_usuario u 
-			inner join codificacion.cod_rol r 
-			on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${id_usuario} and r.rol_id = 5  order by id_usuario DESC
-			`,
-		};
+		const qr = await (await con.query(`
+		SELECT 
+			u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+			u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+			r.rol_codigo, u.telefono
+		FROM codificacion.cod_usuario u 
+		inner join codificacion.cod_rol r 
+		on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${id_usuario} and r.rol_id = 5  order by id_usuario DESC
+		`)).rows;
+		// respuesta
+		res.status(200).json(qr);
 	}
 
-	// Jefe de turno || Sup/Resp de codificacion
-	if (rol_id == 3 || rol_id == 2) {
-		query = {
-			text: `
-			SELECT 
+
+
+	// Jefe de turno : mostrará sus supervisores creados y técnicos en codificación creados por sus supervisores
+	if (rol_id == 3) {
+		const qr = await (await con.query(`
+				SELECT 
+					u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+					u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+					r.rol_codigo, u.telefono
+				FROM codificacion.cod_usuario u 
+				inner join codificacion.cod_rol r 
+				on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${id_usuario} and r.rol_id = 4  order by id_usuario DESC 
+		`)).rows;
+
+		// por cada supervisor de "qr", mostramos sus técnicos en codificación creados por ellos, buscar por el campo cod_supvsr
+		for (let i = 0; i < qr.length; i++) { // recorremos los supervisores
+			const qr2 = await (await con.query(`
+				SELECT 
+					u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+					u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+					r.rol_codigo, u.telefono
+				FROM codificacion.cod_usuario u 
+				inner join codificacion.cod_rol r 
+				on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${qr[i].id_usuario} and r.rol_id = 5  order by id_usuario DESC 
+			`)).rows;
+
+			//console.log(qr2);
+			qr[i].tecnicos = qr2			
+		}		
+
+
+		// respuesta
+		res.status(200).json(qr)
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// Responsable especialista de codificación
+	if (rol_id == 2) {
+		
+		const qr = await (await con.query(` 
+		SELECT 
 			u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
 				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
-				r.rol_codigo
+				r.rol_codigo, u.telefono
 			FROM codificacion.cod_usuario u 
 			inner join codificacion.cod_rol r 
 			on u.rol_id=r.rol_id where u.estado = 'A' and u.usucre='${login}'  order by id_usuario DESC
-			`,
-		};
+		`)).rows;
+
+		// respuesta
+		res.status(200).json(qr)
 	}
 
-	await con
+
+
+
+	/* await con
 		.query(query)
 		.then((result) =>
 			res.status(200).json({
 				datos: result,
 			})
 		)
-		.catch((e) => console.error(e.stack));
+		.catch((e) => console.error(e.stack)); */
 };
 
 
@@ -231,7 +283,10 @@ const registraUsuario = async (req, res) => {
 		sg_apellido,
 		telefono,
 		rol_id,
+		turnoAux // Es el turno de los usuarios  jt y tec. cont
 	} = req.body;
+
+	console.table(req.body);
 
 	var cond = true;
 
@@ -239,6 +294,52 @@ const registraUsuario = async (req, res) => {
 	// quitar espacios en blanco de la variable nombre, usando el metodo replace
 	nombre = nombre.replace(/\s/g, '');
 	nombre = nombre.trim();
+
+
+	// rol_id = 3 // Jefe de turno
+	if (rol_id == 3) {
+		var cond = true;
+
+		var n = 0; var cn = ''
+
+		// Verificamos si el usuario ya existe
+		while (cond) {
+
+			// Si n es igual a 0, cn es igual a vacio, de lo contrario, cn es igual a n convertido a string
+			if (n == 0) { cn = ''; } else { cn = n.toString(); }
+
+			// Generamos el nombre de usuario
+			var nomUsu = nombres.replace(/\s/g, '').charAt(0) + pr_apellido.replace(/\s/g, '') + cn + 'jt';
+			// Verificamos si el usuario ya existe
+			const qr = await (await con.query(`select count(1) from codificacion.cod_usuario where login=LOWER('${nomUsu}')`)).rows;
+
+			// Si el usuario no existe, insertamos el usuario				
+			if (qr[0].count == 0) {
+				cond = false;
+
+				// Averiguamos el turno y el usuario supervisor del usuario
+				//const qr2 = await (await con.query(`select turno, login from codificacion.cod_usuario where id_usuario=${id_usuario}`)).rows;
+
+				// Averiguamos el login del usuario creador
+				const qr3 = await (await con.query(`select login from codificacion.cod_usuario where id_usuario=${id_creador}`)).rows;
+
+				// Ejecutamos la consulta de inserción
+				await con.query(`
+				insert into codificacion.cod_usuario (nombres, pr_apellido, sg_apellido, password, login, telefono, rol_id, usucre, turno, cod_supvsr)
+				values (UPPER ('${nombres}'),UPPER('${pr_apellido}'),UPPER('${sg_apellido}'), md5('123456'),LOWER('${nomUsu}'),'${telefono}', ${rol_id}, '${qr3[0].login}', '${turnoAux}', ${id_usuario})
+				`);
+
+				// respuesta
+				res.status(200).json({
+					success: true,
+					message: 'Jefe de Turno adicionado correctamente.'
+				})
+
+			} else {
+				n++;
+			}
+		}
+	}
 
 
 
@@ -337,6 +438,52 @@ const registraUsuario = async (req, res) => {
 		return;
 	}
 
+
+	// rol_id = 6; // Técnico de contingencia
+	if (rol_id == 6) {
+		var cond = true;
+
+		var n = 0; var cn = ''
+
+		// Verificamos si el usuario ya existe
+		while (cond) {
+
+			// Si n es igual a 0, cn es igual a vacio, de lo contrario, cn es igual a n convertido a string
+			if (n == 0) { cn = ''; } else { cn = n.toString(); }
+
+			// Generamos el nombre de usuario
+			var nomUsu = nombres.replace(/\s/g, '').charAt(0) + pr_apellido.replace(/\s/g, '') + cn + 'cont';
+			// Verificamos si el usuario ya existe
+			const qr = await (await con.query(`select count(1) from codificacion.cod_usuario where login=LOWER('${nomUsu}')`)).rows;
+
+			// Si el usuario no existe, insertamos el usuario				
+			if (qr[0].count == 0) {
+				cond = false;
+
+				// Averiguamos el turno y el usuario supervisor del usuario
+				// const qr2 = await (await con.query(`select turno, login from codificacion.cod_usuario where id_usuario=${id_usuario}`)).rows;
+
+				// Averiguamos el login del usuario creador
+				const qr3 = await (await con.query(`select login from codificacion.cod_usuario where id_usuario=${id_creador}`)).rows;
+
+				// Ejecutamos la consulta de inserción
+				await con.query(`
+				insert into codificacion.cod_usuario (nombres, pr_apellido, sg_apellido, password, login, telefono, rol_id, usucre, turno, cod_supvsr) 
+				values (UPPER ('${nombres}'),UPPER('${pr_apellido}'),UPPER('${sg_apellido}'), md5('123456'),LOWER('${nomUsu}'),'${telefono}', ${rol_id}, '${qr3[0].login}', '${turnoAux}', ${id_usuario})
+				`);
+			} else {
+				n++;
+			}
+		}
+
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Tecnico de Contingencia adicionado correctamente.'
+		})
+		return;
+	}
+
 }
 
 
@@ -377,6 +524,60 @@ const validarUsuario = async (req, res) => {
 
 const modificaUsuario = async (req, res) => {
 	let id = req.params.id;
+	var {
+		nombres,
+		pr_apellido,
+		sg_apellido,
+		telefono,
+		rol_id,
+		id_modificador
+	} = req.body;
+
+	console.log("---------->id: ", id);
+	console.table(req.body)
+
+	// rol_id = 6; //  Técnico de contingencia
+	if (rol_id === 6) {
+	}
+
+	// rol_id = 5; // Técnico en codificación
+	if (rol_id === 5) {
+		// Averiguamos el login del usuario modificador
+		const qr3 = await (await con.query(`select login from codificacion.cod_usuario where id_usuario=${id_modificador}`)).rows;
+
+		// Ejecutamos la consulta de modificación
+
+
+		try {
+			await con.query(`
+			UPDATE codificacion.cod_usuario SET nombres = UPPER('${nombres}'), pr_apellido = UPPER('${pr_apellido}'), sg_apellido = UPPER('${sg_apellido}'), telefono = '${telefono}', usumod=LOWER('${qr3[0].login}'), fecmod=now() 
+			WHERE id_usuario = ${id}
+		`);
+		} catch (error) {
+			console.log(error);
+		}
+
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Técnico en Codificación modificado correctamente.'
+		})
+	}
+
+	// rol_id = 4; // Supervisor de codificación
+	if (rol_id === 4) {
+	}
+
+	// rol_id = 3; // Jefe de turno
+	if (rol_id === 3) {
+	}
+
+};
+
+
+
+const modificaUsuario_ = async (req, res) => {
+	let id = req.params.id;
 	var params = req.body;
 
 	console.log("id: ", id);
@@ -413,8 +614,6 @@ const modificaUsuario = async (req, res) => {
 			.catch((e) => console.error(e.stack));
 
 	}
-
-
 
 };
 
