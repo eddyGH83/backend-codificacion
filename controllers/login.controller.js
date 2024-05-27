@@ -11,7 +11,8 @@ const esquema = "codificacion";
 const login = async (req, res) => {
     var { usu, pass } = req.body;
 
-    console.log("----login----");
+    console.log("----------------LOGIN-----------------");
+    console.table(req.body);
 
 
     const query = `

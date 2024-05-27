@@ -12,7 +12,7 @@ const esquema = "codificacion";
 
 const devuelveUsuarios = async (req, res) => {
 	let { rol_id, login, id_usuario } = req.body
-	//console.table(req.body);
+	console.table(req.body);
 
 
 	let query = ''
@@ -34,8 +34,12 @@ const devuelveUsuarios = async (req, res) => {
 
 
 
+
+
 	// Jefe de turno : mostrará sus supervisores creados y técnicos en codificación creados por sus supervisores
 	if (rol_id == 3) {
+
+		// Listamos los supervisores creados por el jefe de turno
 		const qr = await (await con.query(`
 				SELECT 
 					u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
@@ -47,7 +51,8 @@ const devuelveUsuarios = async (req, res) => {
 		`)).rows;
 
 		// por cada supervisor de "qr", mostramos sus técnicos en codificación creados por ellos, buscar por el campo cod_supvsr
-		for (let i = 0; i < qr.length; i++) { // recorremos los supervisores
+		for (let i = 0; i < qr.length; i++) {
+			// Listamos los técnicos en codificación creados por los supervisores por el campo cod_supvsr
 			const qr2 = await (await con.query(`
 				SELECT 
 					u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
@@ -55,58 +60,107 @@ const devuelveUsuarios = async (req, res) => {
 					r.rol_codigo, u.telefono
 				FROM codificacion.cod_usuario u 
 				inner join codificacion.cod_rol r 
-				on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${qr[i].id_usuario} and r.rol_id = 5  order by id_usuario DESC 
+				on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${qr[i].id_usuario} and r.rol_id = 5  order by id_usuario DESC
 			`)).rows;
 
-			//console.log(qr2);
-			qr[i].tecnicos = qr2			
-		}		
-
-
+			// Agregamos los técnicos en codificación creados por los supervisores
+			for (let j = 0; j < qr2.length; j++) {
+				qr.push(qr2[j]);
+			}
+		}
 		// respuesta
 		res.status(200).json(qr)
 	}
 
 
 
-
-
-
-
-
-
-
-
-
-
-	// Responsable especialista de codificación
+	// Responsable especialista de codificación: mostrará sus jefes de turno y supervisores, técnicos en codificación y técnicos de contingencia
 	if (rol_id == 2) {
-		
-		const qr = await (await con.query(` 
+
+
+
+		// Listamos todos los jefes de turno
+		const qr = await (await con.query(`
 		SELECT 
-			u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+					u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+					u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+					r.rol_codigo, u.telefono
+				FROM codificacion.cod_usuario u 
+				inner join codificacion.cod_rol r 
+				on u.rol_id=r.rol_id where u.estado = 'A' and r.rol_id = 3  order by id_usuario DESC
+		`)).rows;
+		// Listamos todos tecnicos en codificacion
+		const qr2 = await (await con.query(`
+			SELECT 
+				u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
 				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
 				r.rol_codigo, u.telefono
 			FROM codificacion.cod_usuario u 
 			inner join codificacion.cod_rol r 
-			on u.rol_id=r.rol_id where u.estado = 'A' and u.usucre='${login}'  order by id_usuario DESC
+			on u.rol_id=r.rol_id where u.estado = 'A' and r.rol_id = 6  order by id_usuario DESC
+		`)).rows;
+		// Unimos los jefes de turno con los tecnicos en codificacion
+		for (let i = 0; i < qr2.length; i++) {
+			qr.push(qr2[i]);
+		}
+
+
+
+
+
+
+
+
+
+		// Listamos todos los supervisores
+		const qr3 = await (await con.query(`
+			SELECT 
+				u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+				r.rol_codigo, u.telefono
+			FROM codificacion.cod_usuario u 
+			inner join codificacion.cod_rol r 
+			on u.rol_id=r.rol_id where u.estado = 'A' and r.rol_id = 5  order by id_usuario DESC
 		`)).rows;
 
-		// respuesta
-		res.status(200).json(qr)
+		// Unimos los supervisores
+		for (let j = 0; j < qr3.length; j++) {
+			qr.push(qr3[j]);
+		}
+
+
+
+
+
+
+
+		// por cada supervisor de "qr3", mostramos sus técnicos en codificación creados por ellos, buscar por el campo cod_supvsr
+		for (let k = 0; k < qr3.length; k++) {
+			// Listamos los técnicos en codificación creados por los supervisores por el campo cod_supvsr
+			const qr4 = await (await con.query(`
+			SELECT 
+				u.nombres || ' ' || u.pr_apellido || ' ' || u.sg_apellido  nombre_completo,
+				u.id_usuario, r.rol_id, u.nombres, u.login, u.usucre, u.fecre, u.usumod, u.fecmod, u.turno, u.estado, u.cod_supvsr, u.pr_apellido, u.sg_apellido, r.rol_descripcion, 
+				r.rol_codigo, u.telefono
+			FROM codificacion.cod_usuario u 
+			inner join codificacion.cod_rol r 
+			on u.rol_id=r.rol_id where u.estado = 'A' and u.cod_supvsr=${qr[k].id_usuario} and r.rol_id = 5  order by id_usuario DESC
+			`)).rows;
+
+			// Agregamos los técnicos en codificación creados por los supervisores
+			for (let l = 0; l < qr4.length; l++) {
+				qr.push(qr4[l]);
+			}
+		}
+
+
+
+
+		// respuestas
+		res.status(200).json(qr);
 	}
 
 
-
-
-	/* await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack)); */
 };
 
 

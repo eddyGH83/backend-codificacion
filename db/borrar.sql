@@ -94,3 +94,14 @@ SELECT
 FROM codificacion.cod_p52esp
 WHERE estado = 'ELABORADO'
 ORDER BY nro_preg;
+
+
+
+
+¿Qué es DevOps?
+
+
+Un lenguaje de programación
+Una metodología ágil de desarrollo de software popular en las organizaciones
+Una combinación de prácticas y herramientas que buscan automatizar y mejorar la colaboración entre desarrollo y operaciones
+Un tipo de software para gestión de proyectos
