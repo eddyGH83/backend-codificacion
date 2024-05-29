@@ -10,6 +10,7 @@ const {
     preguntasPorDepartamentoCod,
     preguntasPorDepartamentoSup,
     codificadores,
+    cargarParaCodificar,
     codificadoresConCarga,
     supervisores,
     reasignar,
@@ -50,6 +51,7 @@ router.get('/codificacionNormalizadaUpd',codificacionNormalizadaUpd);
 ////ASIGNACION CODIFICADORES Y SUPERVISORES////////////
 router.post('/preguntasPorDepartamentoCod', preguntasPorDepartamentoCod);
 router.get('/preguntasPorDepartamentoSup', preguntasPorDepartamentoSup);
+router.post('/cargarParaCodificar', cargarParaCodificar);
 router.get('/codificadores/:id', codificadores);
 router.post('/codificadoresConCarga', codificadoresConCarga);
 router.get('/supervisores', supervisores);
