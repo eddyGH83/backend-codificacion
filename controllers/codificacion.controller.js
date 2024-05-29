@@ -254,10 +254,8 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 	const { depto } = req.body;
 
 
-	console.log('-----------------------depto', depto);
-
 	if (depto === 'OTROS') {
-		sql_depto = 'and departamento is null';
+		sql_depto = `and departamento = '${depto}'`;
 	} else {
 		sql_depto = `and departamento = '${depto}'`;
 	}
@@ -316,7 +314,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'33' AS nro_preg,
 				'Idioma 3' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO' ${sql_depto}
+			FROM codificacion.cod_p333 WHERE estado = 'ELABORADO' ${sql_depto}
 
 			UNION
 
@@ -521,9 +519,6 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 
 };
-
-
-
 
 
 
@@ -738,12 +733,12 @@ const codificadores = async (req, res) => {
 };
 
 
-const cargarParaCodificar = async (req, res) => {
+const cargarParaCodificarSimple = async (req, res) => {
 
 	const { tabla_id, id_usuario, login } = req.body;
 
 
-	console.log("cargar Para Codificar");
+	console.log("cargar Para Codificar Simple");
 	console.log(req.body);
 
 
@@ -1219,6 +1214,63 @@ const cargarParaCodificar = async (req, res) => {
 
 }
 
+const cargarParaCodificarDoble = async (req, res) => {
+	const { tabla_id, id_usuario, login } = req.body;
+
+	console.log("cargar Para Codificar Simple");
+	console.log(req.body);
+
+	// consulta
+	const qr = await (await con.query(`
+	SELECT
+	CONCAT(
+		'<strong>¿Cuántos años cumplidos tiene? </strong> ',p26,'<br>',
+		'<strong>Nivel educativo: </strong> ',p41a,'<br>',
+		'<strong>Curso o año: </strong> ',p41b,'<br>',
+		'<strong>¿Atendió cultivos agrícolas o cría de aniamales? </strong> ',p45,'<br>',
+		'<strong>Descripción otro espesifique: </strong> ',p48esp,'<br>',
+		'<strong>En este trabajo es (era): </strong> ',p50,'<br>',
+		'<strong>Lugar donde trabaja: </strong> ',p52,'<br>'
+	) contexto,	
+	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
+	FROM codificacion.cod_p49_p51 WHERE estado_ocu = 'ASIGNADO' AND estado_act ='ASIGNADO' AND usucre='rmarcacod';
+	`)).rows;
+
+	// Total carga ocupacion
+
+
+	// Total carga actividad
+
+	// Clasificacion a utilizar para ocupacion:
+	const qr2 = await (await con.query(`
+	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_cob'
+	`)).rows;
+
+
+	// Clasificacion a utilizar para actividad economica:
+	const qr3 = await (await con.query(`
+	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_caeb'
+	`)).rows;
+
+
+	// Respuesta
+	res.status(200).json({
+		totalCarga: qr.length,
+		totalCarga_ocu:99,
+		totalCarga_act:99,
+		nroPreg_ocu: '49',
+		nroPreg_act: '51',
+		descPreg_ocu: '¿Cúal es (era) su trabajo, ocupación u oficio principal?',
+		descPreg_act: 'Principalmente, ¿qué produce, vende o a que actividad se dedica el lugar o establecimiento donce trabaja?',
+		datos: qr,
+		clasificacion_ocu: qr2,
+		clasificacion_act: qr3
+	})
+
+}
+
 
 
 
@@ -1554,6 +1606,125 @@ const updateAsignado_ = async (req, res) => {
 
 
 const updateAsignado = async (req, res) => {
+	let tabla_id = req.params.id;
+	let parametro = req.body;
+
+	// Si el parametro es un array y su longitud es 0, se retorna un error
+	if (parametro.length == 0) {
+		// Mesaje de retorno
+		res.status(200).json({
+			success: false,
+			message: 'No hay cantidad para asignar.'
+		});
+		return;
+	}
+
+
+	// Verificamos is es simple o doble
+	if (tabla_id == 'p49_p51') {
+		// Total de carga
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
+
+		// Veririfica disponibilidad de carga
+		//const queryDisp = `SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+		const result = await (await con.query(
+			`SELECT count(1) from codificacion.cod_${tabla_id} where estado_ocu='ELABORADO' and estado_act = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+		)).rows;
+
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			// Mensaje de retorno
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query = '';
+
+		parametro.forEach(params => {
+			const consulta = `WITH cte AS (select * from codificacion.${tabla} where estado_ocu ilike 'ELABORADO' and estado_act ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
+			update codificacion.${tabla} set estado_ocu='${params.estado}',estado_act='${params.estado}',usucre='${params.usucre}' FROM cte c
+			where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado_ocu='ELABORADO' and codificacion.${tabla}.estado_act='ELABORADO';`
+			query += consulta
+		});
+		await con.query(query)
+
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+		
+	}else{
+		// Total de carga
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
+
+
+		// Veririfica disponibilidad de carga
+		const queryDisp = `
+		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+		const result = await (await con.query(queryDisp)).rows;
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			// Mensaje de retorno
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query = '';
+
+		parametro.forEach(params => {
+			const consulta = `
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
+						update codificacion.${tabla} set estado='${params.estado}',usucre='${params.usucre}' FROM cte c
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
+			query += consulta
+		});
+		await con.query(query)
+
+
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+	}
+
+	
+
+
+
+
+
+
+
+
+
+
+};
+
+
+
+const updateAsignado_old = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
 
@@ -3372,7 +3543,8 @@ module.exports = {
 	preguntasPorDepartamentoCod,
 	preguntasPorDepartamentoSup,
 	codificadores,
-	cargarParaCodificar,
+	cargarParaCodificarSimple,
+	cargarParaCodificarDoble,
 	codificadoresConCarga,
 	supervisores,
 	reasignar,
