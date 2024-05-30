@@ -776,8 +776,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_pais
 		const qr2 = await (await con.query(`
-		SELECT nro, codigo, descripcion, unico, trial821
-		FROM codificacion.catalogo_pais;
+		SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
 		`)).rows;
 
 		// Respuesta
@@ -808,8 +807,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_npioc
 		const qr2 = await (await con.query(`
-			SELECT nro, codigo, descripcion, unico, trial553
-			FROM codificacion.catalogo_npioc;		
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_npioc';		
 		`)).rows;
 
 		// Respuesta
@@ -838,8 +836,8 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_idioma
 		const qr2 = await (await con.query(`
-			SELECT nro, codigo, descripcion, unico, trial684
-			FROM codificacion.catalogo_idioma;
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+			
 		`)).rows;
 
 
@@ -872,8 +870,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_idioma
 		const qr2 = await (await con.query(`
-			SELECT nro, codigo, descripcion, unico, trial684
-			FROM codificacion.catalogo_idioma;
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
 		`)).rows;
 
 		// Respuesta
@@ -902,8 +899,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_idioma
 		const qr2 = await (await con.query(`
-			SELECT nro, codigo, descripcion, unico, trial684
-			FROM codificacion.catalogo_idioma;
+		SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
 		`)).rows;
 
 		// Respuesta
@@ -932,8 +928,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_idioma
 		const qr2 = await (await con.query(`
-			SELECT nro, codigo, descripcion, unico, trial684
-			FROM codificacion.catalogo_idioma;
+		SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
 		`)).rows;
 
 		// Respuesta
@@ -948,15 +943,15 @@ const cargarParaCodificarSimple = async (req, res) => {
 	}
 
 
-	// se tiene la siguiente matriz de palabras parecidas
-	var matricillo = ['oruro de uro','ruro de oruro', 'ouro de or', 'oruo ruo','orur','ruror', 'ana' , 'tubo', 'oro', 'dedo','ramos','wilson']
-
-	// si tiene la palabra de entrada 'uro'
-	var palabra = 'uro';
-
-	// buscar palabras parecidas a 'uro'
-	var palabras = matricillo.filter(pal => pal.includes(palabra)); // resultado ['oruro de uro','ruro de oruro', 'ouro de or', 'oruo ruo','orur','ruror']
-
+	/* 	// se tiene la siguiente matriz de palabras parecidas
+		var matricillo = ['oruro de uro', 'ruro de oruro', 'ouro de or', 'oruo ruo', 'orur', 'ruror', 'ana', 'tubo', 'oro', 'dedo', 'ramos', 'wilson']
+	
+		// si tiene la palabra de entrada 'uro'
+		var palabra = 'uro';
+	
+		// buscar palabras parecidas a 'uro'
+		var palabras = matricillo.filter(pal => pal.includes(palabra)); // resultado ['oruro de uro','ruro de oruro', 'ouro de or', 'oruo ruo','orur','ruror']
+	 */
 
 
 	// si tabla_id es p352a
@@ -983,7 +978,11 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
+
 
 		// Respuesta
 		res.status(200).json({
@@ -1006,11 +1005,14 @@ const cargarParaCodificarSimple = async (req, res) => {
 		id_p353 as id_pregunta, 
 		secuencial,
 		i00, i001a, nro, respuesta, p352a, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
-		FROM codificacion.cod_p353;
+		FROM codificacion.cod_p353
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+		SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).rows;
 
 		// Respuesta
 		res.status(200).json({
@@ -1022,6 +1024,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		})
 		return;
 	}
+
 
 	// si tabla_id es p362a
 	if (tabla_id === 'p362a') {
@@ -1047,7 +1050,10 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
 
 		// Respuesta
 		res.status(200).json({
@@ -1074,7 +1080,11 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).rows;
+
 
 		// Respuesta
 		res.status(200).json({
@@ -1111,7 +1121,11 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
+
 
 		// Respuesta
 		res.status(200).json({
@@ -1139,7 +1153,11 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).rows;
+
 
 		// Respuesta
 		res.status(200).json({
@@ -1169,7 +1187,10 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: catalogo_cob
+		const qr2 = await (await con.query(`
+				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob';
+		`)).rows;
 
 		// Respuesta
 		res.status(200).json({
@@ -1199,7 +1220,10 @@ const cargarParaCodificarSimple = async (req, res) => {
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
-		var qr2 = [];
+		// Clasificacion a utilizar: cod_catalogo
+		const qr2 = await (await con.query(`
+		SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio_pais';
+		`)).rows;
 
 		// Respuesta
 		res.status(200).json({
@@ -1233,10 +1257,23 @@ const cargarParaCodificarDoble = async (req, res) => {
 		'<strong>Lugar donde trabaja: </strong> ',p52,'<br>'
 	) contexto,	
 	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
-	FROM codificacion.cod_p49_p51 WHERE estado_ocu = 'ASIGNADO' AND estado_act ='ASIGNADO' AND usucre='rmarcacod';
+	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}'  ORDER BY id_p49_p51 asc;
 	`)).rows;
 
+
+
 	// Total carga ocupacion
+	const qrTotalOcu = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_p49_p51
+	WHERE estado_ocu = 'ASIGNADO' AND usucre='${login}';
+	`)).rows;
+
+	// Total carga actividad
+	const qrTotalAct = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_p49_p51
+	WHERE estado_act = 'ASIGNADO' AND usucre='${login}';
+	`)).rows;
+
 
 
 	// Total carga actividad
@@ -1258,8 +1295,8 @@ const cargarParaCodificarDoble = async (req, res) => {
 	// Respuesta
 	res.status(200).json({
 		totalCarga: qr.length,
-		totalCarga_ocu:99,
-		totalCarga_act:99,
+		totalCarga_ocu: qrTotalOcu[0].count,
+		totalCarga_act: qrTotalAct[0].count,
 		nroPreg_ocu: '49',
 		nroPreg_act: '51',
 		descPreg_ocu: '¿Cúal es (era) su trabajo, ocupación u oficio principal?',
@@ -1663,8 +1700,8 @@ const updateAsignado = async (req, res) => {
 		});
 
 		return;
-		
-	}else{
+
+	} else {
 		// Total de carga
 		var total_carga = 0;
 		parametro.forEach(paramss => { total_carga += paramss.count; });
@@ -1709,7 +1746,7 @@ const updateAsignado = async (req, res) => {
 		return;
 	}
 
-	
+
 
 
 
@@ -3472,7 +3509,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'49-51' AS nro_preg,
 			'Ocupación - Actividad Económica' AS variable,
 			count (1) AS total_carga
-		FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' and  estado_act = 'ASIGNADO')  AND usucre = $1
+		FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or  estado_act = 'ASIGNADO')  AND usucre = $1
 
 		UNION
 
@@ -3534,6 +3571,56 @@ const devuelvePreguntasCodificado_ = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
+// updateOcuAct
+const updateOcuAct = async (req, res) => {
+
+	const {
+		login,
+		id_p49_p51,
+		codigo,
+		descripcion,
+		variable,
+	} = req.body;
+
+	console.log(req.body);
+
+	// verificamos si la variables es ocupacion o actividad
+	if (variable === 'ocu') {
+
+		await con.query(`
+		UPDATE codificacion.cod_p49_p51
+		SET estado_ocu = 'CODIFICADO', codigocodif_ocu = '${codigo}', feccodificador_ocu = now(), usucodificador_ocu = '${login}'
+		WHERE id_p49_p51 = ${id_p49_p51}
+		`)
+
+		// Respuesta
+		res.status(200).json({
+			success: true,
+		});
+
+		return;
+	}
+
+
+	// verificamos si la variables es ocupacion o actividad
+	if (variable === 'act') {
+
+		await con.query(`
+		UPDATE codificacion.cod_p49_p51
+		SET estado_act = 'CODIFICADO', codigocodif_act = '${codigo}', feccodificador_act = now(), usucodificador_act = '${login}'
+		WHERE id_p49_p51 = ${id_p49_p51}
+		`)
+
+		// Respuesta
+		res.status(200).json({
+			success: true,
+		});
+		return;
+	}
+
+
+};
+
 
 module.exports = {
 	cargarDatos,
@@ -3571,5 +3658,6 @@ module.exports = {
 	muestraCargaDatos,
 	cargarDatosGlobal,
 	getCantidadCarga,
-	updateAsignadoSup
+	updateAsignadoSup,
+	updateOcuAct
 };

@@ -38,7 +38,8 @@ const {
     devuelvePreguntaUsrSup,
     muestraCargaDatos,
     getCantidadCarga,
-    cargarDatosGlobal
+    cargarDatosGlobal,
+    updateOcuAct
 }= require('../controllers/codificacion.controller');
 
 /* router.post('/', usuariosPost)  getCantidadCarga cargarDatosGlobal*/
@@ -82,4 +83,5 @@ router.get('/devuelvePreguntas', devuelvePreguntas);
 router.post('/devuelvePreguntasCodificado', devuelvePreguntasCodificado);
 router.post('/devuelvePreguntasSup', devuelvePreguntasSup);
 router.post('/devuelvePreguntaUsrSup', devuelvePreguntaUsrSup);
+router.post('/updateOcuAct', updateOcuAct);
 module.exports = router;
