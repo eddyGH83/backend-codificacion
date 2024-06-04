@@ -943,17 +943,6 @@ const cargarParaCodificarSimple = async (req, res) => {
 	}
 
 
-	/* 	// se tiene la siguiente matriz de palabras parecidas
-		var matricillo = ['oruro de uro', 'ruro de oruro', 'ouro de or', 'oruo ruo', 'orur', 'ruror', 'ana', 'tubo', 'oro', 'dedo', 'ramos', 'wilson']
-	
-		// si tiene la palabra de entrada 'uro'
-		var palabra = 'uro';
-	
-		// buscar palabras parecidas a 'uro'
-		var palabras = matricillo.filter(pal => pal.includes(palabra)); // resultado ['oruro de uro','ruro de oruro', 'ouro de or', 'oruo ruo','orur','ruror']
-	 */
-
-
 	// si tabla_id es p352a
 	if (tabla_id === 'p352a') {
 		// consulta
@@ -1248,13 +1237,13 @@ const cargarParaCodificarDoble = async (req, res) => {
 	const qr = await (await con.query(`
 	SELECT
 	CONCAT(
-		'<strong>¿Cuántos años cumplidos tiene? </strong> ',p26,'<br>',
-		'<strong>Nivel educativo: </strong> ',p41a,'<br>',
-		'<strong>Curso o año: </strong> ',p41b,'<br>',
-		'<strong>¿Atendió cultivos agrícolas o cría de aniamales? </strong> ',p45,'<br>',
-		'<strong>Descripción otro espesifique: </strong> ',p48esp,'<br>',
-		'<strong>En este trabajo es (era): </strong> ',p50,'<br>',
-		'<strong>Lugar donde trabaja: </strong> ',p52,'<br>'
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>¿CUÁNTOS AÑOS CUMPLIDOS TIENE? </strong> ',p26,' ',
+		'<strong class=''ml-4'' style=''font-weight: normal; color:rgb(16, 177, 99);''>NIVEL EDUCATIVO: </strong> ',p41a,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>CURSO O AÑO: </strong> ',p41b,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>¿ATENDIÓ CULTIVOS AGRICOLAS O CRÍA DE ANIMALES? </strong> ',p45,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>DESCRIPCIÓN OTRO ESPECIFIQUE: </strong> ',p48esp,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>EN ESTE TRABAJO ES (ERA): </strong> ',p50,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>LUGAR DONDE TRABAJA: </strong> ',p52,'<br>'
 	) contexto,	
 	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
 	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}'  ORDER BY id_p49_p51 asc;
@@ -1267,6 +1256,8 @@ const cargarParaCodificarDoble = async (req, res) => {
 	SELECT count(1) FROM codificacion.cod_p49_p51
 	WHERE estado_ocu = 'ASIGNADO' AND usucre='${login}';
 	`)).rows;
+
+
 
 	// Total carga actividad
 	const qrTotalAct = await (await con.query(`
@@ -2378,7 +2369,75 @@ const updatePreguntaVerif = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
-const updatePregunta = async (req, res) => {
+
+// Codificacion Simple
+const updatePreguntaSimple = async (req, res) => {
+	var {
+		id_registro, // id por el cual se modifica
+		tabla_id, // se extrae el campo id y la tabla
+		codigocodif,
+		usucodificador
+	} = req.body;
+
+	// Consulta de actualizacion
+	const qr = `
+		UPDATE codificacion.cod_${tabla_id}
+		SET codigocodif = '${codigocodif}', 
+			estado = 'CODIFICADO', 
+			usucodificador = '${usucodificador}', 
+			feccodificador = now()
+		WHERE id_${tabla_id} = ${id_registro};
+	` ;
+
+	// Ejecucion de la consulta
+	await con.query(qr);
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha codificado correctamente.'
+	})
+
+	return;
+};
+
+// Anular codificacion simple
+const updatePreguntaSimpleAnular = async (req, res) => {
+	var {
+		id_registro, // id por el cual se modifica
+		tabla_id, // se extrae el campo id y la tabla
+	} = req.body;
+
+	// print
+	console.table(req.body);
+
+	// Consulta de actualizacion
+	const qr = `
+		UPDATE codificacion.cod_${tabla_id}
+		SET codigocodif = null, 
+			estado = 'ASIGNADO', 
+			usucodificador = null, 
+			feccodificador = null
+		WHERE id_${tabla_id} = ${id_registro};
+	` ;
+
+	// Ejecucion de la consulta
+	await con.query(qr);
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha anulado correctamente.'
+	})
+
+	return;
+}
+
+
+
+
+
+const updatePregunta_old = async (req, res) => {
 	let id = req.params.id;
 	let params = req.body;
 	//console.log('Hola desde Update')
@@ -3646,7 +3705,9 @@ module.exports = {
 	variablesApoyo,
 	catalogoCodificacion,
 	updatePreguntaVerif,
-	updatePregunta,
+	updatePreguntaSimple,
+	updatePreguntaSimpleAnular,
+	// updatePregunta,
 	anularAnteriorVerif,
 	anularAnterior,
 	updateVerificador,

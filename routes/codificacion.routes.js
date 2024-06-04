@@ -27,7 +27,9 @@ const {
     variablesApoyo,
     catalogoCodificacion,
     updatePreguntaVerif,
-    updatePregunta,
+    updatePreguntaSimple,
+    updatePreguntaSimpleAnular,
+    //updatePregunta,
     anularAnteriorVerif,
     anularAnterior,
     updateVerificador,
@@ -73,7 +75,11 @@ router.post('/preguntasPorVerificar', preguntasPorVerificar);
 router.post('/variablesApoyo', variablesApoyo);
 router.get('/catalogoCodificacion/:enviar', catalogoCodificacion);
 router.put('/updatePreguntaVerif/:id', updatePreguntaVerif);
-router.put('/updatePregunta/:id', updatePregunta);
+router.post('/updatePreguntaSimple', updatePreguntaSimple);
+router.post('/updatePreguntaSimpleAnular', updatePreguntaSimpleAnular);
+
+
+//router.put('/updatePregunta/:id', updatePregunta);
 router.put('/anularAnteriorVerif/:id', anularAnteriorVerif);
 router.put('/anularAnterior/:id', anularAnterior);
 router.put('/updateVerificador/:id', updateVerificador);
