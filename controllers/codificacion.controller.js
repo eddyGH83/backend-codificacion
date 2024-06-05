@@ -430,83 +430,6 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 		`
 	};
 
-	/* var  registros = [
-		{
-			depto: "LA PAZ",
-			nroPreg: "20",
-			variable: "Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?",
-			totalCarga: 45
-
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "32",
-			variable: "¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?",
-			totalCarga: 23
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "33",
-			variable: "Idioma 1",
-			totalCarga: 0
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "33",
-			variable: "Idioma 2",
-			totalCarga: 21
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "33",
-			variable: "Idioma 3",
-			totalCarga: 92
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "34",
-			variable: "¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?",
-			totalCarga: 12
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "35",
-			variable: "¿Dónde nació?",
-			totalCarga: 0
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "36",
-			variable: "¿Dónde vive habitualmente?",
-			totalCarga: 27
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "37",
-			variable: "¿Dónde vivía el año 2019?",
-			totalCarga: 12
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "48",
-			variable: "Las últimas 4 semanas:",
-			totalCarga: 42
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "49-51",
-			variable: "Ocupación - Actividad Económica",
-			totalCarga: 62
-		},
-		{
-			depto: "LA PAZ",
-			nroPreg: "52",
-			variable: "Principalmente, el lugar donde trabaja está ubicado:",
-			totalCarga: 82
-		},
-	] */
-
-	//res.status(200).json(registros)
 
 	//console.log(query)
 	await con
@@ -1237,13 +1160,13 @@ const cargarParaCodificarDoble = async (req, res) => {
 	const qr = await (await con.query(`
 	SELECT
 	CONCAT(
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>¿CUÁNTOS AÑOS CUMPLIDOS TIENE? </strong> ',p26,' ',
-		'<strong class=''ml-4'' style=''font-weight: normal; color:rgb(16, 177, 99);''>NIVEL EDUCATIVO: </strong> ',p41a,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>CURSO O AÑO: </strong> ',p41b,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>¿ATENDIÓ CULTIVOS AGRICOLAS O CRÍA DE ANIMALES? </strong> ',p45,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>DESCRIPCIÓN OTRO ESPECIFIQUE: </strong> ',p48esp,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>EN ESTE TRABAJO ES (ERA): </strong> ',p50,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(16, 177, 99);''>LUGAR DONDE TRABAJA: </strong> ',p52,'<br>'
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Cuántos años cumplidos tiene? </strong> ',p26,' ',
+		'<strong class=''ml-4'' style=''font-weight: normal; color:rgb(14, 149, 83);''>Nivel educativo: </strong> ',p41a,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Curso o año: </strong> ',p41b,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Atendió cultivos agricolas o cría de animales? </strong> ',p45,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Descripción otro especifique: </strong> ',p48esp,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>En ese trabajo es (era): </strong> ',p50,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52,'<br>'
 	) contexto,	
 	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
 	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}'  ORDER BY id_p49_p51 asc;
@@ -1633,6 +1556,8 @@ const updateAsignado_ = async (req, res) => {
 };
 
 
+
+
 const updateAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
@@ -1650,20 +1575,20 @@ const updateAsignado = async (req, res) => {
 
 	// Verificamos is es simple o doble
 	if (tabla_id == 'p49_p51') {
-		// Total de carga
+		console.log("------------------------------------------Nueva asignacion-------------------------------------------");
+		// Total de carga que llega del front 
 		var total_carga = 0;
 		parametro.forEach(paramss => { total_carga += paramss.count; });
 
-		// Veririfica disponibilidad de carga
-		//const queryDisp = `SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+
+		// Carga disponible 
 		const result = await (await con.query(
-			`SELECT count(1) from codificacion.cod_${tabla_id} where estado_ocu='ELABORADO' and estado_act = 'ELABORADO' and departamento = '${parametro[0].departamento}';`
+			`SELECT count(1) FROM codificacion.cod_p49_p51 WHERE (estado_ocu='ELABORADO' OR estado_act = 'ELABORADO') and departamento = '${parametro[0].departamento}';`
 		)).rows;
 
 
 		// Si la cantidad de carga es mayor a la disponible, se retorna un error
 		if (total_carga > result[0].count) {
-			// Mensaje de retorno
 			res.status(200).json({
 				success: false,
 				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
@@ -1671,18 +1596,69 @@ const updateAsignado = async (req, res) => {
 			return;
 		}
 
-		// Asignacion de carga
-		var tabla = 'cod_' + tabla_id;
-		var id = 'id_' + tabla_id;
-		query = '';
 
+		// nAux = 0;
 		parametro.forEach(params => {
-			const consulta = `WITH cte AS (select * from codificacion.${tabla} where estado_ocu ilike 'ELABORADO' and estado_act ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.count})
-			update codificacion.${tabla} set estado_ocu='${params.estado}',estado_act='${params.estado}',usucre='${params.usucre}' FROM cte c
-			where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado_ocu='ELABORADO' and codificacion.${tabla}.estado_act='ELABORADO';`
-			query += consulta
+			// console.table(params);
+
+			for (let i = 1; i <= params.count; i++) {
+
+				 //console.log( "i", i);
+				
+
+				
+				async function cargaDisponible() {
+					//console.log(`SELECT id_p49_p51, estado_ocu, estado_act FROM codificacion.cod_p49_p51 WHERE (estado_ocu='ELABORADO' OR estado_act = 'ELABORADO') and departamento = '${parametro[0].departamento}' limit 1;`);
+					
+					var qr = [];
+
+					qr = await (await con.query(
+						`SELECT id_p49_p51, estado_ocu, estado_act FROM codificacion.cod_p49_p51 WHERE (estado_ocu='ELABORADO' OR estado_act = 'ELABORADO') and departamento = '${parametro[0].departamento}' limit 1;`
+					)).rows;
+					
+					console.log("id_p49_p51 ", qr[0].id_p49_p51);		
+										
+
+					// cuando estado_ocu='ELABORADO' y estado_act !== 'ELABORADO'
+					if (qr[0].estado_ocu == 'ELABORADO' && qr[0].estado_act !== 'ELABORADO') {
+						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_ocu='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
+						console.log("ELABORADO - NO ELABORADO");
+						return
+					}
+					
+					// cuando estado_ocu !== 'ELABORADO' y estado_act='ELABORADO'
+					if (qr[0].estado_ocu !== 'ELABORADO' && qr[0].estado_act == 'ELABORADO') {
+						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_act='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
+						console.log("NO ELABORADO - ELABORADO");
+						return
+					}
+					
+					// cuando estado_ocu='ELABORADO' y estado_act='ELABORADO'
+					if (qr[0].estado_ocu == 'ELABORADO' && qr[0].estado_act == 'ELABORADO') {
+						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_ocu='ASIGNADO', estado_act='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
+						console.log("ELABORADO - ELABORADO");
+						return
+					}
+					
+					
+					//console.table(qr);
+					
+					//console.log("usuarios:----------" + params.usucre);
+				}
+				
+				cargaDisponible();
+				//asignarCarga();
+			}
+
+
+			// nAux++;
 		});
-		await con.query(query)
+
+
+		//await con.query(query)
+		// console.log("nAux: ", nAux);
+
+
 
 		// Mensaje de retorno de la asignacion
 		res.status(200).json({
@@ -1736,17 +1712,6 @@ const updateAsignado = async (req, res) => {
 
 		return;
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 };
 
