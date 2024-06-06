@@ -249,6 +249,8 @@ or (ceco.estado='ASIGNADO' and ceca.estado='ASIGNADO')
 };
 
 
+
+// Asignacion de carga a Codificadores por departamento
 const preguntasPorDepartamentoCod = async (req, res) => {
 
 	const { depto } = req.body;
@@ -444,56 +446,200 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 };
 
 
+// Asignacion de carga a Supervisores por departamento
+const preguntasPorDepartamentoSup = async (req, res) => {
+
+	const { depto } = req.body;
 
 
+	if (depto === 'OTROS') {
+		sql_depto = `and departamento = '${depto}'`;
+	} else {
+		sql_depto = `and departamento = '${depto}'`;
+	}
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+	/* 
+			SELECT
+				1 orden,
+				'p20esp' tabla_id,
+				'La Paz' AS depto,
+				'20' AS nro_preg,
+				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
+				count(*) AS total_carga
+			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' AND departamento ='ORURO'
+	*/
 
-const preguntasPorDepartamentoSup___ = async (req, res) => {
 	const query = {
-		text: `select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else 0 end) count, 
-		id_pregunta, pregunta,codigo_pregunta
-		from (select a.departamento,
-			(select nombre_depto from cartografia.departamentos where codigo_depto=a.departamento) as nombre,
-			a.estado,
-			a.id_pregunta,
-			(select pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as pregunta,
-			  (select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as codigo_pregunta,
-			count(*) cuenta from ${esquema}.cod_encuesta_codificacion a
-			where a.estado in ('CODIFICADO', 'ASIGNASUP')
-			and usucodificador = 'AUTOMATICO_NORMALIZADO'
-			group by a.departamento,a.id_pregunta,a.estado
-			) a
-		where  id_pregunta not in (125,127)
-		group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
-		
-		union all 
-		
-		select departamento, nombre, sum(case when estado ='CODIFICADO' then 1 else 0 end) count,
-			id_pregunta, pregunta, codigo_pregunta
-			from(
-				select ceco.departamento ,--, ceco.estado oo, ceca.estado aa, ceco.usucodificador, 
-				(select nombre_depto from cartografia.departamentos where codigo_depto=ceco.departamento) as nombre,
-				ceco.id_pregunta,  'Preguntas 48-50: Ocupación - Actividad Económica' pregunta, ceco.estado,
-				(select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=ceco.id_pregunta) as codigo_pregunta,
-				 ceco.usucodificador,ceca.usucodificador
-			from ${esquema}.cod_encuesta_codificacion ceco
-				inner join ${esquema}.cod_encuesta_codificacion ceca
-				on ceco.id_informante = ceca.id_informante
-			where ceco.id_pregunta =125 and ceca.id_pregunta=127 and 
-			ceco.estado in ('CODIFICADO', 'ASIGNASUP') and
-					ceca.estado in ('CODIFICADO', 'ASIGNASUP')
-					and ceco.usucodificador in ('AUTOMATICO_NORMDOBLE')
-				and ceca.usucodificador in ('AUTOMATICO_NORMDOBLE')
-				--group by ceco.departamento,ceco.id_pregunta,ceco.estado, ceco.usucodificador,ceca.usucodificador
-			) a
-			group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
-			order by departamento, codigo_pregunta,pregunta`,
+		text: `
+			SELECT
+				1 orden,
+				'p20esp' tabla_id,
+				'La Paz' AS depto,
+				'20' AS nro_preg,
+				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
+				count(*) AS total_carga
+			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+
+			SELECT
+				2 orden,
+				'p32esp' tabla_id,
+				'La Paz' AS depto,
+				'32' AS nro_preg,
+				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+
+			SELECT
+				3 orden,
+				'p331' tabla_id,
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 1' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+			
+			SELECT
+				4 orden,
+				'p332' tabla_id,
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 2' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+
+			SELECT
+				5 orden,
+				'p333' tabla_id,
+				'La Paz' AS depto,
+				'33' AS nro_preg,
+				'Idioma 3' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+
+			SELECT 
+				6 orden,
+				'p341' tabla_id,
+				'La Paz' AS depto,
+				'34' AS nro_preg,
+				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+
+			UNION
+
+			SELECT 
+				7 orden,
+				'p352a' tabla_id,
+				'La Paz' AS depto,
+				'35' AS nro_preg,
+				'¿Dónde nació? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT 
+				8 orden,
+				'p353' tabla_id,
+				'La Paz' AS depto,
+				'35' AS nro_preg,
+				'¿Dónde nació? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT 
+				9 orden,
+				'p362a' tabla_id,
+				'La Paz' AS depto,
+				'36' AS nro_preg,
+				'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT 
+				10 orden,
+				'p363' tabla_id,
+				'La Paz' AS depto,
+				'36' AS nro_preg,
+				'¿Dónde vive habitualmente? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT
+				11 orden,
+				'p372a' tabla_id,
+				'La Paz' AS depto,
+				'37' AS nro_preg,
+				'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT 
+				12 orden,
+				'p373' tabla_id,
+				'La Paz' AS depto,
+				'37' AS nro_preg,
+				'¿Dónde vivía el año 2019? ¿País?' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT
+				13 orden,
+				'p48esp' tabla_id,
+				'La Paz' AS depto,
+				'48' AS nro_preg,
+				'Las últimas 4 semanas:' AS variable,
+				count(1) AS total_carga
+			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+
+			UNION
+
+			SELECT 
+				14 orden,
+				'p49_p51' tabla_id,
+				'La Paz' AS depto,
+				'49-51' AS nro_preg,
+				'Ocupación - Actividad Económica' AS variable,
+				count (1) AS total_carga 
+			FROM codificacion.cod_p49_p51 
+			WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu='AUTOMATICO_NORMDOBLE' AND estado_act = 'CODIFICADO' AND usucodificador_act='AUTOMATICO_NORMDOBLE') ${sql_depto}
+
+			UNION
+			
+			SELECT
+				15 orden,
+				'p52esp' AS tabla_id,						
+			    'La Paz' AS depto,
+			    '52' AS nro_preg,
+			    'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
+			    count(1) AS total_carga
+			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			ORDER BY orden asc
+		`
 	};
+
+
+	//console.log(query)
 	await con
 		.query(query)
 		.then((result) =>
@@ -502,9 +648,11 @@ const preguntasPorDepartamentoSup___ = async (req, res) => {
 			})
 		)
 		.catch((e) => console.error(e.stack));
+
 };
-//  /asignarsup  (Asignacion)
-const preguntasPorDepartamentoSup = async (req, res) => {
+
+
+const preguntasPorDepartamentoSup_old = async (req, res) => {
 
 	var result = [];
 	var pr = '';
@@ -579,6 +727,64 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 		console.log("preguntasPorDepartamentoSup" + error);
 	}
 };
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+
+const preguntasPorDepartamentoSup___ = async (req, res) => {
+	const query = {
+		text: `select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else 0 end) count, 
+		id_pregunta, pregunta,codigo_pregunta
+		from (select a.departamento,
+			(select nombre_depto from cartografia.departamentos where codigo_depto=a.departamento) as nombre,
+			a.estado,
+			a.id_pregunta,
+			(select pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as pregunta,
+			  (select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as codigo_pregunta,
+			count(*) cuenta from ${esquema}.cod_encuesta_codificacion a
+			where a.estado in ('CODIFICADO', 'ASIGNASUP')
+			and usucodificador = 'AUTOMATICO_NORMALIZADO'
+			group by a.departamento,a.id_pregunta,a.estado
+			) a
+		where  id_pregunta not in (125,127)
+		group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
+		
+		union all 
+		
+		select departamento, nombre, sum(case when estado ='CODIFICADO' then 1 else 0 end) count,
+			id_pregunta, pregunta, codigo_pregunta
+			from(
+				select ceco.departamento ,--, ceco.estado oo, ceca.estado aa, ceco.usucodificador, 
+				(select nombre_depto from cartografia.departamentos where codigo_depto=ceco.departamento) as nombre,
+				ceco.id_pregunta,  'Preguntas 48-50: Ocupación - Actividad Económica' pregunta, ceco.estado,
+				(select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=ceco.id_pregunta) as codigo_pregunta,
+				 ceco.usucodificador,ceca.usucodificador
+			from ${esquema}.cod_encuesta_codificacion ceco
+				inner join ${esquema}.cod_encuesta_codificacion ceca
+				on ceco.id_informante = ceca.id_informante
+			where ceco.id_pregunta =125 and ceca.id_pregunta=127 and 
+			ceco.estado in ('CODIFICADO', 'ASIGNASUP') and
+					ceca.estado in ('CODIFICADO', 'ASIGNASUP')
+					and ceco.usucodificador in ('AUTOMATICO_NORMDOBLE')
+				and ceca.usucodificador in ('AUTOMATICO_NORMDOBLE')
+				--group by ceco.departamento,ceco.id_pregunta,ceco.estado, ceco.usucodificador,ceca.usucodificador
+			) a
+			group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
+			order by departamento, codigo_pregunta,pregunta`,
+	};
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
+};
+
 
 /* 
 select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else 0 end) count, 
@@ -1561,6 +1767,9 @@ const updateAsignado_ = async (req, res) => {
 const updateAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
+	console.log("------------------------------------------Nueva asignacion-------------------------------------------");
+
+	console.table(parametro);
 
 	// Si el parametro es un array y su longitud es 0, se retorna un error
 	if (parametro.length == 0) {
@@ -1575,7 +1784,7 @@ const updateAsignado = async (req, res) => {
 
 	// Verificamos is es simple o doble
 	if (tabla_id == 'p49_p51') {
-		console.log("------------------------------------------Nueva asignacion-------------------------------------------");
+
 		// Total de carga que llega del front 
 		var total_carga = 0;
 		parametro.forEach(paramss => { total_carga += paramss.count; });
@@ -1597,68 +1806,45 @@ const updateAsignado = async (req, res) => {
 		}
 
 
-		// nAux = 0;
-		parametro.forEach(params => {
-			// console.table(params);
-
-			for (let i = 1; i <= params.count; i++) {
-
-				 //console.log( "i", i);
-				
-
-				
-				async function cargaDisponible() {
-					//console.log(`SELECT id_p49_p51, estado_ocu, estado_act FROM codificacion.cod_p49_p51 WHERE (estado_ocu='ELABORADO' OR estado_act = 'ELABORADO') and departamento = '${parametro[0].departamento}' limit 1;`);
-					
-					var qr = [];
-
-					qr = await (await con.query(
-						`SELECT id_p49_p51, estado_ocu, estado_act FROM codificacion.cod_p49_p51 WHERE (estado_ocu='ELABORADO' OR estado_act = 'ELABORADO') and departamento = '${parametro[0].departamento}' limit 1;`
-					)).rows;
-					
-					console.log("id_p49_p51 ", qr[0].id_p49_p51);		
-										
-
-					// cuando estado_ocu='ELABORADO' y estado_act !== 'ELABORADO'
-					if (qr[0].estado_ocu == 'ELABORADO' && qr[0].estado_act !== 'ELABORADO') {
-						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_ocu='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
-						console.log("ELABORADO - NO ELABORADO");
-						return
-					}
-					
-					// cuando estado_ocu !== 'ELABORADO' y estado_act='ELABORADO'
-					if (qr[0].estado_ocu !== 'ELABORADO' && qr[0].estado_act == 'ELABORADO') {
-						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_act='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
-						console.log("NO ELABORADO - ELABORADO");
-						return
-					}
-					
-					// cuando estado_ocu='ELABORADO' y estado_act='ELABORADO'
-					if (qr[0].estado_ocu == 'ELABORADO' && qr[0].estado_act == 'ELABORADO') {
-						await con.query(`UPDATE codificacion.cod_p49_p51 SET estado_ocu='ASIGNADO', estado_act='ASIGNADO', usucre='${params.usucre}' WHERE id_p49_p51 = ${qr[0].id_p49_p51};`);
-						console.log("ELABORADO - ELABORADO");
-						return
-					}
-					
-					
-					//console.table(qr);
-					
-					//console.log("usuarios:----------" + params.usucre);
-				}
-				
-				cargaDisponible();
-				//asignarCarga();
-			}
-
-
-			// nAux++;
-		});
-
-
-		//await con.query(query)
-		// console.log("nAux: ", nAux);
-
-
+		var qr = '';
+		for (let i = 0; i < parametro.length; i++) {
+			var params = parametro[i];
+			qr = `
+			UPDATE codificacion.cod_p49_p51 cecupd SET
+					estado_ocu = CASE
+						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act <> 'ELABORADO' THEN 'ASIGNADO'
+						WHEN cecupd.estado_ocu <> 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cecupd.estado_ocu
+					END,
+					estado_act = CASE
+						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act <> 'ELABORADO' THEN cecupd.estado_act
+						WHEN cecupd.estado_ocu <> 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cecupd.estado_act
+					END,
+					usucre = '${params.usucre}'
+				FROM (
+					SELECT
+						id_p49_p51,
+						respuesta_ocu,
+						codigocodif_ocu,
+						estado_ocu,
+						usucodificador_ocu,
+						respuesta_act,
+						codigocodif_act,
+						estado_act,
+						usucodificador_act,
+						usucre
+					FROM codificacion.cod_p49_p51
+					WHERE (estado_ocu = 'ELABORADO' OR estado_act = 'ELABORADO') and departamento='${parametro[0].departamento}'
+					LIMIT ${params.count}
+				) x
+				WHERE cecupd.id_p49_p51 = x.id_p49_p51; 
+			`;
+			console.log(qr);
+			await con.query(qr);
+		}
 
 		// Mensaje de retorno de la asignacion
 		res.status(200).json({
@@ -1667,7 +1853,6 @@ const updateAsignado = async (req, res) => {
 		});
 
 		return;
-
 	} else {
 		// Total de carga
 		var total_carga = 0;
@@ -1702,7 +1887,6 @@ const updateAsignado = async (req, res) => {
 			query += consulta
 		});
 		await con.query(query)
-
 
 		// Mensaje de retorno de la asignacion
 		res.status(200).json({
@@ -2615,7 +2799,7 @@ const devuelvePreguntasSup_ = async (req, res) => {
 
 
 //  .../selecsup
-const devuelvePreguntasSup = async (req, res) => {
+const devuelvePreguntasSup__old = async (req, res) => {
 	var params = req.body;
 	//params.limite = 0;
 	//var limite=params.limite;
@@ -2729,6 +2913,28 @@ const devuelvePreguntasSup = async (req, res) => {
 		datos: { rows: result }
 	})
 };
+
+
+
+// Variables para Supervision: TOTAL= Cod + Aut
+const devuelvePreguntasSup = async (req, res) => {
+	var params = req.body;
+	console.log(req.body);
+
+	// Trabajamos con las preguntas
+
+
+	// 
+
+};
+
+
+
+
+
+
+
+
 
 
 

@@ -54,7 +54,7 @@ router.get('/codificaNormalizada', codificaNormalizada);
 router.get('/codificacionNormalizadaUpd',codificacionNormalizadaUpd);
 ////ASIGNACION CODIFICADORES Y SUPERVISORES////////////
 router.post('/preguntasPorDepartamentoCod', preguntasPorDepartamentoCod);
-router.get('/preguntasPorDepartamentoSup', preguntasPorDepartamentoSup);
+router.post('/preguntasPorDepartamentoSup', preguntasPorDepartamentoSup);
 router.post('/cargarParaCodificarSimple', cargarParaCodificarSimple);
 router.post('/cargarParaCodificarDoble', cargarParaCodificarDoble);
 
