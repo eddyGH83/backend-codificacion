@@ -1430,11 +1430,105 @@ const cargarParaCodificarDoble = async (req, res) => {
 
 
 
-
-
-
-
 const codificadoresConCarga = async (req, res) => {
+
+	var {
+		id, // id del supervisor
+		tabla_id,
+		departamento
+	} = req.body;
+
+	console.table(req.body);
+
+	var total_carga_asignado = 0;
+
+	// verificamos si tabla_id
+	if (tabla_id === 'p49_p51') {
+		console.log("cod_p49_p51");
+		var codificadores = await (await con.query(`
+			SELECT
+				b.id_usuario,
+				b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+				b.turno,
+				b.cod_supvsr,
+				b.rol_id,
+				b.login,
+				a.carga_asignado
+				FROM (
+			SELECT
+				u.login AS usucre,
+				CASE
+					WHEN COUNT(c.usucre) IS NULL THEN 0
+					ELSE COUNT(c.usucre)
+				END AS carga_asignado
+			FROM codificacion.cod_usuario u
+			LEFT JOIN codificacion.cod_p49_p51  c ON u.login = c.usucre AND c.departamento='${departamento}' AND (c.estado_ocu = 'ASIGNADO' OR c.estado_act = 'ASIGNADO')
+			WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
+			GROUP BY u.login
+			) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+		// foreach en codificadores para sumar la carga asignada
+		for (let i = 0; i < codificadores.length; i++) {
+			total_carga_asignado += Number(codificadores[i].carga_asignado);
+		}
+
+
+		console.log("req.body", req.body);
+
+		res.status(200).json({
+			datos: codificadores,
+			total_carga_asignado: total_carga_asignado
+		})
+		return;
+	} else {
+		console.log("else");
+		// consulta con ia
+		var codificadores = await (await con.query(`
+		SELECT
+			b.id_usuario,
+			b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+			b.turno,
+			b.cod_supvsr,
+			b.rol_id,
+			b.login,
+			a.carga_asignado
+			FROM (
+		SELECT
+			u.login AS usucre,
+			CASE
+				WHEN COUNT(c.usucre) IS NULL THEN 0
+				ELSE COUNT(c.usucre)
+			END AS carga_asignado
+		FROM codificacion.cod_usuario u
+		LEFT JOIN codificacion.cod_${tabla_id}  c ON u.login = c.usucre AND c.estado = 'ASIGNADO' AND c.departamento='${departamento}'
+		WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
+		GROUP BY u.login
+		) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+		// foreach en codificadores para sumar la carga asignada
+		for (let i = 0; i < codificadores.length; i++) {
+			total_carga_asignado += Number(codificadores[i].carga_asignado);
+		}
+
+
+		console.log("req.body", req.body);
+
+		res.status(200).json({
+			datos: codificadores,
+			total_carga_asignado: total_carga_asignado
+		})
+		return;
+	}
+
+
+};
+
+
+
+
+const codificadoresConCarga_old = async (req, res) => {
 	//let id = req.params.id;
 
 	const { id, pregunta } = req.body;
@@ -1898,6 +1992,74 @@ const updateAsignado = async (req, res) => {
 	}
 
 };
+
+
+
+const updateReAsignado = async (req, res) => {
+	let tabla_id = req.params.id;
+	let parametro = req.body;
+
+	//var tabla = 'cod_' + tabla_id;
+	//var id = 'id_' + tabla_id;
+	var query = '';
+
+
+	console.log("------------------------------------------Nueva Re-Asignacion-------------------------------------------");
+
+	console.table(parametro);
+
+	// Si el parametro es un array y su longitud es 0, se retorna un error
+	if (parametro.length == 0) {
+		// Mesaje de retorno
+		res.status(200).json({
+			success: false,
+			message: 'No hay cantidad para reasignar.'
+		});
+		return;
+	}
+
+	// Reasingacion de carga 
+	if (tabla_id !== 'p49_p51') {
+
+		// Modificamos todos los registros de los codificadores
+		parametro.forEach(params => {
+			const consulta = `
+				update codificacion.cod_${tabla_id} set estado='ELABORADO', usucre='admin'
+				where estado='ASIGNADO' and departamento='${params.departamento}' and usucre='${params.usucre}';
+			`
+			query += consulta
+		});
+		// Ejectuamos la consulta
+		await con.query(query);
+
+		// MOdificacion de los registros con la reasignacion
+		// ...
+
+
+
+
+
+
+
+		res.status(200).json({
+			success: true,
+			message: 'Reasignacion correcta. p20...'
+		});
+
+		return;
+
+	} else {
+		res.status(200).json({
+			success: true,
+			message: 'Reasignacion correcta. p49_p51'
+		});
+		return;
+
+	}
+
+
+};
+
 
 
 
@@ -3870,6 +4032,7 @@ module.exports = {
 	updateInicializarUsr,
 	updateInicializarUsrSup,
 	updateAsignado,
+	updateReAsignado,
 	preguntasPorUsuario,
 	preguntasPorUsuDual,
 	preguntasPorVerificar,

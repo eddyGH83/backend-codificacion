@@ -20,6 +20,7 @@ const {
     updateInicializarUsr,
     updateInicializarUsrSup,
     updateAsignado,
+    updateReAsignado,
     updateAsignadoSup,
     preguntasPorUsuario,
     preguntasPorUsuDual,
@@ -67,6 +68,7 @@ router.post('/getCantidadDptoPregArea', getCantidadDptoPregArea);
 router.post('/updateInicializarUsr', updateInicializarUsr);
 router.post('/updateInicializarUsrSup', updateInicializarUsrSup);
 router.post('/updateAsignado/:id', updateAsignado);
+router.post('/updateReAsignado/:id', updateReAsignado);
 router.post('/updateAsignadoSup/:id', updateAsignadoSup);
 /////////////CODIFICACION
 router.post('/preguntasPorUsuario', preguntasPorUsuario);//preguntasPorUsuDual
