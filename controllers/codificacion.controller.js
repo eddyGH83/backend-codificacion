@@ -450,190 +450,159 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 const preguntasPorDepartamentoSup = async (req, res) => {
 
 	const { depto } = req.body;
-
-
-	if (depto === 'OTROS') {
-		sql_depto = `and departamento = '${depto}'`;
-	} else {
-		sql_depto = `and departamento = '${depto}'`;
-	}
-
-	/* 
-			SELECT
-				1 orden,
-				'p20esp' tabla_id,
-				'La Paz' AS depto,
-				'20' AS nro_preg,
-				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
-				count(*) AS total_carga
-			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' AND departamento ='ORURO'
-	*/
+	console.log("desde preguntasPorDepartamentoSup");
+	console.log(req.body);
 
 	const query = {
 		text: `
 			SELECT
 				1 orden,
-				'p20esp' tabla_id,
-				'La Paz' AS depto,
+				'p20esp' tabla_id,				
 				'20' AS nro_preg,
 				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
 				count(*) AS total_carga
-			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
 			SELECT
 				2 orden,
 				'p32esp' tabla_id,
-				'La Paz' AS depto,
 				'32' AS nro_preg,
 				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
 			SELECT
 				3 orden,
-				'p331' tabla_id,
-				'La Paz' AS depto,
+				'p331' tabla_id,				
 				'33' AS nro_preg,
 				'Idioma 1' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 			
 			SELECT
 				4 orden,
-				'p332' tabla_id,
-				'La Paz' AS depto,
+				'p332' tabla_id,				
 				'33' AS nro_preg,
 				'Idioma 2' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
 			SELECT
 				5 orden,
-				'p333' tabla_id,
-				'La Paz' AS depto,
+				'p333' tabla_id,				
 				'33' AS nro_preg,
 				'Idioma 3' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				6 orden,
-				'p341' tabla_id,
-				'La Paz' AS depto,
+				'p341' tabla_id,				
 				'34' AS nro_preg,
 				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' ${sql_depto}
+			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				7 orden,
-				'p352a' tabla_id,
-				'La Paz' AS depto,
+				'p352a' tabla_id,				
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				8 orden,
-				'p353' tabla_id,
-				'La Paz' AS depto,
+				'p353' tabla_id,				
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				9 orden,
-				'p362a' tabla_id,
-				'La Paz' AS depto,
+				'p362a' tabla_id,				
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				10 orden,
-				'p363' tabla_id,
-				'La Paz' AS depto,
+				'p363' tabla_id,				
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT
 				11 orden,
-				'p372a' tabla_id,
-				'La Paz' AS depto,
+				'p372a' tabla_id,				
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				12 orden,
-				'p373' tabla_id,
-				'La Paz' AS depto,
+				'p373' tabla_id,				
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT
 				13 orden,
-				'p48esp' tabla_id,
-				'La Paz' AS depto,
+				'p48esp' tabla_id,				
 				'48' AS nro_preg,
 				'Las últimas 4 semanas:' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
 			SELECT 
 				14 orden,
-				'p49_p51' tabla_id,
-				'La Paz' AS depto,
+				'p49_p51' tabla_id,				
 				'49-51' AS nro_preg,
 				'Ocupación - Actividad Económica' AS variable,
 				count (1) AS total_carga 
 			FROM codificacion.cod_p49_p51 
-			WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu='AUTOMATICO_NORMDOBLE' AND estado_act = 'CODIFICADO' AND usucodificador_act='AUTOMATICO_NORMDOBLE') ${sql_depto}
+			WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu='AUTOMATICO_NORMDOBLE' AND estado_act = 'CODIFICADO' AND usucodificador_act='AUTOMATICO_NORMDOBLE') and departamento='${depto}'
 
 			UNION
 			
 			SELECT
 				15 orden,
-				'p52esp' AS tabla_id,						
-			    'La Paz' AS depto,
+				'p52esp' AS tabla_id,									    
 			    '52' AS nro_preg,
 			    'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
 			    count(1) AS total_carga
-			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  ${sql_depto}
+			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 			ORDER BY orden asc
 		`
 	};
@@ -860,6 +829,49 @@ const codificadores = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+
+
+const supervisoresSinCarga = async (req, res) => {
+	let id = req.params.id;
+
+	console.log("supervisoresSinCarga----------------------------------------------------");
+	const query = {
+		text: `
+		SELECT
+		    id_usuario,
+		    nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
+		    nombres,
+		    pr_apellido,
+		    sg_apellido,
+		    turno,
+		    cod_supvsr,
+		    rol_id,
+		    login,
+			0 total,
+    		false activo
+		FROM codificacion.cod_usuario WHERE rol_id =4 AND estado ILIKE 'A' and cod_supvsr = ${id}
+		`,
+	};
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
+}
+
+
+const supervisoresConCarga = async (req, res) => {
+
+}
+
+
+
+
+
 
 
 const cargarParaCodificarSimple = async (req, res) => {
@@ -1857,7 +1869,7 @@ const updateAsignado_ = async (req, res) => {
 
 
 
-
+// Asignación de carga a codificadores
 const updateAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
@@ -1994,7 +2006,7 @@ const updateAsignado = async (req, res) => {
 };
 
 
-
+// Reasignación de carga a codificadores
 const updateReAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
@@ -2059,6 +2071,188 @@ const updateReAsignado = async (req, res) => {
 
 
 };
+
+
+
+// Asignación de carga a supervisores
+const updateAsignadoSup = async (req, res) => {
+	let tabla_id = req.params.id;
+	let parametro = req.body;
+	console.log("------------------------------------------Nueva asignacion de carga a Supervisor-------------------------------------------");
+
+	console.table(parametro);
+
+	// Si el parametro es un array y su longitud es 0, se retorna un error
+	if (parametro.length == 0) {
+		// Mesaje de retorno
+		res.status(200).json({
+			success: false,
+			message: 'No hay cantidad para asignar.'
+		});
+		return;
+	}
+
+
+	// Verificamos is es simple o doble
+	if (tabla_id == 'p49_p51') {
+
+		// Total de carga que llega del front 
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
+
+
+		// Carga disponible 
+		const result = await (await con.query(
+			`SELECT count(1) FROM codificacion.cod_p49_p51 WHERE (estado_ocu='CODIFICADO' OR estado_act = 'CODIFICADO') and departamento = '${parametro[0].departamento}';`
+		)).rows;
+
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+
+		var qr = '';
+		for (let i = 0; i < parametro.length; i++) {
+			var params = parametro[i];
+			qr = `
+			UPDATE codificacion.cod_p49_p51 cecupd SET
+					estado_ocu = CASE
+						WHEN cecupd.estado_ocu = 'CODIFICADO' AND cecupd.estado_act <> 'CODIFICADO' THEN 'ASIGNASUP'
+						WHEN cecupd.estado_ocu <> 'CODIFICADO' AND cecupd.estado_act = 'CODIFICADO' THEN 'ASIGNASUP'
+						WHEN cecupd.estado_ocu = 'CODIFICADO' AND cecupd.estado_act = 'CODIFICADO' THEN 'ASIGNASUP'
+						ELSE cecupd.estado_ocu
+					END,
+					estado_act = CASE
+						WHEN cecupd.estado_ocu = 'CODIFICADO' AND cecupd.estado_act <> 'CODIFICADO' THEN cecupd.estado_act
+						WHEN cecupd.estado_ocu <> 'CODIFICADO' AND cecupd.estado_act = 'CODIFICADO' THEN 'ASIGNASUP'
+						WHEN cecupd.estado_ocu = 'CODIFICADO' AND cecupd.estado_act = 'CODIFICADO' THEN 'ASIGNASUP'
+						ELSE cecupd.estado_act
+					END,
+					usucre = '${params.usucre}'
+				FROM (
+					SELECT
+						id_p49_p51,
+						respuesta_ocu,
+						codigocodif_ocu,
+						estado_ocu,
+						usucodificador_ocu,
+						respuesta_act,
+						codigocodif_act,
+						estado_act,
+						usucodificador_act,
+						usucre
+					FROM codificacion.cod_p49_p51
+					WHERE (estado_ocu = 'CODIFICADO' OR estado_act = 'CODIFICADO') and departamento='${parametro[0].departamento}'
+					LIMIT ${params.count}
+				) x
+				WHERE cecupd.id_p49_p51 = x.id_p49_p51; 
+			`;
+			console.log(qr);
+			await con.query(qr);
+		}
+
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+	} else {
+		// Total de carga
+		var total_carga = 0;
+		parametro.forEach(paramss => { total_carga += paramss.count; });
+
+
+		// Veririfica disponibilidad de carga
+		const queryDisp = `
+		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'CODIFICADO' and departamento = '${parametro[0].departamento}';`
+		const result = await (await con.query(queryDisp)).rows;
+
+		// Si la cantidad de carga es mayor a la disponible, se retorna un error
+		if (total_carga > result[0].count) {
+			// Mensaje de retorno
+			res.status(200).json({
+				success: false,
+				message: 'No hay carga disponible. Cancele la asignación y vuelva a intentar.'
+			});
+			return;
+		}
+
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query = '';
+
+		parametro.forEach(params => {
+			const consulta = `
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'CODIFICADO' and usucodificador='AUTOMATICO_NORMALIZADO' and departamento='${parametro[0].departamento}' limit ${params.count})
+						update codificacion.${tabla} set estado='ASIGNASUP',usucre='${params.usucre}' FROM cte c
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='CODIFICADO' AND codificacion.${tabla}.usucodificador='AUTOMATICO_NORMALIZADO';`
+			query += consulta
+		});
+		await con.query(query)
+
+		// Mensaje de retorno de la asignacion
+		res.status(200).json({
+			success: true,
+			message: 'Se ha asignado correctamente.'
+		});
+
+		return;
+	}
+
+};
+
+
+// Reasignación de carga a supervisores
+const updateReAsignadoSup = async (req, res) => {
+	let tabla_id = req.params.id;
+	let parametro = req.body;
+
+
+
+	//var tabla = 'cod_' + tabla_id;
+	//var id = 'id_' + tabla_id;
+	var query = '';
+
+
+	console.log("------------------------------------------Nueva Re-Asignacion de carga a Supervisor -------------------------------------------");
+	console.log("tabla_id: " + tabla_id);
+	console.table(parametro);
+
+	// Si el parametro es un array y su longitud es 0, se retorna un error
+	if (parametro.length == 0) {
+		// Mesaje de retorno
+		res.status(200).json({
+			success: false,
+			message: 'No hay cantidad para reasignar.'
+		});
+		return;
+	}
+
+	res.status(200).json({
+		success: false,
+		message: 'Carga Reasignado  a Sup'
+	});
+	return;
+
+};
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2212,7 +2406,7 @@ const updateVerificado = async (req, res) => {
  */
 
 // *Asignacion
-const updateAsignadoSup = async (req, res) => {
+const updateAsignadoSup_old = async (req, res) => {
 	let id = req.params.id;
 	let parametro = req.body;
 
@@ -2745,6 +2939,90 @@ const updatePreguntaSimpleAnular = async (req, res) => {
 }
 
 
+// Codificacion Doble ocupacion
+const updatePreguntaDobleOcu = async (req, res) => {
+
+	const {
+		id_registro,	// id por el cual se modifica
+		codigocodif,	// codigo de codificacion
+		usucodificador,	// usuario que codifica
+	} = req.body;
+
+	console.log("Hola desde updatePreguntaDoble");
+	console.table(req.body);
+
+	// Consulta de actualizacion
+	const qr = `
+	    UPDATE codificacion.cod_p49_p51
+		SET codigocodif_ocu = '${codigocodif}', 
+			estado_ocu = 'CODIFICADO', 
+			usucodificador_ocu = '${usucodificador}', 
+			feccodificador_ocu = now()
+		WHERE id_p49_p51 = ${id_registro};
+	`;
+
+	// Ejecucion de la consulta
+	await con.query(qr);
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha codificado correctamente. Ocu, id_registro:: ' + id_registro
+	})
+
+	return;
+}
+
+
+
+// Codificacion Doble actividad
+const updatePreguntaDobleAct = async (req, res) => {
+
+	const {
+		id_registro,	// id por el cual se modifica
+		codigocodif,	// codigo de codificacion
+		usucodificador,	// usuario que codifica
+	} = req.body;
+
+	console.log("Hola desde updatePreguntaDoble");
+	console.table(req.body);
+
+	// Consulta de actualizacion
+	const qr = `
+	    UPDATE codificacion.cod_p49_p51
+		SET codigocodif_act = '${codigocodif}', 
+			estado_act = 'CODIFICADO', 
+			usucodificador_act = '${usucodificador}', 
+			feccodificador_act = now()
+		WHERE id_p49_p51 = ${id_registro};
+	`;
+
+	// Ejecucion de la consulta
+	await con.query(qr);
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha codificado correctamente. Act, id_registro:: ' + id_registro
+	})
+	return;
+}
+
+
+
+const updatePreguntaDobleAnular = async (req, res) => {
+
+	const { } = req.body;
+	console.log("Hola desde updatePreguntaDobleAnular");
+	console.log(req.body);
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha anulado correctamente.'
+	})
+	return;
+}
 
 
 
@@ -3929,6 +4207,151 @@ const devuelvePreguntasCodificado = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
+
+const devuelvePreguntasSupervision = async (req, res) => {
+	//var params = req.body;
+
+	console.log("devuelvePreguntasSupervision---------------------------");
+
+	let registros = [
+		{
+			nro_preg: "20",
+			tabla_id: "p20esp",
+			variable: "¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+
+		},
+		{
+			nro_preg: "32",
+			tabla_id: "p32esp",
+			variable: "¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "33",
+			tabla_id: "p331",
+			variable: "Idioma 1",
+			totalCod: 7,
+			totalAut: 89,
+			btn_simple:true
+		},
+		{
+			nro_preg: "33",
+			tabla_id: "p332",
+			variable: "Idioma 2",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "33",
+			tabla_id: "p332",
+			variable: "Idioma 3",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "34",
+			tabla_id: "p341",
+			variable: "¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "35",
+			tabla_id: "p352a",
+			variable: "¿Dónde nació? ¿Municipio?",
+			totalCod: 9,
+			totalAut: 5,
+			btn_simple:true
+		},
+		{
+			nro_preg: "35",
+			tabla_id: "p353",
+			variable: "¿Dónde nació? ¿País?",
+			totalCod: 10,
+			totalAut: 40,
+			btn_simple:true
+		},
+
+
+
+
+		{
+			nro_preg: "36",
+			tabla_id: "p362a",
+			variable: "¿Dónde vive habitualmente? ¿Municipio?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "36",
+			tabla_id: "p363",
+			variable: "¿Dónde vive habitualmente? ¿País?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+
+
+
+
+		{
+			nro_preg: "37",
+			tabla_id: "p372a",
+			variable: "¿Dónde vivía el año 2019? ¿Municipio?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "37",
+			tabla_id: "p373",
+			variable: "¿Dónde vivía el año 2019? ¿País?",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+
+
+		{
+			nro_preg: "48",
+			tabla_id: "p48esp",
+			variable: "Las últimas 4 semanas:",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:true
+		},
+		{
+			nro_preg: "49-51",
+			tabla_id: "p49_p51",
+			variable: "Ocupación - Actividad Económica",
+			totalCod: 1,
+			totalAut: 2,
+			btn_simple:false
+		},
+		{
+			nro_preg: "52",
+			tabla_id: "p52esp",
+			variable: "Principalmente, el lugar donde trabaja está ubicado:",
+			totalCod: 23,
+			totalAut: 14,
+			btn_simple:true
+		},
+	];
+
+	res.status(200).json({
+		datos: registros
+	})
+};
+
 const devuelvePreguntasCodificado_ = async (req, res) => {
 	var params = req.body;
 	const query = {
@@ -4025,6 +4448,8 @@ module.exports = {
 	cargarParaCodificarSimple,
 	cargarParaCodificarDoble,
 	codificadoresConCarga,
+	supervisoresSinCarga,
+	supervisoresConCarga,
 	supervisores,
 	reasignar,
 	reasignarsup,
@@ -4041,6 +4466,9 @@ module.exports = {
 	updatePreguntaVerif,
 	updatePreguntaSimple,
 	updatePreguntaSimpleAnular,
+	updatePreguntaDobleOcu,
+	updatePreguntaDobleAct,
+	updatePreguntaDobleAnular,
 	// updatePregunta,
 	anularAnteriorVerif,
 	anularAnterior,
@@ -4048,11 +4476,13 @@ module.exports = {
 	updateVerificado,
 	devuelvePreguntas,
 	devuelvePreguntasCodificado,
+	devuelvePreguntasSupervision,
 	devuelvePreguntasSup,
 	devuelvePreguntaUsrSup,
 	muestraCargaDatos,
 	cargarDatosGlobal,
 	getCantidadCarga,
 	updateAsignadoSup,
+	updateReAsignadoSup,
 	updateOcuAct
 };

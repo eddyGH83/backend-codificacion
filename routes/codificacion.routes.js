@@ -13,6 +13,8 @@ const {
     cargarParaCodificarSimple,
     cargarParaCodificarDoble,
     codificadoresConCarga,
+    supervisoresSinCarga,
+	supervisoresConCarga,
     supervisores,
     reasignar,
     reasignarsup,
@@ -22,6 +24,7 @@ const {
     updateAsignado,
     updateReAsignado,
     updateAsignadoSup,
+    updateReAsignadoSup,
     preguntasPorUsuario,
     preguntasPorUsuDual,
     preguntasPorVerificar,
@@ -30,6 +33,9 @@ const {
     updatePreguntaVerif,
     updatePreguntaSimple,
     updatePreguntaSimpleAnular,
+    updatePreguntaDobleOcu,
+    updatePreguntaDobleAct,
+	updatePreguntaDobleAnular,
     //updatePregunta,
     anularAnteriorVerif,
     anularAnterior,
@@ -37,6 +43,7 @@ const {
     updateVerificado,
     devuelvePreguntas,
     devuelvePreguntasCodificado,
+    devuelvePreguntasSupervision,
     devuelvePreguntasSup,
     devuelvePreguntaUsrSup,
     muestraCargaDatos,
@@ -61,6 +68,9 @@ router.post('/cargarParaCodificarDoble', cargarParaCodificarDoble);
 
 router.get('/codificadores/:id', codificadores);
 router.post('/codificadoresConCarga', codificadoresConCarga);
+router.get('/supervisoresSinCarga/:id', supervisoresSinCarga);
+router.get('/supervisoresConCarga/:id', supervisoresConCarga);
+
 router.get('/supervisores', supervisores);
 router.post('/reasignar', reasignar);
 router.post('/reasignarsup', reasignarsup);
@@ -70,6 +80,7 @@ router.post('/updateInicializarUsrSup', updateInicializarUsrSup);
 router.post('/updateAsignado/:id', updateAsignado);
 router.post('/updateReAsignado/:id', updateReAsignado);
 router.post('/updateAsignadoSup/:id', updateAsignadoSup);
+router.post('/updateReAsignadoSup/:id', updateReAsignadoSup);
 /////////////CODIFICACION
 router.post('/preguntasPorUsuario', preguntasPorUsuario);//preguntasPorUsuDual
 router.post('/preguntasPorUsuDual', preguntasPorUsuDual);
@@ -79,7 +90,9 @@ router.get('/catalogoCodificacion/:enviar', catalogoCodificacion);
 router.put('/updatePreguntaVerif/:id', updatePreguntaVerif);
 router.post('/updatePreguntaSimple', updatePreguntaSimple);
 router.post('/updatePreguntaSimpleAnular', updatePreguntaSimpleAnular);
-
+router.post('/updatePreguntaDobleOcu', updatePreguntaDobleOcu);
+router.post('/updatePreguntaDobleAct', updatePreguntaDobleAct);
+router.post('/updatePreguntaDobleAnular', updatePreguntaDobleAnular);
 
 //router.put('/updatePregunta/:id', updatePregunta);
 router.put('/anularAnteriorVerif/:id', anularAnteriorVerif);
@@ -89,6 +102,7 @@ router.post('/updateVerificado/:user', updateVerificado);
 ////////CODIFICACCION SELECCIONAR
 router.get('/devuelvePreguntas', devuelvePreguntas);
 router.post('/devuelvePreguntasCodificado', devuelvePreguntasCodificado);
+router.post('/devuelvePreguntasSupervision', devuelvePreguntasSupervision);
 router.post('/devuelvePreguntasSup', devuelvePreguntasSup);
 router.post('/devuelvePreguntaUsrSup', devuelvePreguntaUsrSup);
 router.post('/updateOcuAct', updateOcuAct);
