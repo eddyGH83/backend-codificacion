@@ -2016,7 +2016,7 @@ const updateReAsignado = async (req, res) => {
 	var query = '';
 
 
-	console.log("------------------------------------------Nueva Re-Asignacion-------------------------------------------");
+	console.log("------------------------------------------Nueva Re-Asignacion a Codificador-------------------------------------------");
 
 	console.table(parametro);
 
@@ -2047,10 +2047,20 @@ const updateReAsignado = async (req, res) => {
 		// MOdificacion de los registros con la reasignacion
 		// ...
 
+		// Asignacion de carga
+		var tabla = 'cod_' + tabla_id;
+		var id = 'id_' + tabla_id;
+		query2 = '';
 
-
-
-
+		parametro.forEach(params => {
+			const consulta = `
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO'  and departamento='${parametro[0].departamento}' limit ${params.carga_asignado})
+						update codificacion.${tabla} set estado='ASIGNADO',usucre='${params.usucre}' FROM cte c
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO'; `
+			console.log(consulta);
+			query2 += consulta
+		});
+		await con.query(query2)
 
 
 		res.status(200).json({
