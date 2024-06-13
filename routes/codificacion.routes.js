@@ -33,8 +33,8 @@ const {
     updatePreguntaVerif,
     updatePreguntaSimple,
     updatePreguntaSimpleAnular,
-    updatePreguntaDobleOcu,
-    updatePreguntaDobleAct,
+    updatePreguntaDobleOcuAct,
+    //updatePreguntaDobleAct,
 	updatePreguntaDobleAnular,
     //updatePregunta,
     anularAnteriorVerif,
@@ -90,8 +90,8 @@ router.get('/catalogoCodificacion/:enviar', catalogoCodificacion);
 router.put('/updatePreguntaVerif/:id', updatePreguntaVerif);
 router.post('/updatePreguntaSimple', updatePreguntaSimple);
 router.post('/updatePreguntaSimpleAnular', updatePreguntaSimpleAnular);
-router.post('/updatePreguntaDobleOcu', updatePreguntaDobleOcu);
-router.post('/updatePreguntaDobleAct', updatePreguntaDobleAct);
+router.post('/updatePreguntaDobleOcuAct', updatePreguntaDobleOcuAct);
+// router.post('/updatePreguntaDobleAct', updatePreguntaDobleAct);
 router.post('/updatePreguntaDobleAnular', updatePreguntaDobleAnular);
 
 //router.put('/updatePregunta/:id', updatePregunta);

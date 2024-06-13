@@ -755,54 +755,19 @@ const preguntasPorDepartamentoSup___ = async (req, res) => {
 };
 
 
-/* 
-select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else 0 end) count, 
-		id_pregunta, pregunta,codigo_pregunta
-		from (select a.departamento,
-			(select nombre_depto from cartografia.departamentos where codigo_depto=a.departamento) as nombre,
-			a.estado,
-			a.id_pregunta,
-			(select pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as pregunta,
-			  (select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=a.id_pregunta) as codigo_pregunta,
-			count(*) cuenta from ${esquema}.cod_encuesta_codificacion a
-			where a.estado in ('CODIFICADO', 'ASIGNASUP')
-			--and usucodificador in ('AUTOMATICO_NORMALIZADO', 'AUTOMATICO_NORMDOBLE')
-			group by a.departamento,a.id_pregunta,a.estado
-			) a
-		where  id_pregunta not in (125,127)
-		group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
-union all 
-select departamento, nombre, max(case when estado ='CODIFICADO' then cuenta else 0 end) count,
-			id_pregunta, pregunta, codigo_pregunta
-			from(
-				select distinct ceco.departamento,
-				(select nombre_depto from cartografia.departamentos where codigo_depto=ceco.departamento) as nombre,
-				ceco.id_pregunta,  'Preguntas 48-50: Ocupación jjj - Actividad Económica' pregunta, ceco.estado,
-				(select codigo_pregunta from ${esquema}.cod_variables where id_pregunta=ceco.id_pregunta) as codigo_pregunta,
-				count(*) cuenta
-			from ${esquema}.cod_encuesta_codificacion ceco
-				inner join ${esquema}.cod_encuesta_codificacion ceca
-				on ceco.id_informante = ceca.id_informante
-			where ceco.id_pregunta =125 and ceca.id_pregunta=127 and 
-			ceco.estado in ('CODIFICADO', 'ASIGNASUP') and
-					ceca.estado in ('CODIFICADO', 'ASIGNASUP')
-					--and ceco.usucodificador in ('AUTOMATICO_NORMDOBLE')
-				--and ceca.usucodificador in ('AUTOMATICO_NORMDOBLE')
-				group by ceco.departamento,ceco.id_pregunta,ceco.estado
-			) a
-			group by departamento, nombre, codigo_pregunta, id_pregunta,pregunta
-			order by departamento, codigo_pregunta,pregunta
-*/
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+// Listar codificadores para asignar carga
 const codificadores = async (req, res) => {
 	let id = req.params.id;
-	// console.log("ffffffffffffffffffffffffffffffffffffffffffff", id)
-	const query = {
-		text: `
+
+	// averiguar si es supervisor o jefe de turno
+	const rol_id = await (await con.query(`SELECT rol_id FROM codificacion.cod_usuario WHERE id_usuario = ${id}`)).rows[0].rol_id;
+
+
+	// Es supervisor (Lista de codificadores de sus codificadores)
+	if (rol_id == 4) {
+		const query = {
+			text: `
 		SELECT
 		    id_usuario,
 		    nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
@@ -816,19 +781,241 @@ const codificadores = async (req, res) => {
 			0 total,
     		false activo
 		FROM codificacion.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
-
-		--SELECT * FROM ${esquema}.cod_usuario WHERE rol_id =5 AND estado ILIKE 'A' and cod_supvsr = ${id}
 		`,
-	};
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
+		};
+		await con
+			.query(query)
+			.then((result) =>
+				res.status(200).json({
+					datos: result,
+				})
+			)
+			.catch((e) => console.error(e.stack));
+	}
+
+
+
+
+	// Es jefe de turno (Lista de codificadores de sus supervisores)
+	if (rol_id == 3) {
+		const query = {
+			text: `
+		SELECT 
+			id_usuario,
+		    nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
+		    nombres,
+		    pr_apellido,
+		    sg_apellido,
+		    turno,
+		    cod_supvsr,
+		    rol_id,
+		    login,
+			0 total,
+    		false activo
+		FROM codificacion.cod_usuario WHERE rol_id = 5 and estado = 'A' and cod_supvsr in (
+			SELECT id_usuario FROM codificacion.cod_usuario WHERE rol_id = 4 AND estado = 'A' AND cod_supvsr = ${id}
 		)
-		.catch((e) => console.error(e.stack));
+		`,
+		};
+		await con
+			.query(query)
+			.then((result) =>
+				res.status(200).json({
+					datos: result,
+				})
+			)
+			.catch((e) => console.error(e.stack));
+	}
 };
+
+
+// Listar codificadores con carga para reasignar carga
+const codificadoresConCarga = async (req, res) => {
+
+	var {
+		id, // id del supervisor
+		tabla_id,
+		departamento
+	} = req.body;
+
+	// averiguar si es supervisor o jefe de turno
+	const rol = await (await con.query(`SELECT rol_id FROM codificacion.cod_usuario WHERE id_usuario = ${id}`)).rows[0].rol_id;
+
+	var total_carga_asignado = 0;
+
+	// si es supervisor (Lista de codificadores de sus codificadores)
+	if (rol == 4) {
+
+		// verificamos si tabla_id
+		if (tabla_id === 'p49_p51') {
+			console.log("cod_p49_p51");
+			var codificadores = await (await con.query(`
+			SELECT
+				b.id_usuario,
+				b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+				b.turno,
+				b.cod_supvsr,
+				b.rol_id,
+				b.login,
+				a.carga_asignado
+				FROM (
+			SELECT
+				u.login AS usucre,
+				CASE
+					WHEN COUNT(c.usucre) IS NULL THEN 0
+					ELSE COUNT(c.usucre)
+				END AS carga_asignado
+			FROM codificacion.cod_usuario u
+			LEFT JOIN codificacion.cod_p49_p51  c ON u.login = c.usucre AND c.departamento='${departamento}' AND (c.estado_ocu = 'ASIGNADO' OR c.estado_act = 'ASIGNADO')
+			WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
+			GROUP BY u.login
+			) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+			// foreach en codificadores para sumar la carga asignada
+			for (let i = 0; i < codificadores.length; i++) {
+				total_carga_asignado += Number(codificadores[i].carga_asignado);
+			}
+
+			res.status(200).json({
+				datos: codificadores,
+				total_carga_asignado: total_carga_asignado
+			})
+			return;
+		} else {
+
+			var codificadores = await (await con.query(`
+		SELECT
+			b.id_usuario,
+			b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+			b.turno,
+			b.cod_supvsr,
+			b.rol_id,
+			b.login,
+			a.carga_asignado
+			FROM (
+		SELECT
+			u.login AS usucre,
+			CASE
+				WHEN COUNT(c.usucre) IS NULL THEN 0
+				ELSE COUNT(c.usucre)
+			END AS carga_asignado
+		FROM codificacion.cod_usuario u
+		LEFT JOIN codificacion.cod_${tabla_id}  c ON u.login = c.usucre AND c.estado = 'ASIGNADO' AND c.departamento='${departamento}'
+		WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
+		GROUP BY u.login
+		) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+			// foreach en codificadores para sumar la carga asignada
+			for (let i = 0; i < codificadores.length; i++) {
+				total_carga_asignado += Number(codificadores[i].carga_asignado);
+			}
+
+			res.status(200).json({
+				datos: codificadores,
+				total_carga_asignado: total_carga_asignado
+			})
+			return;
+		}
+
+	}
+
+
+
+	// si es jefe de turno (Lista de codificadores de sus supervisores)
+	if (rol == 3) {
+
+		// verificamos si tabla_id
+		if (tabla_id === 'p49_p51') {
+			console.log("cod_p49_p51");
+			var codificadores = await (await con.query(`
+			SELECT
+				b.id_usuario,
+				b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+				b.turno,
+				b.cod_supvsr,
+				b.rol_id,
+				b.login,
+				a.carga_asignado
+				FROM (
+			SELECT
+				u.login AS usucre,
+				CASE
+					WHEN COUNT(c.usucre) IS NULL THEN 0
+					ELSE COUNT(c.usucre)
+				END AS carga_asignado
+			FROM codificacion.cod_usuario u
+			LEFT JOIN codificacion.cod_p49_p51  c ON u.login = c.usucre AND c.departamento='${departamento}' AND (c.estado_ocu = 'ASIGNADO' OR c.estado_act = 'ASIGNADO')
+			WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr in ( SELECT id_usuario FROM codificacion.cod_usuario WHERE rol_id = 4 AND estado = 'A' AND cod_supvsr = ${id})
+			GROUP BY u.login
+			) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+			// foreach en codificadores para sumar la carga asignada
+			for (let i = 0; i < codificadores.length; i++) {
+				total_carga_asignado += Number(codificadores[i].carga_asignado);
+			}
+
+			res.status(200).json({
+				datos: codificadores,
+				total_carga_asignado: total_carga_asignado
+			})
+			return;
+		} else {
+
+			var codificadores = await (await con.query(`
+		SELECT
+			b.id_usuario,
+			b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
+			b.turno,
+			b.cod_supvsr,
+			b.rol_id,
+			b.login,
+			a.carga_asignado
+			FROM (
+		SELECT
+			u.login AS usucre,
+			CASE
+				WHEN COUNT(c.usucre) IS NULL THEN 0
+				ELSE COUNT(c.usucre)
+			END AS carga_asignado
+		FROM codificacion.cod_usuario u
+		LEFT JOIN codificacion.cod_${tabla_id}  c ON u.login = c.usucre AND c.estado = 'ASIGNADO' AND c.departamento='${departamento}'
+		WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr in (SELECT id_usuario FROM codificacion.cod_usuario WHERE rol_id = 4 AND estado = 'A' AND cod_supvsr = ${id})
+		GROUP BY u.login
+		) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
+		`)).rows;
+
+			// foreach en codificadores para sumar la carga asignada
+			for (let i = 0; i < codificadores.length; i++) {
+				total_carga_asignado += Number(codificadores[i].carga_asignado);
+			}
+
+			res.status(200).json({
+				datos: codificadores,
+				total_carga_asignado: total_carga_asignado
+			})
+			return;
+		}
+
+	}
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1319,7 +1506,15 @@ const cargarParaCodificarSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_cob
 		const qr2 = await (await con.query(`
-				SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob';
+			SELECT
+			id_catalogo,
+			CASE
+				WHEN codigo IS NULL THEN '123456'
+				ELSE codigo
+			END AS codigo,
+			descripcion
+			FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob'
+				--SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob';
 		`)).rows;
 
 		// Respuesta
@@ -1413,14 +1608,14 @@ const cargarParaCodificarDoble = async (req, res) => {
 	// Clasificacion a utilizar para ocupacion:
 	const qr2 = await (await con.query(`
 	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
-	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_cob'
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_cob' ORDER BY LENGTH(codigo), codigo ASC
 	`)).rows;
 
 
 	// Clasificacion a utilizar para actividad economica:
 	const qr3 = await (await con.query(`
 	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
-	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_caeb'
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_caeb' ORDER BY LENGTH(codigo), codigo ASC
 	`)).rows;
 
 
@@ -1442,100 +1637,6 @@ const cargarParaCodificarDoble = async (req, res) => {
 
 
 
-const codificadoresConCarga = async (req, res) => {
-
-	var {
-		id, // id del supervisor
-		tabla_id,
-		departamento
-	} = req.body;
-
-	console.table(req.body);
-
-	var total_carga_asignado = 0;
-
-	// verificamos si tabla_id
-	if (tabla_id === 'p49_p51') {
-		console.log("cod_p49_p51");
-		var codificadores = await (await con.query(`
-			SELECT
-				b.id_usuario,
-				b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
-				b.turno,
-				b.cod_supvsr,
-				b.rol_id,
-				b.login,
-				a.carga_asignado
-				FROM (
-			SELECT
-				u.login AS usucre,
-				CASE
-					WHEN COUNT(c.usucre) IS NULL THEN 0
-					ELSE COUNT(c.usucre)
-				END AS carga_asignado
-			FROM codificacion.cod_usuario u
-			LEFT JOIN codificacion.cod_p49_p51  c ON u.login = c.usucre AND c.departamento='${departamento}' AND (c.estado_ocu = 'ASIGNADO' OR c.estado_act = 'ASIGNADO')
-			WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
-			GROUP BY u.login
-			) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
-		`)).rows;
-
-		// foreach en codificadores para sumar la carga asignada
-		for (let i = 0; i < codificadores.length; i++) {
-			total_carga_asignado += Number(codificadores[i].carga_asignado);
-		}
-
-
-		console.log("req.body", req.body);
-
-		res.status(200).json({
-			datos: codificadores,
-			total_carga_asignado: total_carga_asignado
-		})
-		return;
-	} else {
-		console.log("else");
-		// consulta con ia
-		var codificadores = await (await con.query(`
-		SELECT
-			b.id_usuario,
-			b.nombres || ' ' || b.pr_apellido || ' ' || b.sg_apellido nombre_completo,
-			b.turno,
-			b.cod_supvsr,
-			b.rol_id,
-			b.login,
-			a.carga_asignado
-			FROM (
-		SELECT
-			u.login AS usucre,
-			CASE
-				WHEN COUNT(c.usucre) IS NULL THEN 0
-				ELSE COUNT(c.usucre)
-			END AS carga_asignado
-		FROM codificacion.cod_usuario u
-		LEFT JOIN codificacion.cod_${tabla_id}  c ON u.login = c.usucre AND c.estado = 'ASIGNADO' AND c.departamento='${departamento}'
-		WHERE u.rol_id = 5 AND u.estado ILIKE 'A' AND u.cod_supvsr = ${id}
-		GROUP BY u.login
-		) a JOIN codificacion.cod_usuario b ON a.usucre = b.login
-		`)).rows;
-
-		// foreach en codificadores para sumar la carga asignada
-		for (let i = 0; i < codificadores.length; i++) {
-			total_carga_asignado += Number(codificadores[i].carga_asignado);
-		}
-
-
-		console.log("req.body", req.body);
-
-		res.status(200).json({
-			datos: codificadores,
-			total_carga_asignado: total_carga_asignado
-		})
-		return;
-	}
-
-
-};
 
 
 
@@ -1916,18 +2017,18 @@ const updateAsignado = async (req, res) => {
 		for (let i = 0; i < parametro.length; i++) {
 			var params = parametro[i];
 			qr = `
-			UPDATE codificacion.cod_p49_p51 cecupd SET
+			UPDATE codificacion.cod_p49_p51 cdf SET
 					estado_ocu = CASE
-						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act <> 'ELABORADO' THEN 'ASIGNADO'
-						WHEN cecupd.estado_ocu <> 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
-						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
-						ELSE cecupd.estado_ocu
+						WHEN cdf.estado_ocu = 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_ocu <> 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_ocu = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cdf.estado_ocu
 					END,
 					estado_act = CASE
-						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act <> 'ELABORADO' THEN cecupd.estado_act
-						WHEN cecupd.estado_ocu <> 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
-						WHEN cecupd.estado_ocu = 'ELABORADO' AND cecupd.estado_act = 'ELABORADO' THEN 'ASIGNADO'
-						ELSE cecupd.estado_act
+						--WHEN cdf.estado_act <> 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						WHEN cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cdf.estado_act
 					END,
 					usucre = '${params.usucre}'
 				FROM (
@@ -1946,7 +2047,7 @@ const updateAsignado = async (req, res) => {
 					WHERE (estado_ocu = 'ELABORADO' OR estado_act = 'ELABORADO') and departamento='${parametro[0].departamento}'
 					LIMIT ${params.count}
 				) x
-				WHERE cecupd.id_p49_p51 = x.id_p49_p51; 
+				WHERE cdf.id_p49_p51 = x.id_p49_p51; 
 			`;
 			console.log(qr);
 			await con.query(qr);
@@ -2016,7 +2117,7 @@ const updateReAsignado = async (req, res) => {
 	var query = '';
 
 
-	console.log("------------------------------------------Nueva Re-Asignacion a Codificador-------------------------------------------");
+	console.log("------------------------------------------Nueva Re-Asignacion-------------------------------------------");
 
 	console.table(parametro);
 
@@ -2033,7 +2134,7 @@ const updateReAsignado = async (req, res) => {
 	// Reasingacion de carga 
 	if (tabla_id !== 'p49_p51') {
 
-		// Modificamos todos los registros de los codificadores
+		// Modificamos todos los registros a ELABORADO
 		parametro.forEach(params => {
 			const consulta = `
 				update codificacion.cod_${tabla_id} set estado='ELABORADO', usucre='admin'
@@ -2044,43 +2145,125 @@ const updateReAsignado = async (req, res) => {
 		// Ejectuamos la consulta
 		await con.query(query);
 
-		// MOdificacion de los registros con la reasignacion
-		// ...
 
-		// Asignacion de carga
+		// ReAsignacion de carga
 		var tabla = 'cod_' + tabla_id;
 		var id = 'id_' + tabla_id;
 		query2 = '';
 
 		parametro.forEach(params => {
 			const consulta = `
-						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO'  and departamento='${parametro[0].departamento}' limit ${params.carga_asignado})
+						WITH cte AS (select * from codificacion.${tabla} where estado ilike 'ELABORADO' and departamento='${parametro[0].departamento}' limit ${params.carga_asignado})
 						update codificacion.${tabla} set estado='ASIGNADO',usucre='${params.usucre}' FROM cte c
-						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO'; `
-			console.log(consulta);
+						where codificacion.${tabla}.${id} = c.${id} and codificacion.${tabla}.estado='ELABORADO';`
 			query2 += consulta
 		});
-		await con.query(query2)
-
+		// Ejectuamos la consulta
+		await con.query(query2);
 
 		res.status(200).json({
 			success: true,
-			message: 'Reasignacion correcta. p20...'
+			message: 'Reasignacion correcta.'
 		});
 
 		return;
 
 	} else {
+
+		// Modificamos todos los registros  a ELABORADO
+		parametro.forEach(params => {
+			const consulta = `
+				UPDATE codificacion.cod_p49_p51 cdf SET
+				estado_ocu = CASE
+						WHEN cdf.estado_ocu = 'ASIGNADO'  THEN 'ELABORADO'
+						-- WHEN cdf.estado_ocu <> 'ASIGNADO'  THEN 'ELABORADO'
+						-- 	WHEN cdf.estado_ocu = 'ASIGNADO'  THEN 'ELABORADO'
+						ELSE cdf.estado_ocu
+					END,
+					estado_act = CASE
+						--WHEN cdf.estado_act <> 'ASIGNADO' THEN 'ELABORADO'
+						WHEN cdf.estado_act = 'ASIGNADO' THEN 'ELABORADO'
+						--WHEN cdf.estado_act = 'ASIGNADO' THEN 'ELABORADO'
+						ELSE cdf.estado_act
+					END,
+					usucre = 'admin'
+				FROM (
+					SELECT
+						id_p49_p51,
+						respuesta_ocu,
+						codigocodif_ocu,
+						estado_ocu,
+						usucodificador_ocu,
+						respuesta_act,
+						codigocodif_act,
+						estado_act,
+						usucodificador_act,
+						usucre
+					FROM codificacion.cod_p49_p51
+					WHERE (estado_ocu = 'ASIGNADO' OR estado_act = 'ASIGNADO') and departamento='${params.departamento}' and  usucre = '${params.usucre}'
+				) x
+				WHERE cdf.id_p49_p51 = x.id_p49_p51;
+			`
+			// Ejectuamos la consulta
+			query += consulta
+		});
+		// Ejectuamos la consulta
+		await con.query(query);
+
+
+
+
+		// Nuevamente reasignamos la carga
+		var qr = '';
+		for (let i = 0; i < parametro.length; i++) {
+			var params = parametro[i];
+			qr = `
+			UPDATE codificacion.cod_p49_p51 cdf SET
+					estado_ocu = CASE
+						WHEN cdf.estado_ocu = 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_ocu <> 'ELABORADO' AND cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_ocu = 'ELABORADO' AND cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cdf.estado_ocu
+					END,
+					estado_act = CASE
+						--WHEN df.estado_act <> 'ELABORADO' THEN 'ASIGNADO'
+						--WHEN cdf.estado_ocu <> 'ELABORADO' AND cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						WHEN cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
+						ELSE cdf.estado_act
+					END,
+					usucre = '${params.usucre}'
+				FROM (
+					SELECT
+						id_p49_p51,
+						respuesta_ocu,
+						codigocodif_ocu,
+						estado_ocu,
+						usucodificador_ocu,
+						respuesta_act,
+						codigocodif_act,
+						estado_act,
+						usucodificador_act,
+						usucre
+					FROM codificacion.cod_p49_p51
+					WHERE (estado_ocu = 'ELABORADO' OR estado_act = 'ELABORADO') and departamento='${parametro[0].departamento}'
+					LIMIT ${params.carga_asignado}
+				) x
+				WHERE cdf.id_p49_p51 = x.id_p49_p51; 
+			`;
+			//console.log(qr);
+			await con.query(qr);
+		}
+
+
 		res.status(200).json({
 			success: true,
-			message: 'Reasignacion correcta. p49_p51'
+			message: 'Reasignacion correcta.'
 		});
 		return;
-
 	}
 
-
 };
+
 
 
 
@@ -2254,15 +2437,6 @@ const updateReAsignadoSup = async (req, res) => {
 	return;
 
 };
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2885,6 +3059,10 @@ const updatePreguntaVerif = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
+
+
+
+
 // Codificacion Simple
 const updatePreguntaSimple = async (req, res) => {
 	var {
@@ -2893,6 +3071,19 @@ const updatePreguntaSimple = async (req, res) => {
 		codigocodif,
 		usucodificador
 	} = req.body;
+
+	// verifica si el registro esta asignado a codificar 
+	const verif = await con.query(`SELECT count(1)  FROM codificacion.cod_${tabla_id} WHERE id_${tabla_id} = ${id_registro} AND estado ='ASIGNADO' AND usucre = '${usucodificador}'`);
+
+	// Si no esta asignado, se retorna un error
+	if (verif.rows[0].count == 0) {
+		res.status(200).json({
+			success: false,
+			message: 'Back-end: No se puede codificar, el registro no esta asignado.'
+		})
+		return;
+	}
+
 
 	// Consulta de actualizacion
 	const qr = `
@@ -2910,11 +3101,16 @@ const updatePreguntaSimple = async (req, res) => {
 	// Respuesta
 	res.status(200).json({
 		success: true,
-		message: 'Se ha codificado correctamente.'
+		message: 'Back-end: Se ha codificado correctamente.'
 	})
 
 	return;
 };
+
+
+
+
+
 
 // Anular codificacion simple
 const updatePreguntaSimpleAnular = async (req, res) => {
@@ -2950,35 +3146,107 @@ const updatePreguntaSimpleAnular = async (req, res) => {
 
 
 // Codificacion Doble ocupacion
-const updatePreguntaDobleOcu = async (req, res) => {
+const updatePreguntaDobleOcuAct = async (req, res) => {
 
 	const {
 		id_registro,	// id por el cual se modifica
-		codigocodif,	// codigo de codificacion
-		usucodificador,	// usuario que codifica
+		codigocodifOcu,	// codigo de codificacion
+		usucodificadorOcu,	// usuario que codifica
+		codigocodifAct,	// codigo de codificacion
+		usucodificadorAct,	// usuario que codifica
 	} = req.body;
 
-	console.log("Hola desde updatePreguntaDoble");
-	console.table(req.body);
 
-	// Consulta de actualizacion
-	const qr = `
-	    UPDATE codificacion.cod_p49_p51
-		SET codigocodif_ocu = '${codigocodif}', 
-			estado_ocu = 'CODIFICADO', 
-			usucodificador_ocu = '${usucodificador}', 
-			feccodificador_ocu = now()
-		WHERE id_p49_p51 = ${id_registro};
-	`;
 
-	// Ejecucion de la consulta
-	await con.query(qr);
+	// Verificar si el registro esta asignado a codificar
+	const verif = await con.query(`
+		SELECT count(1)  FROM codificacion.cod_p49_p51 
+		WHERE id_p49_p51 = ${id_registro} AND 
+		((estado_ocu ='ASIGNADO' AND usucodificador_ocu = '${usucodificadorOcu}') AND (estado_act ='ASIGNADO' AND usucodificador_act = '${usucodificadorAct}'))
+	`);
 
-	// Respuesta
+
+	//console.log("Hola desde updatePreguntaDoble");
+	//console.table(req.body);
+
+	// buscar registro
+	const qr1 = `
+	SELECT 
+		CASE  
+			WHEN codigocodif_ocu IS NULL THEN  ''
+			ELSE codigocodif_ocu		
+		END AS codigocodif_ocu,
+		CASE  
+			WHEN usucodificador_ocu IS NULL THEN  ''
+			ELSE usucodificador_ocu		
+		END AS usucodificador_ocu,
+		CASE  
+			WHEN codigocodif_act IS NULL THEN  ''
+			ELSE codigocodif_act		
+		END AS codigocodif_act,
+		CASE  
+			WHEN usucodificador_act IS NULL THEN  ''
+			ELSE usucodificador_act		
+		END AS usucodificador_act,
+		CASE  
+			WHEN usucre IS NULL THEN  ''
+			ELSE usucre		
+		END AS usucre
+	FROM codificacion.cod_p49_p51 WHERE id_p49_p51 = ${Number(id_registro)}
+	`
+	// ejecutar consulta
+	const datosSinCodif = await (await con.query(qr1)).rows;
+
+	console.table(datosSinCodif);
+	console.log(datosSinCodif[0].usucre);
+
+
+	// Verificamos datosSinCodif.rows[0].usucodificador_ocu empieza con AUTOMATICO_  y si usucodificador_act empieza con AUTOMATICO_
+	if (datosSinCodif[0].usucre !== usucodificadorAct || datosSinCodif[0].usucre !== usucodificadorOcu) {
+		res.status(200).json({
+			success: false,
+			message: 'No se puede codificar, el registro no esta asignado.'
+		})
+		return;
+	}
+
+
+	// Consulta de actualizacion OCU
+	if (datosSinCodif[0].codigocodif_ocu !== codigocodifOcu) {
+		const qrOcu = `
+			UPDATE codificacion.cod_p49_p51
+			SET codigocodif_ocu = '${codigocodifOcu}', 
+				estado_ocu = 'CODIFICADO', 
+				usucodificador_ocu = '${usucodificadorOcu}', 
+				feccodificador_ocu = now()
+			WHERE id_p49_p51 = ${id_registro};
+			`;
+		await con.query(qrOcu);
+	}
+
+
+
+	// Consulta de actualizacion ACT
+	if (datosSinCodif[0].codigocodif_act !== codigocodifAct) {
+		const qrAct = `
+			UPDATE codificacion.cod_p49_p51
+			SET codigocodif_act = '${codigocodifAct}', 
+				estado_act = 'CODIFICADO', 
+				usucodificador_act = '${usucodificadorAct}', 
+				feccodificador_act = now()
+			WHERE id_p49_p51 = ${id_registro};
+			`;
+		await con.query(qrAct);
+	}
+
+
+
 	res.status(200).json({
 		success: true,
 		message: 'Se ha codificado correctamente. Ocu, id_registro:: ' + id_registro
 	})
+
+
 
 	return;
 }
@@ -2986,7 +3254,7 @@ const updatePreguntaDobleOcu = async (req, res) => {
 
 
 // Codificacion Doble actividad
-const updatePreguntaDobleAct = async (req, res) => {
+const updatePreguntaDobleAct______ = async (req, res) => {
 
 	const {
 		id_registro,	// id por el cual se modifica
@@ -4085,12 +4353,12 @@ const devuelvePreguntasCodificado = async (req, res) => {
 
 		SELECT
 			5 orden,
-			'p332' tabla_id,
+			'p333' tabla_id,
 			'La Paz' AS depto,
 			'33' AS nro_preg,
 			'Idioma 3' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1
+		FROM codificacion.cod_p333 WHERE estado = 'ASIGNADO' AND usucre = $1
 
 		UNION
 
@@ -4230,7 +4498,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 
 		},
 		{
@@ -4239,7 +4507,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "33",
@@ -4247,7 +4515,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Idioma 1",
 			totalCod: 7,
 			totalAut: 89,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "33",
@@ -4255,7 +4523,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Idioma 2",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "33",
@@ -4263,7 +4531,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Idioma 3",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "34",
@@ -4271,7 +4539,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "35",
@@ -4279,7 +4547,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde nació? ¿Municipio?",
 			totalCod: 9,
 			totalAut: 5,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "35",
@@ -4287,7 +4555,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde nació? ¿País?",
 			totalCod: 10,
 			totalAut: 40,
-			btn_simple:true
+			btn_simple: true
 		},
 
 
@@ -4299,7 +4567,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde vive habitualmente? ¿Municipio?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "36",
@@ -4307,7 +4575,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde vive habitualmente? ¿País?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 
 
@@ -4319,7 +4587,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde vivía el año 2019? ¿Municipio?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "37",
@@ -4327,7 +4595,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "¿Dónde vivía el año 2019? ¿País?",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 
 
@@ -4337,7 +4605,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Las últimas 4 semanas:",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:true
+			btn_simple: true
 		},
 		{
 			nro_preg: "49-51",
@@ -4345,7 +4613,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Ocupación - Actividad Económica",
 			totalCod: 1,
 			totalAut: 2,
-			btn_simple:false
+			btn_simple: false
 		},
 		{
 			nro_preg: "52",
@@ -4353,7 +4621,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 			variable: "Principalmente, el lugar donde trabaja está ubicado:",
 			totalCod: 23,
 			totalAut: 14,
-			btn_simple:true
+			btn_simple: true
 		},
 	];
 
@@ -4476,8 +4744,8 @@ module.exports = {
 	updatePreguntaVerif,
 	updatePreguntaSimple,
 	updatePreguntaSimpleAnular,
-	updatePreguntaDobleOcu,
-	updatePreguntaDobleAct,
+	updatePreguntaDobleOcuAct,
+	//updatePreguntaDobleAct,
 	updatePreguntaDobleAnular,
 	// updatePregunta,
 	anularAnteriorVerif,
