@@ -4489,146 +4489,252 @@ const devuelvePreguntasCodificado = async (req, res) => {
 const devuelvePreguntasSupervision = async (req, res) => {
 	//var params = req.body;
 
-	console.log("devuelvePreguntasSupervision---------------------------");
+	const {
+		id_usuario // id_usuario del supervisor
+	} = req.body;
 
-	let registros = [
-		{
-			nro_preg: "20",
-			tabla_id: "p20esp",
-			variable: "¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
+	// query
+	const query = `
+	SELECT 
+		1 orden,
+		'p20esp' tabla_id,
+		'20' AS nro_preg,
+		'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p20esp 
+	WHERE estado ='CODIFICADO' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
-		},
-		{
-			nro_preg: "32",
-			tabla_id: "p32esp",
-			variable: "¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "33",
-			tabla_id: "p331",
-			variable: "Idioma 1",
-			totalCod: 7,
-			totalAut: 89,
-			btn_simple: true
-		},
-		{
-			nro_preg: "33",
-			tabla_id: "p332",
-			variable: "Idioma 2",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "33",
-			tabla_id: "p332",
-			variable: "Idioma 3",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "34",
-			tabla_id: "p341",
-			variable: "¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "35",
-			tabla_id: "p352a",
-			variable: "¿Dónde nació? ¿Municipio?",
-			totalCod: 9,
-			totalAut: 5,
-			btn_simple: true
-		},
-		{
-			nro_preg: "35",
-			tabla_id: "p353",
-			variable: "¿Dónde nació? ¿País?",
-			totalCod: 10,
-			totalAut: 40,
-			btn_simple: true
-		},
+	UNION
 
+	SELECT
+		2 orden,
+		'p32esp' tabla_id,
+		'32' AS nro_preg,
+		'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p32esp
+	WHERE estado ='CODIFICADO' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	UNION
 
+	SELECT
+		3 orden,
+		'p331' tabla_id,
+		'33' AS nro_preg,
+		'Idioma 1' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p331
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
+	UNION
 
-		{
-			nro_preg: "36",
-			tabla_id: "p362a",
-			variable: "¿Dónde vive habitualmente? ¿Municipio?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "36",
-			tabla_id: "p363",
-			variable: "¿Dónde vive habitualmente? ¿País?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
+	SELECT
+		4 orden,
+		'p332' tabla_id,
+		'33' AS nro_preg,
+		'Idioma 2' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p332
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
+	UNION
 
+	SELECT
+		5 orden,
+		'p333' tabla_id,
+		'33' AS nro_preg,
+		'Idioma 3' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p333
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
+	UNION
 
-		{
-			nro_preg: "37",
-			tabla_id: "p372a",
-			variable: "¿Dónde vivía el año 2019? ¿Municipio?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "37",
-			tabla_id: "p373",
-			variable: "¿Dónde vivía el año 2019? ¿País?",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
+	SELECT
+		6 orden,
+		'p341' tabla_id,
+		'34' AS nro_preg,
+		'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p341
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
+	UNION
 
-		{
-			nro_preg: "48",
-			tabla_id: "p48esp",
-			variable: "Las últimas 4 semanas:",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: true
-		},
-		{
-			nro_preg: "49-51",
-			tabla_id: "p49_p51",
-			variable: "Ocupación - Actividad Económica",
-			totalCod: 1,
-			totalAut: 2,
-			btn_simple: false
-		},
-		{
-			nro_preg: "52",
-			tabla_id: "p52esp",
-			variable: "Principalmente, el lugar donde trabaja está ubicado:",
-			totalCod: 23,
-			totalAut: 14,
-			btn_simple: true
-		},
-	];
+	SELECT
+		7 orden,
+		'p352a' tabla_id,
+		'35' AS nro_preg,
+		'¿Dónde nació? ¿Municipio?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p352a
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		8 orden,
+		'p353' tabla_id,
+		'35' AS nro_preg,
+		'¿Dónde nació? ¿País?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p353
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		9 orden,
+		'p362a' tabla_id,
+		'36' AS nro_preg,
+		'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p362a
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		10 orden,
+		'p363' tabla_id,
+		'36' AS nro_preg,
+		'¿Dónde vive habitualmente? ¿País?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p363
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		11 orden,
+		'p372a' tabla_id,
+		'37' AS nro_preg,
+		'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p372a
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		12 orden,
+		'p373' tabla_id,
+		'37' AS nro_preg,
+		'¿Dónde vivía el año 2019? ¿País?' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p373
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		13 orden,
+		'p48esp' tabla_id,
+		'48' AS nro_preg,
+		'Las últimas 4 semanas:' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p48esp
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		14 orden,
+		'p49_p51' tabla_id,
+		'49-51' AS nro_preg,
+		'Ocupación - Actividad Económica' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p49_p51
+	WHERE (estado_ocu = 'CODIFICADO' or  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+
+	UNION
+
+	SELECT
+		15 orden,
+		'p52esp' tabla_id,
+		'52' AS nro_preg,
+		'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
+		count(1) totalCod,
+		0 totalAut,
+		true btn_simple
+	FROM codificacion.cod_p52esp
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})	
+	ORDER BY orden asc
+	`;
+
+	// ejecutar query
+	const registros = await (await con.query(query)).rows;
+
+	console.table(registros);
 
 	res.status(200).json({
 		datos: registros
 	})
+
 };
+
+
+const devuelveCargaParaSupervision = async (req, res) => {
+	const {
+		id_usuario, // id_usuario del supervisor	
+		tabla_id // tabla_id
+	} = req.body;
+
+	console.table(req.body);
+
+	// query
+	const query = `
+		SELECT 
+			id_p20esp,
+			estado,
+			respuesta,
+			codigocodif,
+			usucodificador,
+			'- -' descripcion,
+			'- -' var_contexto		
+		FROM codificacion.cod_p20esp
+		WHERE estado ='CODIFICADO'
+	`;
+
+	// ejecutar query
+	const registros = await (await con.query(query)).rows;
+
+	// respuesta
+	res.status(200).json({
+		datos: registros
+	})
+
+
+
+}
+
 
 const devuelvePreguntasCodificado_ = async (req, res) => {
 	var params = req.body;
@@ -4755,6 +4861,7 @@ module.exports = {
 	devuelvePreguntas,
 	devuelvePreguntasCodificado,
 	devuelvePreguntasSupervision,
+	devuelveCargaParaSupervision,
 	devuelvePreguntasSup,
 	devuelvePreguntaUsrSup,
 	muestraCargaDatos,

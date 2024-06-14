@@ -44,6 +44,7 @@ const {
     devuelvePreguntas,
     devuelvePreguntasCodificado,
     devuelvePreguntasSupervision,
+    devuelveCargaParaSupervision,
     devuelvePreguntasSup,
     devuelvePreguntaUsrSup,
     muestraCargaDatos,
@@ -102,6 +103,8 @@ router.post('/updateVerificado/:user', updateVerificado);
 ////////CODIFICACCION SELECCIONAR
 router.get('/devuelvePreguntas', devuelvePreguntas);
 router.post('/devuelvePreguntasCodificado', devuelvePreguntasCodificado);
+router.post('/devuelveCargaParaSupervision', devuelveCargaParaSupervision);
+
 router.post('/devuelvePreguntasSupervision', devuelvePreguntasSupervision);
 router.post('/devuelvePreguntasSup', devuelvePreguntasSup);
 router.post('/devuelvePreguntaUsrSup', devuelvePreguntaUsrSup);
