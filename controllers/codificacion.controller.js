@@ -3166,8 +3166,8 @@ const updatePreguntaDobleOcuAct = async (req, res) => {
 	`);
 
 
-	//console.log("Hola desde updatePreguntaDoble");
-	//console.table(req.body);
+	console.log("Hola desde updatePreguntaDoble");
+	console.table(req.body);
 
 	// buscar registro
 	const qr1 = `
@@ -3202,7 +3202,45 @@ const updatePreguntaDobleOcuAct = async (req, res) => {
 
 
 	// Verificamos datosSinCodif.rows[0].usucodificador_ocu empieza con AUTOMATICO_  y si usucodificador_act empieza con AUTOMATICO_
-	if (datosSinCodif[0].usucre !== usucodificadorAct || datosSinCodif[0].usucre !== usucodificadorOcu) {
+	if (datosSinCodif[0].usucre == usucodificadorAct || datosSinCodif[0].usucre == usucodificadorOcu) {
+
+
+		// Consulta de actualizacion OCU
+		if (datosSinCodif[0].codigocodif_ocu !== codigocodifOcu) {
+			const qrOcu = `
+			UPDATE codificacion.cod_p49_p51
+			SET codigocodif_ocu = '${codigocodifOcu}', 
+				estado_ocu = 'CODIFICADO', 
+				usucodificador_ocu = '${usucodificadorOcu}', 
+				feccodificador_ocu = now()
+			WHERE id_p49_p51 = ${id_registro};
+			`;
+			await con.query(qrOcu);
+		}
+
+
+		// Consulta de actualizacion ACT
+		if (datosSinCodif[0].codigocodif_act !== codigocodifAct) {
+			const qrAct = `
+			UPDATE codificacion.cod_p49_p51
+			SET codigocodif_act = '${codigocodifAct}', 
+				estado_act = 'CODIFICADO', 
+				usucodificador_act = '${usucodificadorAct}', 
+				feccodificador_act = now()
+			WHERE id_p49_p51 = ${id_registro};
+			`;
+			await con.query(qrAct);
+		}
+
+
+		res.status(200).json({
+			success: true,
+			message: 'Se ha codificado correctamente. Ocu, id_registro:: ' + id_registro
+		})
+
+		return;
+
+	} else {
 		res.status(200).json({
 			success: false,
 			message: 'No se puede codificar, el registro no esta asignado.'
@@ -3211,44 +3249,6 @@ const updatePreguntaDobleOcuAct = async (req, res) => {
 	}
 
 
-	// Consulta de actualizacion OCU
-	if (datosSinCodif[0].codigocodif_ocu !== codigocodifOcu) {
-		const qrOcu = `
-			UPDATE codificacion.cod_p49_p51
-			SET codigocodif_ocu = '${codigocodifOcu}', 
-				estado_ocu = 'CODIFICADO', 
-				usucodificador_ocu = '${usucodificadorOcu}', 
-				feccodificador_ocu = now()
-			WHERE id_p49_p51 = ${id_registro};
-			`;
-		await con.query(qrOcu);
-	}
-
-
-
-	// Consulta de actualizacion ACT
-	if (datosSinCodif[0].codigocodif_act !== codigocodifAct) {
-		const qrAct = `
-			UPDATE codificacion.cod_p49_p51
-			SET codigocodif_act = '${codigocodifAct}', 
-				estado_act = 'CODIFICADO', 
-				usucodificador_act = '${usucodificadorAct}', 
-				feccodificador_act = now()
-			WHERE id_p49_p51 = ${id_registro};
-			`;
-		await con.query(qrAct);
-	}
-
-
-
-	res.status(200).json({
-		success: true,
-		message: 'Se ha codificado correctamente. Ocu, id_registro:: ' + id_registro
-	})
-
-
-
-	return;
 }
 
 
@@ -4670,7 +4670,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		'Ocupación - Actividad Económica' AS variable,
 		count(1) totalCod,
 		0 totalAut,
-		true btn_simple
+		false btn_simple
 	FROM codificacion.cod_p49_p51
 	WHERE (estado_ocu = 'CODIFICADO' or  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
@@ -4701,39 +4701,77 @@ const devuelvePreguntasSupervision = async (req, res) => {
 };
 
 
+// Devuelve carga para supervision simple y doble
 const devuelveCargaParaSupervision = async (req, res) => {
 	const {
 		id_usuario, // id_usuario del supervisor	
 		tabla_id // tabla_id
 	} = req.body;
 
-	console.table(req.body);
+	// console.table(req.body);
 
-	// query
-	const query = `
+	//
+	if (tabla_id === 'p49_p51') {
+		const query = `
 		SELECT 
-			id_p20esp,
-			estado,
-			respuesta,
-			codigocodif,
-			usucodificador,
-			'- -' descripcion,
-			'- -' var_contexto		
-		FROM codificacion.cod_p20esp
-		WHERE estado ='CODIFICADO'
-	`;
+			id_p49_p51 as id_registro,
+			estado_ocu,
+			codigocodif_ocu,
+			estado_act,
+			codigocodif_act,
+			respuesta_ocu,
+			respuesta_act,
+			usucodificador_ocu,
+			usucodificador_act,
+			'- -' descripcion_ocu,
+			'- -' descripcion_act,			
+			CONCAT(p26) contexto_edad,
+			CONCAT(p41a) contexto_nivel_edu,
+			CONCAT(p41b) contexto_curso,
+			CONCAT(p45) contexto_atendio,
+			CONCAT(p48esp) contexto_otro,
+			CONCAT(p50) contexto_es_era,
+			CONCAT(p52) contexto_lugar_trabajo
+		FROM codificacion.cod_p49_p51
+		WHERE (estado_ocu = 'CODIFICADO' or  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+		`;
+		const registros = await (await con.query(query)).rows;
+		res.status(200).json({
+			datos: registros
+		})
+		return;
 
-	// ejecutar query
-	const registros = await (await con.query(query)).rows;
+	} else {
+		// query
+		const query = `
+			SELECT 
+				id_${tabla_id} as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				'- -' descripcion,
+				'- -' var_contexto		
+			FROM codificacion.cod_${tabla_id}
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+		`;
 
-	// respuesta
-	res.status(200).json({
-		datos: registros
-	})
+		// ejecutar query
+		const registros = await (await con.query(query)).rows;
 
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
 
+	}
 
 }
+
+
+
+
 
 
 const devuelvePreguntasCodificado_ = async (req, res) => {
@@ -4821,6 +4859,68 @@ const updateOcuAct = async (req, res) => {
 };
 
 
+// 
+const updateCargaSupervision = async (req, res) => {
+	const {
+		id_usuario,
+		tabla_id,
+		registros
+	} = req.body;
+
+	console.log(req.body);
+
+
+	// verificar que tabla es
+	if (tabla_id === 'p49_p51') {
+
+		console.log('------------------------------------p49_p51--------------------------------------------');
+
+		// recorrer registros
+		for (let i = 0; i < registros.length; i++) {
+			const element = registros[i];
+			
+			await con.query(`
+			UPDATE codificacion.cod_p49_p51
+			SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu ='${element.codigocodif_ocu}', fecverificador = now(), usuverificador = '${id_usuario}', 
+				estado_act = 'VERIFICADO', codigocodif_v1_act ='${element.codigocodif_act}'
+			WHERE id_p49_p51 = ${element.id_registro}
+			`)
+		}
+
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Carga supervisada correctamente. ' + tabla_id
+		})
+	} else {
+		console.log('------------------------------------cod_'+ tabla_id +'--------------------------------------------');
+		// recorrer registros
+		for (let i = 0; i < registros.length; i++) {
+			const element = registros[i];
+			await con.query(`
+			UPDATE codificacion.cod_${tabla_id}
+			SET estado = 'VERIFICADO', codigocodif_v1 ='${element.codigocodif}', fecverificador = now(), usuverificador = '${id_usuario}'			
+			WHERE id_${tabla_id} = ${element.id_registro}
+			`)
+		}
+
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Carga supervisada correctamente. ' + tabla_id
+		})
+	}
+
+
+}
+/* 
+estado
+codigocodif_v1
+fecverificador
+usuverificador
+*/
+
+
 module.exports = {
 	cargarDatos,
 	normalizaRespuesta,
@@ -4869,5 +4969,6 @@ module.exports = {
 	getCantidadCarga,
 	updateAsignadoSup,
 	updateReAsignadoSup,
-	updateOcuAct
+	updateOcuAct,
+	updateCargaSupervision
 };

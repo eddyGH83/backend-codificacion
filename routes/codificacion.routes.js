@@ -50,7 +50,8 @@ const {
     muestraCargaDatos,
     getCantidadCarga,
     cargarDatosGlobal,
-    updateOcuAct
+    updateOcuAct,
+    updateCargaSupervision
 }= require('../controllers/codificacion.controller');
 
 /* router.post('/', usuariosPost)  getCantidadCarga cargarDatosGlobal*/
@@ -109,4 +110,5 @@ router.post('/devuelvePreguntasSupervision', devuelvePreguntasSupervision);
 router.post('/devuelvePreguntasSup', devuelvePreguntasSup);
 router.post('/devuelvePreguntaUsrSup', devuelvePreguntaUsrSup);
 router.post('/updateOcuAct', updateOcuAct);
+router.post('/updateCargaSupervision', updateCargaSupervision);
 module.exports = router;
