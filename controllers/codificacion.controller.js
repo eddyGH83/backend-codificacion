@@ -263,6 +263,8 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 	}
 
 
+
+
 	const query = {
 		text: `
 			SELECT
@@ -292,7 +294,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'p331' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
-				'Idioma 1' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p331 WHERE estado = 'ELABORADO' ${sql_depto}
 
@@ -303,7 +305,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'p332' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
-				'Idioma 2' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p332 WHERE estado = 'ELABORADO' ${sql_depto}
 
@@ -314,7 +316,7 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 				'p333' tabla_id,
 				'La Paz' AS depto,
 				'33' AS nro_preg,
-				'Idioma 3' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p333 WHERE estado = 'ELABORADO' ${sql_depto}
 
@@ -479,7 +481,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				3 orden,
 				'p331' tabla_id,				
 				'33' AS nro_preg,
-				'Idioma 1' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
@@ -489,7 +491,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				4 orden,
 				'p332' tabla_id,				
 				'33' AS nro_preg,
-				'Idioma 2' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
@@ -499,7 +501,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				5 orden,
 				'p333' tabla_id,				
 				'33' AS nro_preg,
-				'Idioma 3' AS variable,
+				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 				count(1) AS total_carga
 			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
@@ -1057,6 +1059,204 @@ const supervisoresConCarga = async (req, res) => {
 
 
 
+const cargarParaSupervisionSimple = async (req, res) => {
+	const { tabla_id, id_usuario, login } = req.body;
+
+	console.log("cargar Para Supervision Simple");
+	console.log(req.body);
+
+	// si tabla_id es p20esp
+	if (tabla_id === 'p20esp') {
+		// consulta
+		const qr = await (await con.query(`
+				SELECT 
+					'' contexto,
+					id_p20esp as id_pregunta, 
+					sec_cuestionario as secuencial, 
+					i00, 
+					i001a, 
+					p20nro, 
+					respuesta, 
+					codigocodif, 
+					codigocodif_v1, 
+					codigocodif_v2, 
+					estado, 
+					usucre, 
+					feccre, 
+					usucodificador, 
+					feccodificador, 
+					usuverificador, 
+					fecverificador, 
+					usuverificador2, 
+					fecverificador2, 
+					respuesta_normalizada, 
+					departamento, 
+					orden
+				FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+					SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+				);	
+			`)).rows;
+
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '20',
+			descPreg: '¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+	// si tabla_id es p32esp
+	if (tabla_id === 'p32esp') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p32esp as id_pregunta, 
+			secuencial,
+			id_pregunta,
+			respuesta,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '32',
+			descPreg: '¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+
+
+
+
+
+}
+
+const cargarParaSupervisionDoble = async (req, res) => {
+
+	const { tabla_id, id_usuario, login } = req.body;
+
+	console.log("cargar Para Supervision Doble");
+	console.log(req.body);
+
+	// si tabla_id es p20esp
+	if (tabla_id === 'p20esp') {
+
+
+
+		console.table(`
+				SELECT 
+					'' contexto,
+					id_p20esp as id_pregunta, 
+					sec_cuestionario as secuencial, 
+					i00, 
+					i001a, 
+					p20nro, 
+					respuesta, 
+					codigocodif, 
+					codigocodif_v1, 
+					codigocodif_v2, 
+					estado, 
+					usucre, 
+					feccre, 
+					usucodificador, 
+					feccodificador, 
+					usuverificador, 
+					fecverificador, 
+					usuverificador2, 
+					fecverificador2, 
+					respuesta_normalizada, 
+					departamento, 
+					orden
+				FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+					SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+				);	
+			`);
+
+
+
+		// consulta
+		const qr = await (await con.query(`
+				SELECT 
+					'' contexto,
+					id_p20esp as id_pregunta, 
+					sec_cuestionario as secuencial, 
+					i00, 
+					i001a, 
+					p20nro, 
+					respuesta, 
+					codigocodif, 
+					codigocodif_v1, 
+					codigocodif_v2, 
+					estado, 
+					usucre, 
+					feccre, 
+					usucodificador, 
+					feccodificador, 
+					usuverificador, 
+					fecverificador, 
+					usuverificador2, 
+					fecverificador2, 
+					respuesta_normalizada, 
+					departamento, 
+					orden
+				FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+					SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+				);	
+			`)).rows;
+
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '20',
+			descPreg: '¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+}
 
 
 
@@ -1173,7 +1373,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		res.status(200).json({
 			totalCarga: qr.length,
 			nroPreg: '33',
-			descPreg: 'Idioma 1',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1',
 			datos: qr,
 			clasificacion: qr2
 		})
@@ -1205,7 +1405,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		res.status(200).json({
 			totalCarga: qr.length,
 			nroPreg: '33',
-			descPreg: 'Idioma 2',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2',
 			datos: qr,
 			clasificacion: qr2
 		})
@@ -1234,7 +1434,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		res.status(200).json({
 			totalCarga: qr.length,
 			nroPreg: '33',
-			descPreg: 'Idioma 3',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3',
 			datos: qr,
 			clasificacion: qr2
 		})
@@ -1577,9 +1777,9 @@ const cargarParaCodificarDoble = async (req, res) => {
 		'<strong class=''ml-4'' style=''font-weight: normal; color:rgb(14, 149, 83);''>Nivel educativo: </strong> ',p41a,'<br>',
 		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Curso o año: </strong> ',p41b,'<br>',
 		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Atendió cultivos agricolas o cría de animales? </strong> ',p45,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Descripción otro especifique: </strong> ',p48esp,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>P.48 Otro especifique: </strong> ',p48esp,'<br>',
 		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>En ese trabajo es (era): </strong> ',p50,'<br>',
-		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52,'<br>'
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
 	) contexto,	
 	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
 	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}'  ORDER BY id_p49_p51 asc;
@@ -1626,8 +1826,8 @@ const cargarParaCodificarDoble = async (req, res) => {
 		totalCarga_act: qrTotalAct[0].count,
 		nroPreg_ocu: '49',
 		nroPreg_act: '51',
-		descPreg_ocu: '¿Cúal es (era) su trabajo, ocupación u oficio principal?',
-		descPreg_act: 'Principalmente, ¿qué produce, vende o a que actividad se dedica el lugar o establecimiento donce trabaja?',
+		descPreg_ocu: '¿Cuál es (era) su trabajo, ocupación u oficio principal?',
+		descPreg_act: 'Principalmente, ¿qué produce, vende o a que actividad se dedica el lugar o establecimiento donde trabaja?',
 		datos: qr,
 		clasificacion_ocu: qr2,
 		clasificacion_act: qr3
@@ -3109,6 +3309,30 @@ const updatePreguntaSimple = async (req, res) => {
 
 
 
+// Supervision simple correctos
+const updatePreguntaSimpleCorreccion = async (req, res) => {
+	var {
+		id_registro, // id por el cual se modifica
+		tabla_id, // se extrae el campo id y la tabla
+		codigocodif,
+		usuverificador
+	} = req.body;
+
+	// update
+	await con.query(`
+		UPDATE codificacion.cod_${tabla_id} 
+		SET estado = 'VERIFICADO', codigocodif_v1 = codigocodif, fecverificador = now(), usuverificador = '${usuverificador}'			
+		WHERE id_${tabla_id} = ${id_registro}
+	`)
+
+	// respuesta
+	res.status(200).json({
+		success: true,
+		message: 'La supervisión se ha realizado correctamente.'
+	})
+}
+
+
 
 
 
@@ -3955,15 +4179,15 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 
 			if (id_pregunta == 88) {
 				catalogo = 'cat_idioma';	// PREGUNTA 33
-				pregunta = 'Pregunta 33: Idioma 1'
+				pregunta = 'Pregunta 33: ¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1'
 			}
 			if (id_pregunta == 89) {
 				catalogo = 'cat_idioma';	// PREGUNTA 33
-				pregunta = 'Pregunta 33: Idioma 2'
+				pregunta = 'Pregunta 33: ¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2'
 			}
 			if (id_pregunta == 90) {
 				catalogo = 'cat_idioma';	// PREGUNTA 33
-				pregunta = 'Pregunta 33: Idioma 3'
+				pregunta = 'Pregunta 33: ¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3'
 			}
 
 
@@ -4334,7 +4558,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'p331' tabla_id,
 			'La Paz' AS depto,
 			'33' AS nro_preg,
-			'Idioma 1' AS variable,
+			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 			count(1) AS total_carga
 		FROM codificacion.cod_p331 WHERE estado = 'ASIGNADO' AND usucre = $1
 
@@ -4345,7 +4569,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'p332' tabla_id,
 			'La Paz' AS depto,
 			'33' AS nro_preg,
-			'Idioma 2' AS variable,
+			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 			count(1) AS total_carga
 		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1
 
@@ -4356,7 +4580,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'p333' tabla_id,
 			'La Paz' AS depto,
 			'33' AS nro_preg,
-			'Idioma 3' AS variable,
+			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 			count(1) AS total_carga
 		FROM codificacion.cod_p333 WHERE estado = 'ASIGNADO' AND usucre = $1
 
@@ -4524,7 +4748,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		3 orden,
 		'p331' tabla_id,
 		'33' AS nro_preg,
-		'Idioma 1' AS variable,
+		'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 		count(1) totalCod,
 		0 totalAut,
 		true btn_simple
@@ -4537,7 +4761,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		4 orden,
 		'p332' tabla_id,
 		'33' AS nro_preg,
-		'Idioma 2' AS variable,
+		'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 		count(1) totalCod,
 		0 totalAut,
 		true btn_simple
@@ -4550,7 +4774,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		5 orden,
 		'p333' tabla_id,
 		'33' AS nro_preg,
-		'Idioma 3' AS variable,
+		'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 		count(1) totalCod,
 		0 totalAut,
 		true btn_simple
@@ -4878,7 +5102,7 @@ const updateCargaSupervision = async (req, res) => {
 		// recorrer registros
 		for (let i = 0; i < registros.length; i++) {
 			const element = registros[i];
-			
+
 			await con.query(`
 			UPDATE codificacion.cod_p49_p51
 			SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu ='${element.codigocodif_ocu}', fecverificador = now(), usuverificador = '${id_usuario}', 
@@ -4893,7 +5117,7 @@ const updateCargaSupervision = async (req, res) => {
 			message: 'Carga supervisada correctamente. ' + tabla_id
 		})
 	} else {
-		console.log('------------------------------------cod_'+ tabla_id +'--------------------------------------------');
+		console.log('------------------------------------cod_' + tabla_id + '--------------------------------------------');
 		// recorrer registros
 		for (let i = 0; i < registros.length; i++) {
 			const element = registros[i];
@@ -4970,5 +5194,8 @@ module.exports = {
 	updateAsignadoSup,
 	updateReAsignadoSup,
 	updateOcuAct,
-	updateCargaSupervision
+	updateCargaSupervision,
+	cargarParaSupervisionSimple,
+	cargarParaSupervisionDoble,
+	updatePreguntaSimpleCorreccion
 };
