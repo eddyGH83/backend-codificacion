@@ -1122,8 +1122,8 @@ const cargarParaSupervisionSimple = async (req, res) => {
 			'' contexto,
 			id_p32esp as id_pregunta, 
 			secuencial,
-			id_pregunta,
 			respuesta,
+			codigocodif,
 			estado,
 			usucre,
 			feccre,
@@ -1143,7 +1143,7 @@ const cargarParaSupervisionSimple = async (req, res) => {
 
 		// Clasificacion a utilizar: catalogo_pais
 		const qr2 = await (await con.query(`
-			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_npioc';		
 			`)).rows;
 
 		// Respuesta
@@ -1158,8 +1158,580 @@ const cargarParaSupervisionSimple = async (req, res) => {
 	}
 
 
+	// si tabla_id es p331
+	if (tabla_id === 'p331') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p331 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_idioma
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '33',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
 
 
+	// si tabla_id es p332
+	if (tabla_id === 'p332') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p332 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_idioma
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '33',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+
+	}
+
+
+	// si tabla_id es p333
+	if (tabla_id === 'p333') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p333 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_idioma
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '33',
+			descPreg: '¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+	// si tabla_id es p341
+	if (tabla_id === 'p341') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p341 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_idioma
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '34',
+			descPreg: '¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p352a
+	if (tabla_id === 'p352a') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			case 
+			when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+			when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+			when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+			when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+			when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+			when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+			when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+			when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+			when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+			when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+		    end as contexto,
+			id_p352a as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '35',
+			descPreg: '¿Dónde nació? ¿Municipio?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p353
+	if (tabla_id === 'p353') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p353 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '35',
+			descPreg: '¿Dónde nació? ¿País?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p362a
+	if (tabla_id === 'p362a') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			case 
+				when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+				when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+				when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+				when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+				when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+				when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+				when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+				when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+				when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+				when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+			end as contexto,
+			id_p362a as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '36',
+			descPreg: '¿Dónde vive actualmente? ¿Municipio?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p363
+	if (tabla_id === 'p363') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p363 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '36',
+			descPreg: '¿Dónde vive actualmente? ¿País?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p372a
+	if (tabla_id === 'p372a') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			case 
+				when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+				when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+				when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+				when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+				when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+				when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+				when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+				when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+				when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+				when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+			end as contexto,
+			id_p372a as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_municipio
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '37',
+			descPreg: '¿Dónde vivía el año 2019? ¿Municipio?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+
+	// si tabla_id es p373
+	if (tabla_id === 'p373') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			'' contexto,
+			id_p373 as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_pais
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '37',
+			descPreg: '¿Dónde vivía el año 2019? ¿País?',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p48esp
+	if (tabla_id === 'p48esp') {
+		// consulta
+		const qr = await (await con.query(`
+			SELECT  
+			case 
+			when p48 is not null then '<strong> Descripción: </strong>' || p48
+			when p48 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
+			end as contexto,
+			id_p48esp as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: catalogo_cob
+		const qr2 = await (await con.query(`
+			SELECT
+			id_catalogo,
+			CASE
+				WHEN codigo IS NULL THEN '123456'
+				ELSE codigo
+			END AS codigo,
+			descripcion
+			FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob'
+				--SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '48',
+			descPreg: 'Las últimas 4 semanas:',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
+
+
+	// si tabla_id es p52esp
+	if (tabla_id === 'p52esp') {
+		// consulta
+		const qr = await (await con.query(` 
+			SELECT  
+			case 
+			when p52 is not null then '<strong> Descripción: </strong>' || p52
+			when p52 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
+			end as contexto,
+			id_p52esp as id_pregunta, 
+			secuencial,
+			respuesta,
+			codigocodif,
+			estado,
+			usucre,
+			feccre,
+			usucodificador,
+			feccodificador,
+			usuverificador,
+			fecverificador,
+			usuverificador2,
+			fecverificador2,
+			respuesta_normalizada,
+			departamento,
+			orden
+			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
+				SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
+			);	
+		`)).rows;
+
+		// Clasificacion a utilizar: cod_catalogo
+		const qr2 = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio_pais';
+			`)).rows;
+
+		// Respuesta
+		res.status(200).json({
+			totalCarga: qr.length,
+			nroPreg: '52',
+			descPreg: 'Principalmente, el lugar donde trabaja está ubicado:',
+			datos: qr,
+			clasificacion: qr2
+		})
+		return;
+	}
 
 
 
@@ -4934,7 +5506,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 
 	// console.table(req.body);
 
-	//
+	// p49_p51
 	if (tabla_id === 'p49_p51') {
 		const query = `
 		SELECT 
@@ -4947,49 +5519,382 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			respuesta_act,
 			usucodificador_ocu,
 			usucodificador_act,
-			'- -' descripcion_ocu,
-			'- -' descripcion_act,			
+			(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_cob' AND  codigo = codigocodif_ocu AND unico = 1 AND estado ='ACTIVO') AS descripcion_ocu,
+			(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_caeb' AND  codigo = codigocodif_act AND unico = 1 AND estado ='ACTIVO') AS descripcion_act,
 			CONCAT(p26) contexto_edad,
 			CONCAT(p41a) contexto_nivel_edu,
 			CONCAT(p41b) contexto_curso,
 			CONCAT(p45) contexto_atendio,
 			CONCAT(p48esp) contexto_otro,
 			CONCAT(p50) contexto_es_era,
-			CONCAT(p52) contexto_lugar_trabajo
+			CONCAT(p52esp) contexto_lugar_trabajo
 		FROM codificacion.cod_p49_p51
-		WHERE (estado_ocu = 'CODIFICADO' or  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
 		`;
 		const registros = await (await con.query(query)).rows;
-		res.status(200).json({
-			datos: registros
-		})
-		return;
-
-	} else {
-		// query
-		const query = `
-			SELECT 
-				id_${tabla_id} as id_registro,
-				estado,
-				respuesta,
-				codigocodif,
-				usucodificador,
-				'- -' descripcion,
-				'- -' var_contexto		
-			FROM codificacion.cod_${tabla_id}
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
-		`;
-
-		// ejecutar query
-		const registros = await (await con.query(query)).rows;
-
-		// respuesta
 		res.status(200).json({
 			datos: registros
 		})
 		return;
 
 	}
+
+	// p20esp
+	if (tabla_id === 'p20esp') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p20esp  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p20esp
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p32esp
+	if (tabla_id === 'p32esp') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p32esp  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p32esp
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p331
+	if (tabla_id === 'p331') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p331  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p331
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p332
+	if (tabla_id === 'p332') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p332  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p332
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p333
+	if (tabla_id === 'p333') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p333  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p333
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p341
+	if (tabla_id === 'p341') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p341  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					'- -' var_contexto		
+				FROM codificacion.cod_p341
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+
+	// p352a
+	if (tabla_id === 'p352a') {
+		// Consulta	
+		const registros = await (await con.query(`
+				SELECT 
+					id_p352a  as id_registro,
+					estado,
+					respuesta,
+					codigocodif,
+					usucodificador,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+					case 
+						when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+						when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+						when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+						when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+						when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+						when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+						when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+						when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+						when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+						when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+					end as var_contexto
+				FROM codificacion.cod_p352a
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+
+
+	// p353
+	if (tabla_id === 'p353') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p353  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				'- -' var_contexto		
+			FROM codificacion.cod_p353
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+
+
+	}
+
+
+	// p362a
+	if (tabla_id === 'p362a') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p362a  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+				case 
+					when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+					when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+					when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+					when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+					when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+					when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+					when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+					when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+					when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+					when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+				end as var_contexto
+			FROM codificacion.cod_p362a
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+
+	// p363
+	if (tabla_id === 'p363') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p363  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				'- -' var_contexto		
+			FROM codificacion.cod_p363
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+
+	// p372a
+	if (tabla_id === 'p372a') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p372a  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+				case 
+					when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
+					when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
+					when apoyo = '03' then '<strong> ¿En qué departamento?</strong>' || ' COCHABAMBA' 
+					when apoyo = '04' then '<strong> ¿En qué departamento?</strong>' || ' ORURO' 
+					when apoyo = '05' then '<strong> ¿En qué departamento?</strong>' || ' POTOSI' 
+					when apoyo = '06' then '<strong> ¿En qué departamento?</strong>' || ' TARIJA' 
+					when apoyo = '07' then '<strong> ¿En qué departamento?</strong>' || ' SANTA CRUZ' 
+					when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
+					when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
+					when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
+				end as var_contexto
+			FROM codificacion.cod_p372a
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+
+	// p373
+	if (tabla_id === 'p373') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p373  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				'- -' var_contexto		
+			FROM codificacion.cod_p373
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p48esp
+	if (tabla_id === 'p48esp') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p48esp  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				case 
+					when p48 is not null then '<strong> Descripción: </strong>' || p48
+					when p48 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
+				end as var_contexto
+			FROM codificacion.cod_p48esp
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
+	// p52esp
+	if (tabla_id === 'p52esp') {
+		// Consulta	
+		const registros = await (await con.query(`
+			SELECT 
+				id_p52esp  as id_registro,
+				estado,
+				respuesta,
+				codigocodif,
+				usucodificador,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				case 
+					when p52 is not null then '<strong> Descripción: </strong>' || p52
+					when p52 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
+				end as var_contexto
+			FROM codificacion.cod_p52esp
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+		`)).rows;
+		// respuesta
+		res.status(200).json({
+			datos: registros
+		})
+		return;
+	}
+
 
 }
 
