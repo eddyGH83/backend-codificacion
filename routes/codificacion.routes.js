@@ -55,7 +55,8 @@ const {
     cargarParaSupervisionSimple,
 	cargarParaSupervisionDoble,
     updatePreguntaSimpleCorreccion,
-    updatePreguntaDobleCorreccion
+    updatePreguntaDobleCorreccion,
+    updatePreguntaSimpleCheck
 }= require('../controllers/codificacion.controller');
 
 /* router.post('/', usuariosPost)  getCantidadCarga cargarDatosGlobal*/
@@ -120,6 +121,7 @@ router.post('/cargarParaSupervisionSimple', cargarParaSupervisionSimple);
 router.post('/cargarParaSupervisionDoble', cargarParaSupervisionDoble);
 router.post('/updatePreguntaSimpleCorreccion', updatePreguntaSimpleCorreccion);
 router.post('/updatePreguntaDobleCorreccion', updatePreguntaDobleCorreccion);
+router.post('/updatePreguntaSimpleCheck', updatePreguntaSimpleCheck);
 
 
 module.exports = router;

@@ -1748,8 +1748,8 @@ const cargarParaSupervisionDoble = async (req, res) => {
 	console.log("01");
 
 
-// consulta
-const qr = await (await con.query(`
+	// consulta
+	const qr = await (await con.query(`
 	SELECT
 	id_p49_p51 as id_registro,
 	CONCAT(
@@ -1818,7 +1818,7 @@ const qr = await (await con.query(`
 	// Respuesta
 	res.status(200).json({
 		totalCarga: qr.length,
-		totalCarga_ocu:qr.length,   // qrTotalOcu[0].count,
+		totalCarga_ocu: qr.length,   // qrTotalOcu[0].count,
 		totalCarga_act: qr.length,  // qrTotalAct[0].count,
 		nroPreg_ocu: '49',
 		nroPreg_act: '51',
@@ -1829,7 +1829,7 @@ const qr = await (await con.query(`
 		clasificacion_act: qr3
 	})
 
-console.log("05");
+	console.log("05");
 
 
 
@@ -3935,13 +3935,50 @@ const updatePreguntaSimpleCorreccion = async (req, res) => {
 	})
 }
 
+const updatePreguntaSimpleCheck = async (req, res) => {
+
+	const {
+		id_registro,
+		tabla_id,
+		codigocodif,
+		usuverificador,
+	} = req.body;
+
+	console.log("------------->Hola desde updatePreguntaSimpleCheck");
+	console.log(req.body);
+
+	// Tabla_id
+	if (tabla_id !== 'p49_p51') {
+		// query	
+		await con.query(`
+			UPDATE codificacion.cod_${tabla_id}
+			SET estado = 'VERIFICADO', codigocodif_v1 ='${codigocodif}', fecverificador = now(), usuverificador = '${usuverificador}'			
+			WHERE id_${tabla_id} = ${id_registro}
+		`);
+
+		// Respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Se ha supervisado correctamente. Pregunta simple.' + tabla_id
+		})
+
+		return;
+
+	} else {
+
+	}
+
+
+}
+
+
 // Supervision doble correctos
 const updatePreguntaDobleCorreccion = async (req, res) => {
 
 	const {
 		id_usuario,
-        tabla_id,
-        id_registro
+		tabla_id,
+		id_registro
 	} = req.body;
 	console.table(req.body);
 
@@ -5523,7 +5560,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		false btn_simple
 	FROM codificacion.cod_p49_p51
-	WHERE (estado_ocu = 'CODIFICADO' or  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE (estado_ocu = 'CODIFICADO' and  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
 
 	UNION
 
@@ -6158,5 +6195,6 @@ module.exports = {
 	cargarParaSupervisionSimple,
 	cargarParaSupervisionDoble,
 	updatePreguntaSimpleCorreccion,
-	updatePreguntaDobleCorreccion
+	updatePreguntaDobleCorreccion,
+	updatePreguntaSimpleCheck
 };
