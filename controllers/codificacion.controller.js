@@ -1058,7 +1058,7 @@ const supervisoresConCarga = async (req, res) => {
 }
 
 
-
+// Supervisión individual simple
 const cargarParaSupervisionSimple = async (req, res) => {
 	const { tabla_id, id_usuario, login } = req.body;
 
@@ -1737,97 +1737,128 @@ const cargarParaSupervisionSimple = async (req, res) => {
 
 }
 
+// Supervisión individual doble
 const cargarParaSupervisionDoble = async (req, res) => {
 
 	const { tabla_id, id_usuario, login } = req.body;
 
-	console.log("cargar Para Supervision Doble");
+	console.log("cargar Para Supervision Doble---");
 	console.log(req.body);
 
-	// si tabla_id es p20esp
-	if (tabla_id === 'p20esp') {
+	console.log("01");
+
+
+// consulta
+const qr = await (await con.query(`
+	SELECT
+	id_p49_p51 as id_registro,
+	CONCAT(
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Cuántos años cumplidos tiene? </strong> ',p26,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Nivel educativo: </strong> ',p41a,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Curso o año: </strong> ',p41b,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Atendió cultivos agricolas o cría de animales? </strong> ',p45,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>P.48 Otro especifique: </strong> ',p48esp,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>En ese trabajo es (era): </strong> ',p50,'<br>',
+		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
+	) contexto,	
+	estado_ocu,
+	codigocodif_ocu,
+	estado_act,
+	codigocodif_act,
+	respuesta_ocu,
+	respuesta_act,
+	usucodificador_ocu,
+	usucodificador_act,
+	(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_cob' AND  codigo = codigocodif_ocu AND unico = 1 AND estado ='ACTIVO') AS descripcion_ocu,
+	(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_caeb' AND  codigo = codigocodif_act AND unico = 1 AND estado ='ACTIVO') AS descripcion_act,
+	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, p50, p52, p52esp, codigocodif_v1_ocu, codigocodif_v2_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_v1_act, 
+	codigocodif_v2_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento	
+	FROM codificacion.cod_p49_p51 
+	WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario});		
+	`)).rows;
+
+	console.log("02");
+
+
+	// Total carga ocupacion
+	/* const qrTotalOcu = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_p49_p51
+	WHERE estado_ocu = 'ASIGNADO' AND usucre='${login}';
+	`)).rows; */
 
 
 
-		console.table(`
-				SELECT 
-					'' contexto,
-					id_p20esp as id_pregunta, 
-					sec_cuestionario as secuencial, 
-					i00, 
-					i001a, 
-					p20nro, 
-					respuesta, 
-					codigocodif, 
-					codigocodif_v1, 
-					codigocodif_v2, 
-					estado, 
-					usucre, 
-					feccre, 
-					usucodificador, 
-					feccodificador, 
-					usuverificador, 
-					fecverificador, 
-					usuverificador2, 
-					fecverificador2, 
-					respuesta_normalizada, 
-					departamento, 
-					orden
-				FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
-					SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
-				);	
-			`);
+	// Total carga actividad
+	/* const qrTotalAct = await (await con.query(`
+	SELECT count(1) FROM codificacion.cod_p49_p51
+	WHERE estado_act = 'ASIGNADO' AND usucre='${login}';
+	`)).rows; */
 
 
 
-		// consulta
-		const qr = await (await con.query(`
-				SELECT 
-					'' contexto,
-					id_p20esp as id_pregunta, 
-					sec_cuestionario as secuencial, 
-					i00, 
-					i001a, 
-					p20nro, 
-					respuesta, 
-					codigocodif, 
-					codigocodif_v1, 
-					codigocodif_v2, 
-					estado, 
-					usucre, 
-					feccre, 
-					usucodificador, 
-					feccodificador, 
-					usuverificador, 
-					fecverificador, 
-					usuverificador2, 
-					fecverificador2, 
-					respuesta_normalizada, 
-					departamento, 
-					orden
-				FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador IN (
-					SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr =${id_usuario} and rol_id = 5
-				);	
-			`)).rows;
+	// Total carga actividad
 
 
-		// Clasificacion a utilizar: catalogo_pais
-		const qr2 = await (await con.query(`
-			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
-			`)).rows;
+	// Clasificacion a utilizar para ocupacion:
+	const qr2 = await (await con.query(`
+	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_cob' ORDER BY LENGTH(codigo), codigo ASC
+	`)).rows;
 
-		// Respuesta
-		res.status(200).json({
-			totalCarga: qr.length,
-			nroPreg: '20',
-			descPreg: '¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?',
-			datos: qr,
-			clasificacion: qr2
-		})
-		return;
-	}
+	console.log("03");
+
+	// Clasificacion a utilizar para actividad economica:
+	const qr3 = await (await con.query(`
+	SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+	FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_caeb' ORDER BY LENGTH(codigo), codigo ASC
+	`)).rows;
+
+	console.log("04");
+
+	// Respuesta
+	res.status(200).json({
+		totalCarga: qr.length,
+		totalCarga_ocu:qr.length,   // qrTotalOcu[0].count,
+		totalCarga_act: qr.length,  // qrTotalAct[0].count,
+		nroPreg_ocu: '49',
+		nroPreg_act: '51',
+		descPreg_ocu: '¿Cuál es (era) su trabajo, ocupación u oficio principal?',
+		descPreg_act: 'Principalmente, ¿qué produce, vende o a que actividad se dedica el lugar o establecimiento donde trabaja?',
+		datos: qr,
+		clasificacion_ocu: qr2,
+		clasificacion_act: qr3
+	})
+
+console.log("05");
 
 
+
+
+	/* 
+	const qr = await (await con.query(`
+			SELECT 
+			id_p49_p51 as id_registro,
+			estado_ocu,
+			codigocodif_ocu,
+			estado_act,
+			codigocodif_act,
+			respuesta_ocu,
+			respuesta_act,
+			usucodificador_ocu,
+			usucodificador_act,
+			(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_cob' AND  codigo = codigocodif_ocu AND unico = 1 AND estado ='ACTIVO') AS descripcion_ocu,
+			(SELECT descripcion  FROM codificacion.cod_catalogo WHERE catalogo ='cat_caeb' AND  codigo = codigocodif_act AND unico = 1 AND estado ='ACTIVO') AS descripcion_act,
+			CONCAT(p26) contexto_edad,
+			CONCAT(p41a) contexto_nivel_edu,
+			CONCAT(p41b) contexto_curso,
+			CONCAT(p45) contexto_atendio,
+			CONCAT(p48esp) contexto_otro,
+			CONCAT(p50) contexto_es_era,
+			CONCAT(p52esp) contexto_lugar_trabajo
+		FROM codificacion.cod_p49_p51
+		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario});		
+		`)).rows;
+	*/
 }
 
 
@@ -3901,6 +3932,30 @@ const updatePreguntaSimpleCorreccion = async (req, res) => {
 	res.status(200).json({
 		success: true,
 		message: 'La supervisión se ha realizado correctamente.'
+	})
+}
+
+// Supervision doble correctos
+const updatePreguntaDobleCorreccion = async (req, res) => {
+
+	const {
+		id_usuario,
+        tabla_id,
+        id_registro
+	} = req.body;
+	console.table(req.body);
+
+	await con.query(`
+		UPDATE codificacion.cod_p49_p51
+		SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu = codigocodif_ocu , fecverificador = now(), usuverificador = '${id_usuario}', 
+			estado_act = 'VERIFICADO', codigocodif_v1_act = codigocodif_act
+		WHERE id_p49_p51 = ${id_registro}
+	`)
+
+	// Respuesta
+	res.status(200).json({
+		success: true,
+		message: 'Se ha supervisado la doble individual'
 	})
 }
 
@@ -6102,5 +6157,6 @@ module.exports = {
 	updateCargaSupervision,
 	cargarParaSupervisionSimple,
 	cargarParaSupervisionDoble,
-	updatePreguntaSimpleCorreccion
+	updatePreguntaSimpleCorreccion,
+	updatePreguntaDobleCorreccion
 };
