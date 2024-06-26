@@ -431,3 +431,17 @@ imports: [RouterModule.forChild([
         ]
     }
 ]
+-------------------------
+
+C:\Program Files\PostgreSQL\14\bin\pg_restore.exe --verbose --host=localhost --port=5432 --username=postgres --format=c --dbname=db_digitalizacion_bk C:\Users\epaco\Documents\backup_db_digitalizacion_25062024_1620.sql
+Task 'PostgreSQL restore' started at Tue Jun 25 16:29:30 BOT 2024
+pg_restore: error: versiÃ³n no soportada (1.15) en el encabezado del archivo
+
+------------------------- Backup de la base de datos
+C:\Program Files\PostgreSQL\14\bin\pg_restore.exe --verbose --host=10.10.10.26 --port=5432 --username=postgres --format=c --dbname=db_digitalizacion_bk C:\Users\epaco\Documents\backup_db_digitalizacion_25062024_1620.sql
+
+------------
+pg_dump -U epaco -h 10.32.0.119 -p 5432 -W -F c -n codificacion -f "C:/Users/epaco/Documents/backup_db_digitalizacion_25062024_1620.sql" db_digitalizacion
+
+
+-- tengo una tabla llamada "codificacion"

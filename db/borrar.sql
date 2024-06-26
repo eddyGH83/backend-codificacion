@@ -105,3 +105,58 @@ Un lenguaje de programación
 Una metodología ágil de desarrollo de software popular en las organizaciones
 Una combinación de prácticas y herramientas que buscan automatizar y mejorar la colaboración entre desarrollo y operaciones
 Un tipo de software para gestión de proyectos
+
+
+
+-- tabla: catalogo_pais
+SELECT codigo, descripcion, nro, unico
+FROM codificacion.catalogo_pais;
+
+
+
+-- tabla: cod_catalogo
+SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+FROM codificacion.cod_catalogo;
+
+-- Hacer un insert en la tabla cod_catalogo, donde los registros sean de la tabla catalogo_pais
+INSERT INTO codificacion.cod_catalogo (id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico)
+SELECT
+	1 AS id_catalogo,
+	'catalogo_pais' AS catalogo,
+	codigo,
+	descripcion,
+	'ACTIVO' AS estado,
+	'admin' AS usucre,
+	now() AS feccre,
+	'admin' AS usumod,
+	now() AS fecmod,
+	CONCAT(codigo, ' - ', descripcion) AS descripcion_unida,
+	CONCAT(codigo, descripcion) AS unicoid
+FROM codificacion.catalogo_pais;
+
+------------------- tabla: cod_persona, donde el campo img debe se debe almacenar una cadena de caracteres aleatorios unicos de tamaño 8, 
+create table codificacion.cod_persona
+(
+	id_persona serial not null,
+	nombre varchar(100) not null,
+	apellido_paterno varchar(100) not null,
+	apellido_materno varchar(100) not null,
+	ci varchar(20) not null,
+	img varchar(8) not null DEFAULT substr(md5(random()::text), 1, 8),
+	estado varchar(20) not null,
+	usucre varchar(20) not null,
+	feccre timestamp not null,
+	usumod varchar(20),
+	fecmod timestamp,
+	unicoid varchar(100) not null,
+	primary key (id_persona)
+);
+
+--- Ejemmplo 1:
+SELECT img substr(md5(random()::text), 1, 8)  from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 8
+
+--- Ejemplo 2:
+SELECT md5(random()::text) from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 32
+
+--- Ejemplo 3:
+SELECT substr(md5(random()::text), 1, 8) from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 8

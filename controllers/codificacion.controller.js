@@ -2823,13 +2823,9 @@ const updateAsignado = async (req, res) => {
 			UPDATE codificacion.cod_p49_p51 cdf SET
 					estado_ocu = CASE
 						WHEN cdf.estado_ocu = 'ELABORADO' THEN 'ASIGNADO'
-						--WHEN cdf.estado_ocu <> 'ELABORADO' THEN 'ASIGNADO'
-						--WHEN cdf.estado_ocu = 'ELABORADO' THEN 'ASIGNADO'
 						ELSE cdf.estado_ocu
 					END,
 					estado_act = CASE
-						--WHEN cdf.estado_act <> 'ELABORADO' THEN 'ASIGNADO'
-						--WHEN cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
 						WHEN cdf.estado_act = 'ELABORADO' THEN 'ASIGNADO'
 						ELSE cdf.estado_act
 					END,
