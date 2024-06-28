@@ -986,6 +986,55 @@ const reporte12 = async (req, res) => {
 		.catch((e) => console.error(e.stack));
 };
 
+
+
+const reporte0 = async (req, res) => {
+	const {cod_depto} = req.body;
+	console.table(req.body);
+
+	// query
+	consulta = `
+	SELECT 
+		case 
+			when cod_depto = '01' then 'CHUQUISACA' 
+			when cod_depto = '02' then 'LA PAZ' 
+			when cod_depto = '03' then 'COCHABAMBA' 
+			when cod_depto = '04' then 'ORURO' 
+			when cod_depto = '05' then 'POTOSI' 
+			when cod_depto = '06' then 'TARIJA' 
+			when cod_depto = '07' then 'SANTA CRUZ' 
+			when cod_depto = '08' then 'BENI' 
+			when cod_depto = '09' then 'PANDO'
+		end as departamento,
+		cod_depto AS codigo_departamento,
+		cont_creacion,
+		to_char(fecha_creacion, 'DD-MM-YYYY') as fecha_creacion,
+		count(1) AS cantidad
+	FROM codificacion.cod_num_cuestionarios WHERE cod_depto ='${cod_depto}' GROUP BY  (cod_depto, cont_creacion, fecha_creacion)
+	`;
+
+	// ejecutar query
+	const resultado= await (await con.query(consulta)).rows;
+	
+	
+	/* [
+		{
+			departamento: 'ORURO',
+			codigo_departamento: '04',
+			cont_creacion: 1,
+			fecha_creacion: '27-06-2024',
+			cantidad:83344
+		}
+	] */ // await con.query(consulta);
+
+	// respuestas 202
+	res.status(200).json({
+		datos: resultado
+	});
+
+	
+};
+
 module.exports = {
 	repCodificados,
 	repHoyAyerMes,
@@ -1004,4 +1053,5 @@ module.exports = {
 	reporte10,
 	reporte11,
 	reporte12,
+	reporte0
 };

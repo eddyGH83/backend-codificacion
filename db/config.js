@@ -68,11 +68,19 @@ const { Pool } = require('pg');
 }); */
 
 /* db_digitalizacion_01 */
+/* const con = new Pool({
+	user: "postgres",
+	host: "localhost",
+	password: "toor",
+	database: "db_digitalizacion_01",
+	port: "5432",
+}); */
+
 const con = new Pool({
 	user: "postgres",
 	host: "localhost",
 	password: "toor",
-	database: "db_digitalizacion",
+	database: "db_digitalizacion01_27_06-2024",
 	port: "5432",
 });
 

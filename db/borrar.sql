@@ -160,3 +160,100 @@ SELECT md5(random()::text) from codificacion.cod_persona;  -- para generar una c
 
 --- Ejemplo 3:
 SELECT substr(md5(random()::text), 1, 8) from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 8
+
+---------------inicial1_capitulo_vivienda---------------
+CREATE TABLE estructura.inicial1_capitulo_vivienda (
+	secuencial int4 NOT NULL,
+	i00 varchar(8) NOT NULL DEFAULT 0,
+	i001a varchar(8) NOT NULL DEFAULT 0,
+	i01 varchar(8) NOT NULL,
+	i02 varchar(4) NULL,
+	i03 varchar(2) NULL,
+	i03a varchar(1) NULL,
+	i04 varchar(2) NULL,
+	i05 varchar(2) NULL,
+	i06 varchar(35) NULL,
+	i07 varchar(35) NULL,
+	i08 varchar(4) NULL,
+	i09 varchar(3) NULL,
+	i10 varchar(4) NULL,
+	i11 varchar(15) NULL,
+	i12 varchar(4) NULL,
+	mco int4 NULL,
+	p01 int4 NULL,
+	p02 int4 NULL,
+	p03 int4 NULL,
+	p04 int4 NULL,
+	p05 int4 NULL,
+	p06 int4 NULL,
+	p07 int4 NULL,
+	p08 int4 NULL,
+	p09 int4 NULL,
+	p10 int4 NULL,
+	p11 int4 NULL,
+	p12 int4 NULL,
+	p13 int4 NULL,
+	p14 int4 NULL,
+	p15 int4 NULL,
+	p16 int4 NULL,
+	p17 int4 NULL,
+	p181 int4 NULL,
+	p182 int4 NULL,
+	p183 int4 NULL,
+	p184 int4 NULL,
+	p185 int4 NULL,
+	p186 int4 NULL,
+	p187 int4 NULL,
+	p188 int4 NULL,
+	p189 int4 NULL,
+	p1810 int4 NULL,
+	p191 int4 NULL,
+	p192 int4 NULL,
+	p193 int4 NULL,
+	p194 int4 NULL,
+	p195 int4 NULL,
+	p196 int4 NULL,
+	p197 int4 NULL,
+	p198 int4 NULL,
+	p20 varchar(4) NULL,
+	p20a varchar(2) NULL,
+	p21 varchar(4) NULL,
+	p21a varchar(2) NULL,
+	p23 varchar(2) NULL,
+	p23a varchar(2) NULL,
+	p23b varchar(2) NULL,
+	p23c varchar(2) NULL,
+	p23d varchar(2) NULL,
+	p23e varchar(2) NULL,
+	cod_depto varchar(2) NULL,
+	cod_prov varchar(2) NULL,
+	cod_mpio varchar(2) NULL,
+	cod_cd_com varchar(5) NULL,
+	zona varchar(2) NULL,
+	sector varchar(6) NULL,
+	segmento varchar(8) NULL,
+	area varchar(2) NULL,
+	con_mpio varchar(6) NULL,
+	g_aforo_viv_colectiva int4 NULL,
+	CONSTRAINT inicial1_capitulo_vivienda_pk PRIMARY KEY (secuencial),
+	CONSTRAINT inicial1_capitulo_vivienda_unique UNIQUE (i00)
+);
+
+---------------cod_num_cuestionarios---------------
+CREATE TABLE codificacion.cod_num_cuestionarios (
+	secuencial int4 NOT NULL,
+	i00 varchar(8) NOT NULL DEFAULT 0,
+	i001a varchar(8) NOT NULL DEFAULT 0,
+	cont_creacion int4 NOT NULL,
+	fecha_creacion timestamp NOT NULL DEFAULT now(),
+	cod_depto varchar(2) NOT NULL,
+	obs text NULL,
+	CONSTRAINT inicial1_capitulo_vivienda_pk PRIMARY KEY (secuencial),
+	CONSTRAINT inicial1_capitulo_vivienda_unique UNIQUE (i00)
+);
+
+-- insertar datos en la tabla inicial1_capitulo_vivienda en la tabla cod_num_cuestionarios
+INSERT INTO codificacion.cod_num_cuestionarios (secuencial, i00, i001a, cont_creacion, fecha_creacion, cod_depto, obs) 
+SELECT 
+	secuencial, i00, i001a, 1, now(), cod_depto, null
+FROM estructura.inicial1_capitulo_vivienda from cod_depto = '04';

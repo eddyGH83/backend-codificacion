@@ -209,12 +209,7 @@ const updateEstadoCatalogo = async (req, res) => {
 
 
 
-/////MATRIZ
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+//Lista todos los registros de la tabla cod_matriz
 const devuelveMatriz = async (req, res) => {
 	const query = {
 		text: `
@@ -240,11 +235,9 @@ const devuelveMatriz = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+
+
+// 
 const validarMatriz = async (req, res) => {
 	let params = req.body;
 	const query = {
