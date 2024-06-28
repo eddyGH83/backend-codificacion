@@ -98,7 +98,7 @@ const repOdbc_npioc = async (req, res) => {
 
 const query = `---NPIOC
 	
-Select id_p32esp id_p, secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
+Select id_p32esp,secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
 cec.respuesta respuestaCampo , 
 cec.codigocodif codigo_codif, 
 cc.descripcion acep_desc_codif, 
@@ -110,7 +110,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p32esp cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
@@ -132,7 +132,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p331 cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
@@ -154,7 +154,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p332 cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
@@ -176,7 +176,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p333 cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
@@ -198,7 +198,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p341 cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
@@ -220,7 +220,7 @@ cec.usucodificador usuario_codif,
 cec.usuverificador usuario_super,
 cec.usuverificador2 usuario_jefe,
 '' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+date(cec.feccodificador)::text fecha_codif
 from codificacion.cod_p48esp cec
 left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_cob' 
 left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_cob' 
@@ -228,7 +228,7 @@ left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and c
 where not codigocodif isnull and codigocodif<>'' 
 AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 
-order by pregunta, id_p, secuencial,nro`;
+order by pregunta, id_p32esp,secuencial,nro`;
 
 
 
@@ -250,7 +250,7 @@ const repOdbc_migracion = async (req, res) => {
 	console.log(req.params)
 	const query = `
 	---Migracion
-	select id_p20esp id_p,sec_cuestionario secuencial, p20nro nro,'cod_p20esp' num_preg, 'PREGUNTA 20' pregunta,departamento, '' depto,'' municipio,
+	select id_p20esp,sec_cuestionario secuencial, p20nro nro,'cod_p20esp' num_preg, 'PREGUNTA 20' pregunta,departamento, '' depto,'' municipio,
 	'' codigo_mun_codif, 
 	'' acep_desc_mun_codif, 
 '' codigo_mun_super,
@@ -269,7 +269,7 @@ const repOdbc_migracion = async (req, res) => {
 '' usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p20esp cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
@@ -300,7 +300,7 @@ cec.usuverificador usuario_mun_super,
 cec.usuverificador2 usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p352a cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
@@ -331,7 +331,7 @@ UNION ALL
 '' usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p353 cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
@@ -363,7 +363,7 @@ cec.usuverificador usuario_mun_super,
 cec.usuverificador2 usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p362a cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
@@ -394,7 +394,7 @@ UNION ALL
 '' usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p363 cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
@@ -426,7 +426,7 @@ cec.usuverificador usuario_mun_super,
 cec.usuverificador2 usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p372a cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
@@ -457,7 +457,7 @@ UNION ALL
 '' usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p373 cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
@@ -488,7 +488,7 @@ cec.usuverificador usuario_mun_super,
 cec.usuverificador2 usuario_mun_jefe,
 cec.usucodificador usuario_pais_codif, 
 cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe, date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+cec.usuverificador2 usuario_pais_jefe, feccodificador
 		
 	from codificacion.cod_p52esp cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc.catalogo='cat_pais' and cc.unico=1 else cc.catalogo='cat_municipio' end)
@@ -499,7 +499,7 @@ cec.usuverificador2 usuario_pais_jefe, date(feccodificador)::text fecha_codif, d
 	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 		
 		
-	order by pregunta, id_p, secuencial,nro
+	order by pregunta, id_p20esp, secuencial,nro
 	`;
 	console.log(query);
 	await con
@@ -516,6 +516,60 @@ cec.usuverificador2 usuario_pais_jefe, date(feccodificador)::text fecha_codif, d
 const repOdbc = async (req, res) => {
 	console.log(req.params)
 /*	const query = ` --- Ocupacion - Actividad ---
+	select cec.id_informante, max(case when ee.id_pregunta=69 then ee.respuesta3 else null end) edad,
+		max(case when ep.id_pregunta = 113 and (not ee.respuesta3 isnull and ee.respuesta3<>'') then concat(ep.respuesta->(respuesta3::INTEGER-1)->'respuesta') else null end) Nivel,
+		max(case when ep.id_pregunta = 114 and (not ee.respuesta3 isnull and ee.respuesta3<>'') then concat(ep.respuesta->(respuesta3::INTEGER-1)->'respuesta') else null end) curso_anio,
+		max(case when ep.id_pregunta = 126 and (not ee.respuesta3 isnull and ee.respuesta3<>'') then concat(ep.respuesta->(respuesta3::INTEGER-1)->'respuesta') else null end) Categoria,
+		max(case when ep.id_pregunta = 122 and (not ee.respuesta3 isnull and ee.respuesta3<>'') then concat(ep.respuesta->(respuesta3::INTEGER-1)->'respuesta') else null end) Destino_agropecuario,
+		o_ocupacion,o_codigo_codif,o_acep_desc_codif,o_codigo_super,o_acep_desc_super,o_codigo_jefe,o_acep_desc_jefe,
+		'' as cod_rev_ocupacion,
+		a_actividad,a_codigo_codif,a_acep_desc_codif,a_codigo_super,a_acep_desc_super, a_codigo_jefe,a_acep_desc_jefe,
+		'' as cod_rev_actividad,
+		max(case when ee.id_pregunta=129 then ee.respuesta3 else null end) lugar_trabajo,
+		o_usuario_codif, o_usuario_super,o_usuario_jefe,a_usuario_codif, a_usuario_super,a_usuario_jefe,
+		date(fecha_codif)::text fecha_codif
+		from (select  id_informante, 
+		max(case when cec.id_pregunta=125 then cec.respuesta else null end) o_ocupacion,
+		max(case when cec.id_pregunta=125 then cec.codigocodif else null end) o_codigo_codif,
+		max(case when cec.id_pregunta=125 then cc.descripcion else null end) o_acep_desc_codif,
+		max(case when cec.id_pregunta=125 then cec.codigocodif_v1 else null end) o_codigo_super,
+		max(case when cec.id_pregunta=125 then cc2.descripcion else null end) o_acep_desc_super,
+		max(case when cec.id_pregunta=125 then cec.codigocodif_v2 else null end) o_codigo_jefe,
+		max(case when cec.id_pregunta=125 then cc3.descripcion else null end) o_acep_desc_jefe,
+		max(case when cec.id_pregunta=127 then cec.respuesta else null end) a_actividad,
+		max(case when cec.id_pregunta=127 then cec.codigocodif else null end) a_codigo_codif,
+		max(case when cec.id_pregunta=127 then cc.descripcion else null end) a_acep_desc_codif,
+		max(case when cec.id_pregunta=127 then cec.codigocodif_v1 else null end) a_codigo_super,
+		max(case when cec.id_pregunta=127 then cc2.descripcion else null end) a_acep_desc_super,
+		max(case when cec.id_pregunta=127 then cec.codigocodif_v2 else null end) a_codigo_jefe,
+		max(case when cec.id_pregunta=127 then cc3.descripcion else null end) a_acep_desc_jefe,
+		
+		max(case when cec.id_pregunta=125 then cec.usucodificador else null end) o_usuario_codif, 
+		max(case when cec.id_pregunta=125 then cec.usuverificador else null end) o_usuario_super,
+		max(case when cec.id_pregunta=125 then cec.usuverificador2 else null end) o_usuario_jefe,
+		max(case when cec.id_pregunta=127 then cec.usucodificador else null end) a_usuario_codif, 
+		max(case when cec.id_pregunta=127 then cec.usuverificador else null end) a_usuario_super,
+		max(case when cec.id_pregunta=127 then cec.usuverificador2 else null end) a_usuario_jefe,
+		max(date(cec.feccodificador)::text) fecha_codif
+		from codificacion.cod_encuesta_codificacion cec
+		
+		join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
+		left join codificacion.cod_catalogo cc on cv.catalogo=cc.catalogo and cec.codigocodif=cc.codigo and cc.unico=1
+		left join codificacion.cod_catalogo cc2 on cv.catalogo=cc2.catalogo and cec.codigocodif_v1=cc2.codigo and cc2.unico=1
+		left join codificacion.cod_catalogo cc3 on cv.catalogo=cc3.catalogo and cec.codigocodif_v2=cc3.codigo and cc3.unico=1
+		
+		where cec.id_pregunta in (125,127) and not cec.codigocodif isnull and cec.codigocodif<>''
+		AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+		group by id_informante having count(*)=2) cec 
+		join enc_encuesta ee on cec.id_informante=ee.id_informante
+		join enc_pregunta ep on ee.id_pregunta=ep.id_pregunta
+		where ee.id_pregunta in (69,113,114,122,126,129) --and not ee.respuesta3 isnull and ee.respuesta3<>'' 
+		group by cec.id_informante,o_ocupacion,o_codigo_codif,o_acep_desc_codif,o_codigo_super,o_acep_desc_super,o_codigo_jefe,o_acep_desc_jefe,a_codigo_codif,a_acep_desc_codif,a_codigo_super,
+		a_acep_desc_super, a_codigo_jefe,a_acep_desc_jefe,o_usuario_codif, o_usuario_super,o_usuario_jefe,a_actividad,a_usuario_codif, a_usuario_super,a_usuario_jefe,fecha_codif
+		order by cec.id_informante
+	`;*/
+
+	const query = ` --- Ocupacion - Actividad ---
 	SELECT id_p49_p51, secuencial, nro, departamento, p26, p41a, p41b, p50, p45, p48esp, p52, p52esp, 
 	respuesta_ocu, codigocodif_ocu, cc_o.descripcion o_acep_desc_codif, codigocodif_v1_ocu, cc_o2.descripcion o_acep_desc_super, codigocodif_v2_ocu, cc_o3.descripcion o_acep_desc_jefe, '' rev_ocu,
 	respuesta_act, codigocodif_act, cc_act.descripcion a_acep_desc_codif , codigocodif_v1_act, cc_act2.descripcion a_acep_desc_super, codigocodif_v2_act, cc_act3.descripcion a_acep_desc_jefe, '' rev_act ,
@@ -528,43 +582,8 @@ const repOdbc = async (req, res) => {
 	left JOIN codificacion.cod_catalogo cc_act2 ON cp.codigocodif_v1_act = cc_act2.codigo and cc_act2.catalogo='cat_caeb' and cc_act2.unico=1
 	left JOIN codificacion.cod_catalogo cc_act3 ON cp.codigocodif_v2_act = cc_act3.codigo and cc_act3.catalogo='cat_caeb' and cc_act3.unico=1
 	WHERE estado_ocu <>'ELABORADO' and estado_act <> 'ELABORADO' and estado_ocu <>'ASIGNADO' and estado_act <> 'ASIGNADO'
-	AND feccodificador_ocu::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 `;
-*/
-const query = ` --- Ocupacion - Actividad ---
-WITH fecha_filtrada AS (
-    SELECT 
-        cp.*,
-        CASE 
-            WHEN cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_ocu::date 
-            WHEN cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND NOT cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_act::date 
-            WHEN NOT cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_ocu::date 
-			WHEN NOT cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND not cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_act::date 
-            ELSE NULL 
-        END AS fecha_codificada
-    FROM 
-        codificacion.cod_p49_p51 cp
-)
-SELECT 
-    id_p49_p51, secuencial, nro, departamento, p26 edad, p41a nivel, p41b curso_anio, p50 categoria, p45 cultiva_cria, p48esp p48_otro, p52esp lugar_trabajo, 
-    respuesta_ocu o_ocupacion, codigocodif_ocu o_codigo_codif, cc_o.descripcion o_acep_desc_codif, codigocodif_v1_ocu o_codigo_super, 
-    cc_o2.descripcion o_acep_desc_super, codigocodif_v2_ocu o_codigo_esp_cont, cc_o3.descripcion o_acep_desc_esp_cont, '' cod_rev_ocupacion,
-    respuesta_act a_actividad, codigocodif_act a_codigo_codif, cc_act.descripcion a_acep_desc_codif , codigocodif_v1_act a_codigo_super, 
-    cc_act2.descripcion a_acep_desc_super, codigocodif_v2_act a_codigo_esp_cont, cc_act3.descripcion a_acep_desc_esp_cont, '' cod_rev_actividad ,
-    usucodificador_ocu o_usuario_codif, usucodificador_act a_usuario_codif, usuverificador usuario_super, usuverificador2 usuario_esp_cont, 
-	date(fecha_codificada)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-FROM fecha_filtrada cp
-JOIN codificacion.cod_catalogo cc_o ON cp.codigocodif_ocu = cc_o.codigo AND cc_o.catalogo = 'cat_cob' AND cc_o.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_o2 ON cp.codigocodif_v1_ocu = cc_o2.codigo AND cc_o2.catalogo = 'cat_cob' AND cc_o2.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_o3 ON cp.codigocodif_v2_ocu = cc_o3.codigo AND cc_o3.catalogo = 'cat_cob' AND cc_o3.unico = 1
-JOIN codificacion.cod_catalogo cc_act ON cp.codigocodif_act = cc_act.codigo AND cc_act.catalogo = 'cat_caeb' AND cc_act.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_act2 ON cp.codigocodif_v1_act = cc_act2.codigo AND cc_act2.catalogo = 'cat_caeb' AND cc_act2.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_act3 ON cp.codigocodif_v2_act = cc_act3.codigo AND cc_act3.catalogo = 'cat_caeb' AND cc_act3.unico = 1
-WHERE estado_ocu <> 'ELABORADO' AND estado_act <> 'ELABORADO' AND estado_ocu <> 'ASIGNADO' AND estado_act <> 'ASIGNADO'
-    AND (
-        (cp.fecha_codificada BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date)
-    );
-	`;
 	console.log(query);
 	await con
 		.query(query)
@@ -968,7 +987,8 @@ const reporte12 = async (req, res) => {
 };
 
 
-const reporte13 = async (req, res) => {
+
+const reporte0 = async (req, res) => {
 	const {cod_depto} = req.body;
 	console.table(req.body);
 
@@ -1033,5 +1053,5 @@ module.exports = {
 	reporte10,
 	reporte11,
 	reporte12,
-	reporte13
+	reporte0
 };

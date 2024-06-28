@@ -5615,7 +5615,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			CONCAT(p45) contexto_atendio,
 			CONCAT(p48esp) contexto_otro,
 			CONCAT(p50) contexto_es_era,
-			CONCAT(p52esp) contexto_lugar_trabajo
+			CONCAT(p52esp) contexto_lugar_trabajo,
+			departamento
 		FROM codificacion.cod_p49_p51
 		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
 		`;
@@ -5638,7 +5639,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p20esp
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5660,7 +5662,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p32esp
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5682,7 +5685,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p331
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5704,7 +5708,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p332
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5726,7 +5731,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p333
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5748,7 +5754,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto		
+					'- -' var_contexto,
+					departamento		
 				FROM codificacion.cod_p341
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5782,7 +5789,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 						when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
 						when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
 						when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
-					end as var_contexto
+					end as var_contexto,
+					departamento
 				FROM codificacion.cod_p352a
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
@@ -5806,7 +5814,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				'- -' var_contexto		
+				'- -' var_contexto,
+				departamento		
 			FROM codificacion.cod_p353
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5842,7 +5851,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
 					when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
 					when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
-				end as var_contexto
+				end as var_contexto,
+				departamento
 			FROM codificacion.cod_p362a
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5865,7 +5875,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				'- -' var_contexto		
+				'- -' var_contexto,
+				departamento		
 			FROM codificacion.cod_p363
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5899,7 +5910,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					when apoyo = '08' then '<strong> ¿En qué departamento?</strong>' || ' BENI' 
 					when apoyo = '09' then '<strong> ¿En qué departamento?</strong>' || ' PANDO' 
 					when apoyo is null then  '<strong> ¿En qué departamento?</strong>' || ' NO DEFINIDO' 
-				end as var_contexto
+				end as var_contexto,
+				departamento
 			FROM codificacion.cod_p372a
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5922,7 +5934,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				'- -' var_contexto		
+				'- -' var_contexto,
+				departamento		
 			FROM codificacion.cod_p373
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5947,7 +5960,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				case 
 					when p48 is not null then '<strong> Descripción: </strong>' || p48
 					when p48 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
-				end as var_contexto
+				end as var_contexto,
+				departamento
 			FROM codificacion.cod_p48esp
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
@@ -5972,7 +5986,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				case 
 					when p52 is not null then '<strong> Descripción: </strong>' || p52
 					when p52 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
-				end as var_contexto
+				end as var_contexto,
+				departamento
 			FROM codificacion.cod_p52esp
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
