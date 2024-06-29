@@ -5621,11 +5621,15 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
 		`;
 		const registros = await (await con.query(query)).rows;
+
+		// catalogo
+
+
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo:[],
 		})
 		return;
-
 	}
 
 	// p20esp
@@ -5644,9 +5648,16 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				FROM codificacion.cod_p20esp
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+		
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais'
+		`)).rows;			
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo:[],
 		})
 		return;
 	}
