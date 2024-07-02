@@ -5591,7 +5591,6 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		id_usuario, // id_usuario del supervisor	
 		tabla_id // tabla_id
 	} = req.body;
-
 	// console.table(req.body);
 
 	// p49_p51
@@ -5599,6 +5598,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const query = `
 		SELECT 
 			id_p49_p51 as id_registro,
+			secuencial,
 			estado_ocu,
 			codigocodif_ocu,
 			estado_act,
@@ -5622,12 +5622,10 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		`;
 		const registros = await (await con.query(query)).rows;
 
-		// catalogo
-
-
+		// Catalogo
 		res.status(200).json({
 			datos: registros,
-			catalogo:[],
+			catalogo: [],
 		})
 		return;
 	}
@@ -5638,26 +5636,27 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p20esp  as id_registro,
+					sec_cuestionario secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
-		
+
 		// Catalogo
 		const catalogo = await (await con.query(`
 			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais'
-		`)).rows;			
+		`)).rows;
 
 		// respuesta
 		res.status(200).json({
 			datos: registros,
-			catalogo:[],
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5668,19 +5667,28 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p32esp  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_npioc';		
+		`)).rows;
+
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5691,19 +5699,27 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p331  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5714,19 +5730,27 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p332  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5737,19 +5761,27 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p333  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5758,21 +5790,29 @@ const devuelveCargaParaSupervision = async (req, res) => {
 	if (tabla_id === 'p341') {
 		// Consulta	
 		const registros = await (await con.query(`
-				SELECT 
+				SELECT 					 
 					id_p341  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'- -' var_contexto,
+					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_idioma';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5784,6 +5824,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 				SELECT 
 					id_p352a  as id_registro,
+					secuencial,
 					estado,
 					respuesta,
 					codigocodif,
@@ -5805,9 +5846,16 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				FROM codificacion.cod_p352a
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 			`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5820,19 +5868,29 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p353  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				'- -' var_contexto,
+				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).rows;
+
+
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 
@@ -5846,6 +5904,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p362a  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -5867,9 +5926,17 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p362a
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
+
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5881,6 +5948,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p363  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -5891,12 +5959,20 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p363
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
+
 
 
 	// p372a
@@ -5905,6 +5981,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p372a  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -5926,9 +6003,16 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p372a
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio';
+		`)).rows;
+
 		// respuesta
 		res.status(200).json({
-			datos: registros
+			datos: registros,
+			catalogo: catalogo
 		})
 		return;
 	}
@@ -5940,6 +6024,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p373  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -5950,12 +6035,20 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p373
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
-		// respuesta
-		res.status(200).json({
-			datos: registros
-		})
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
+		`)).
+
+			// respuesta
+			res.status(200).json({
+				datos: registros,
+				catalogo: catalogo
+			})
 		return;
 	}
+
 
 	// p48esp
 	if (tabla_id === 'p48esp') {
@@ -5963,6 +6056,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p48esp  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -5976,10 +6070,17 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p48esp
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
-		// respuesta
-		res.status(200).json({
-			datos: registros
-		})
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT id_catalogo,	codigo,	descripcion	FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_cob';
+		`)).
+
+			// respuesta
+			res.status(200).json({
+				datos: registros,
+				catalogo: catalogo
+			})
 		return;
 	}
 
@@ -5989,6 +6090,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const registros = await (await con.query(`
 			SELECT 
 				id_p52esp  as id_registro,
+				secuencial,
 				estado,
 				respuesta,
 				codigocodif,
@@ -6002,10 +6104,18 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			FROM codificacion.cod_p52esp
 			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
 		`)).rows;
-		// respuesta
-		res.status(200).json({
-			datos: registros
-		})
+
+		// Catalogo
+		const catalogo = await (await con.query(`
+			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_municipio_pais';
+		`)).
+
+
+			// respuesta
+			res.status(200).json({
+				datos: registros,
+				catalogo: catalogo
+			})
 		return;
 	}
 
