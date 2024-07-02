@@ -395,6 +395,11 @@ const sumar = (a, b) => function sumar() {
 };
 
 
+// PayloadTooLargeError: request entity too large 
+// Aumentar el límite de tamaño del cuerpo de la solicitud
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 
 

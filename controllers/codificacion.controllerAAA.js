@@ -62,6 +62,11 @@ const getCantidadCarga = async (req, res) => {
 
 const cargarDatos = async (req, res) => {
 	let params = req.body;
+
+// averiguar cuanta memoria ocupa el req.body
+
+
+
 	const query = {
 		text: `WITH codnc AS (
 			SELECT id_pregunta, id_informante, id_encuesta, departamento

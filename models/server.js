@@ -1,9 +1,14 @@
 const express = require('express')
 const cors = require('cors');
- 
+
 class Server {
-    constructor(){
+    constructor() {
         this.app = express()
+        // Aumentar el límite de tamaño del cuerpo de la solicitud
+        this.app.use(express.json({ limit: '50mb' })); // Para solicitudes JSON
+        this.app.use(express.urlencoded({ limit: '50mb', extended: true })); // Para solicitudes URL-encoded
+
+
         this.port = process.env.PORT;
 
         // Middelwares
@@ -13,9 +18,9 @@ class Server {
         this.routes();
     }
 
-    middelwares(){
+    middelwares() {
         //CORS
-        this.app.use( cors());
+        this.app.use(cors());
         /* this.app.use(function (req, res, next) {        
             res.setHeader('Access-Control-Allow-Origin', '*');    
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');    
@@ -29,16 +34,16 @@ class Server {
         //     methods: ['GET', 'POST', 'PUT', 'DELETE'],
         //     allowedHeaders: ['Content-Type', 'Authorization', 'token']
         // }));
-        
+
         // Lectura y parseo del body
         //todo se cambiara a Json
-        this.app.use( express.json() );
+        this.app.use(express.json());
         //Directorio publico
-       this.app.use(express.static('public')); 
+        this.app.use(express.static('public'));
     }
 
 
-    routes(){
+    routes() {
         this.app.use('/api/diccionarios', require('../routes/diccionarios.routes'));
         this.app.use('/api/usuarios', require('../routes/usuarios.routes'));
         this.app.use('/api/login', require('../routes/login.routes'));
