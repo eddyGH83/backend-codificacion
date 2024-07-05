@@ -5592,6 +5592,10 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		tabla_id // tabla_id
 	} = req.body;
 	// console.table(req.body);
+	console.log("------------*-*-*-*-*----------------");
+	console.table(req.body);
+	// 
+
 
 	// p49_p51
 	if (tabla_id === 'p49_p51') {
@@ -5616,11 +5620,21 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			CONCAT(p48esp) contexto_otro,
 			CONCAT(p50) contexto_es_era,
 			CONCAT(p52esp) contexto_lugar_trabajo,
-			departamento
+			departamento,
+			CONCAT(
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Cuántos años cumplidos tiene? </strong> ',p26,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Nivel educativo: </strong> ',p41a,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Curso o año: </strong> ',p41b,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>¿Atendió cultivos agricolas o cría de animales? </strong> ',p45,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>P.48 Otro especifique: </strong> ',p48esp,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>En ese trabajo es (era): </strong> ',p50,'<br>',
+				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
+			) contexto_html
 		FROM codificacion.cod_p49_p51
 		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
 		`;
 		const registros = await (await con.query(query)).rows;
+		console.table(registros);
 
 		// Catalogo
 		res.status(200).json({
@@ -5683,7 +5697,6 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		const catalogo = await (await con.query(`
 			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_npioc';		
 		`)).rows;
-
 
 		// respuesta
 		res.status(200).json({

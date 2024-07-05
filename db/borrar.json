@@ -445,3 +445,4 @@ pg_dump -U epaco -h 10.32.0.119 -p 5432 -W -F c -n codificacion -f "C:/Users/epa
 
 
 -- tengo una tabla llamada "codificacion"
+

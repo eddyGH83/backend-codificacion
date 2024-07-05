@@ -20,12 +20,10 @@ const devuelveCatalogo = async (req, res) => {
 			usucre,
 			to_char(feccre, 'DD-MM-YYYY') as feccre,
 			usumod,
-			to_char(fecmod, 'DD-MM-YYYY') as fecmod
+			to_char(fecmod, 'DD-MM-YYYY') as fecmod,
+			unico
 		FROM codificacion.cod_catalogo WHERE catalogo ILIKE $1 
-				AND estado ILIKE 'ACTIVO' order by id_catalogo DESC
-		
-		--SELECT * FROM ${esquema}.cod_catalogo WHERE catalogo ILIKE $1 
-		--AND estado ILIKE 'ACTIVO' order by id_catalogo desc `,
+				AND estado ILIKE 'ACTIVO' order by id_catalogo DESC`,
 		values: [
 			params.catalogo,
 		],
