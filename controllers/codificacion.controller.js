@@ -5591,11 +5591,6 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		id_usuario, // id_usuario del supervisor	
 		tabla_id // tabla_id
 	} = req.body;
-	// console.table(req.body);
-	console.log("------------*-*-*-*-*----------------");
-	console.table(req.body);
-	// 
-
 
 	// p49_p51
 	if (tabla_id === 'p49_p51') {
@@ -5634,12 +5629,26 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
 		`;
 		const registros = await (await con.query(query)).rows;
-		console.table(registros);
+
+
+		// Clasificacion a utilizar para ocupacion:
+		const catalogo_ocu = await (await con.query(`
+		SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+		FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_cob' ORDER BY LENGTH(codigo), codigo ASC
+		`)).rows;
+
+
+		// Clasificacion a utilizar para actividad economica:
+		const catalogo_act = await (await con.query(`
+		SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
+		FROM codificacion.cod_catalogo WHERE estado ='ACTIVO' AND catalogo ='cat_caeb' ORDER BY LENGTH(codigo), codigo ASC
+		`)).rows;
 
 		// Catalogo
 		res.status(200).json({
 			datos: registros,
-			catalogo: [],
+			catalogo_ocu,
+			catalogo_act
 		})
 		return;
 	}
