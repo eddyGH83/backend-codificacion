@@ -66,37 +66,37 @@ const repHoyAyerMes = async (req, res) => {
 
 const repOdbc_npioc = async (req, res) => {
 	console.log(req.params)
-// 	const query = `	---NPIOC
-// select id_informante, cec.id_pregunta,
-// (case when cec.id_pregunta in (86) then 'PREGUNTA 32' 
-// when cec.id_pregunta in (88) then 'PREGUNTA 33. Idioma 1' 
-// when cec.id_pregunta in (89) then 'PREGUNTA 33. Idioma 2' 
-// when cec.id_pregunta in (90) then 'PREGUNTA 33. Idioma 3' 
-// when cec.id_pregunta in (92) then 'PREGUNTA 34' else null end) pregunta,
-// cec.respuesta respuestaCampo , 
-// cec.codigocodif codigo_codif, 
-// cc.descripcion acep_desc_codif, 
-// cec.codigocodif_v1 codigo_super, 
-// cc_1.descripcion acep_desc_super,
-// cec.codigocodif_v2 codigo_jefe,
-// cc_2.descripcion acep_desc_jefe,
-// cec.usucodificador usuario_codif, 
-// cec.usuverificador usuario_super,
-// cec.usuverificador2 usuario_jefe,
-// '' as cod_rev_npioc, 
-// date(cec.feccodificador)::text fecha_codif
-// from codificacion.cod_encuesta_codificacion cec
-// left join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
-// left join codificacion.cod_catalogo cc on cv.catalogo=cc.catalogo and cec.codigocodif=cc.codigo and cc.unico=1 
-// left join codificacion.cod_variables cv_1 on cec.id_pregunta=cv_1.id_pregunta
-// left join codificacion.cod_catalogo cc_1 on cv_1.catalogo=cc_1.catalogo and cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 
-// left join codificacion.cod_variables cv_2 on cec.id_pregunta=cv_2.id_pregunta
-// left join codificacion.cod_catalogo cc_2 on cv_2.catalogo=cc_2.catalogo and cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 
-// where not codigocodif isnull and codigocodif<>'' and cec.id_pregunta in (86,88,89,90,92) 
-// AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-// order by pregunta, id_informante`;
+	// 	const query = `	---NPIOC
+	// select id_informante, cec.id_pregunta,
+	// (case when cec.id_pregunta in (86) then 'PREGUNTA 32' 
+	// when cec.id_pregunta in (88) then 'PREGUNTA 33. Idioma 1' 
+	// when cec.id_pregunta in (89) then 'PREGUNTA 33. Idioma 2' 
+	// when cec.id_pregunta in (90) then 'PREGUNTA 33. Idioma 3' 
+	// when cec.id_pregunta in (92) then 'PREGUNTA 34' else null end) pregunta,
+	// cec.respuesta respuestaCampo , 
+	// cec.codigocodif codigo_codif, 
+	// cc.descripcion acep_desc_codif, 
+	// cec.codigocodif_v1 codigo_super, 
+	// cc_1.descripcion acep_desc_super,
+	// cec.codigocodif_v2 codigo_jefe,
+	// cc_2.descripcion acep_desc_jefe,
+	// cec.usucodificador usuario_codif, 
+	// cec.usuverificador usuario_super,
+	// cec.usuverificador2 usuario_jefe,
+	// '' as cod_rev_npioc, 
+	// date(cec.feccodificador)::text fecha_codif
+	// from codificacion.cod_encuesta_codificacion cec
+	// left join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
+	// left join codificacion.cod_catalogo cc on cv.catalogo=cc.catalogo and cec.codigocodif=cc.codigo and cc.unico=1 
+	// left join codificacion.cod_variables cv_1 on cec.id_pregunta=cv_1.id_pregunta
+	// left join codificacion.cod_catalogo cc_1 on cv_1.catalogo=cc_1.catalogo and cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 
+	// left join codificacion.cod_variables cv_2 on cec.id_pregunta=cv_2.id_pregunta
+	// left join codificacion.cod_catalogo cc_2 on cv_2.catalogo=cc_2.catalogo and cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 
+	// where not codigocodif isnull and codigocodif<>'' and cec.id_pregunta in (86,88,89,90,92) 
+	// AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	// order by pregunta, id_informante`;
 
-const query = `---NPIOC
+	const query = `---NPIOC
 	
 Select id_p32esp id_p, secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
 cec.respuesta respuestaCampo , 
@@ -232,15 +232,15 @@ order by pregunta, id_p, secuencial,nro`;
 
 
 
-console.log(query);
-await con
-	.query(query)
-	.then((result) =>
-		res.status(200).json({
-			datos: result,
-		})
-	)
-	.catch((e) => console.error(e.stack));
+	console.log(query);
+	await con
+		.query(query)
+		.then((result) =>
+			res.status(200).json({
+				datos: result,
+			})
+		)
+		.catch((e) => console.error(e.stack));
 };
 
 
@@ -515,23 +515,23 @@ cec.usuverificador2 usuario_pais_jefe, date(feccodificador)::text fecha_codif, d
 
 const repOdbc = async (req, res) => {
 	console.log(req.params)
-/*	const query = ` --- Ocupacion - Actividad ---
-	SELECT id_p49_p51, secuencial, nro, departamento, p26, p41a, p41b, p50, p45, p48esp, p52, p52esp, 
-	respuesta_ocu, codigocodif_ocu, cc_o.descripcion o_acep_desc_codif, codigocodif_v1_ocu, cc_o2.descripcion o_acep_desc_super, codigocodif_v2_ocu, cc_o3.descripcion o_acep_desc_jefe, '' rev_ocu,
-	respuesta_act, codigocodif_act, cc_act.descripcion a_acep_desc_codif , codigocodif_v1_act, cc_act2.descripcion a_acep_desc_super, codigocodif_v2_act, cc_act3.descripcion a_acep_desc_jefe, '' rev_act ,
-	usucodificador_ocu,usucodificador_act, usuverificador, usuverificador2
-	FROM codificacion.cod_p49_p51 cp
-	JOIN codificacion.cod_catalogo cc_o ON cp.codigocodif_ocu = cc_o.codigo and cc_o.catalogo='cat_cob' and cc_o.unico=1
-	left JOIN codificacion.cod_catalogo cc_o2 ON cp.codigocodif_v1_ocu = cc_o2.codigo and cc_o2.catalogo='cat_cob' and cc_o2.unico=1
-	left JOIN codificacion.cod_catalogo cc_o3 ON cp.codigocodif_v2_ocu = cc_o3.codigo and cc_o3.catalogo='cat_cob' and cc_o3.unico=1
-	JOIN codificacion.cod_catalogo cc_act ON cp.codigocodif_act = cc_act.codigo and cc_act.catalogo='cat_caeb' and cc_act.unico=1
-	left JOIN codificacion.cod_catalogo cc_act2 ON cp.codigocodif_v1_act = cc_act2.codigo and cc_act2.catalogo='cat_caeb' and cc_act2.unico=1
-	left JOIN codificacion.cod_catalogo cc_act3 ON cp.codigocodif_v2_act = cc_act3.codigo and cc_act3.catalogo='cat_caeb' and cc_act3.unico=1
-	WHERE estado_ocu <>'ELABORADO' and estado_act <> 'ELABORADO' and estado_ocu <>'ASIGNADO' and estado_act <> 'ASIGNADO'
-	AND feccodificador_ocu::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-`;
-*/
-const query = ` --- Ocupacion - Actividad ---
+	/*	const query = ` --- Ocupacion - Actividad ---
+		SELECT id_p49_p51, secuencial, nro, departamento, p26, p41a, p41b, p50, p45, p48esp, p52, p52esp, 
+		respuesta_ocu, codigocodif_ocu, cc_o.descripcion o_acep_desc_codif, codigocodif_v1_ocu, cc_o2.descripcion o_acep_desc_super, codigocodif_v2_ocu, cc_o3.descripcion o_acep_desc_jefe, '' rev_ocu,
+		respuesta_act, codigocodif_act, cc_act.descripcion a_acep_desc_codif , codigocodif_v1_act, cc_act2.descripcion a_acep_desc_super, codigocodif_v2_act, cc_act3.descripcion a_acep_desc_jefe, '' rev_act ,
+		usucodificador_ocu,usucodificador_act, usuverificador, usuverificador2
+		FROM codificacion.cod_p49_p51 cp
+		JOIN codificacion.cod_catalogo cc_o ON cp.codigocodif_ocu = cc_o.codigo and cc_o.catalogo='cat_cob' and cc_o.unico=1
+		left JOIN codificacion.cod_catalogo cc_o2 ON cp.codigocodif_v1_ocu = cc_o2.codigo and cc_o2.catalogo='cat_cob' and cc_o2.unico=1
+		left JOIN codificacion.cod_catalogo cc_o3 ON cp.codigocodif_v2_ocu = cc_o3.codigo and cc_o3.catalogo='cat_cob' and cc_o3.unico=1
+		JOIN codificacion.cod_catalogo cc_act ON cp.codigocodif_act = cc_act.codigo and cc_act.catalogo='cat_caeb' and cc_act.unico=1
+		left JOIN codificacion.cod_catalogo cc_act2 ON cp.codigocodif_v1_act = cc_act2.codigo and cc_act2.catalogo='cat_caeb' and cc_act2.unico=1
+		left JOIN codificacion.cod_catalogo cc_act3 ON cp.codigocodif_v2_act = cc_act3.codigo and cc_act3.catalogo='cat_caeb' and cc_act3.unico=1
+		WHERE estado_ocu <>'ELABORADO' and estado_act <> 'ELABORADO' and estado_ocu <>'ASIGNADO' and estado_act <> 'ASIGNADO'
+		AND feccodificador_ocu::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	`;
+	*/
+	const query = ` --- Ocupacion - Actividad ---
 WITH fecha_filtrada AS (
     SELECT 
         cp.*,
@@ -585,7 +585,7 @@ WHERE estado_ocu <> 'ELABORADO' AND estado_act <> 'ELABORADO' AND estado_ocu <> 
  * @param {*} res 
  */
 const reporte1 = async (req, res) => {
-	
+
 	const query = {
 		text: ` select * from codificacion.fn_reporte_1() `,
 	};
@@ -607,21 +607,21 @@ const reporte1 = async (req, res) => {
  * @param {*} res 
  */
 const reporte2 = async (req, res) => {
-/*	const query = {
-		text: `select (case when codigo isnull then catalogo||' - T O T A L' else catalogo end) catalogo,codigo, acep_desc, sum(tot) from
-		(select cc.catalogo,cc.codigo, cc.descripcion acep_desc, count(cec.respuesta) tot
-		from codificacion.cod_encuesta_codificacion cec
-		join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
-		join codificacion.cod_catalogo cc on cc.codigo = cec.codigocodif and cc.unico=1 and cc.catalogo=cv.catalogo
-		group by cc.catalogo,cc.codigo, cc.descripcion
-		 order by  cc.catalogo,cc.codigo 
-		) x
-		GROUP BY GROUPING SETS ( (catalogo),(catalogo,codigo,acep_desc))
-		order by catalogo,codigo `,
-	};*/
+	/*	const query = {
+			text: `select (case when codigo isnull then catalogo||' - T O T A L' else catalogo end) catalogo,codigo, acep_desc, sum(tot) from
+			(select cc.catalogo,cc.codigo, cc.descripcion acep_desc, count(cec.respuesta) tot
+			from codificacion.cod_encuesta_codificacion cec
+			join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
+			join codificacion.cod_catalogo cc on cc.codigo = cec.codigocodif and cc.unico=1 and cc.catalogo=cv.catalogo
+			group by cc.catalogo,cc.codigo, cc.descripcion
+			 order by  cc.catalogo,cc.codigo 
+			) x
+			GROUP BY GROUPING SETS ( (catalogo),(catalogo,codigo,acep_desc))
+			order by catalogo,codigo `,
+		};*/
 	const query = {
-	text: `	select * from codificacion.fn_reporte_2() `,
-};
+		text: `	select * from codificacion.fn_reporte_2() `,
+	};
 
 	await con
 		.query(query)
@@ -700,15 +700,15 @@ const reporte4 = async (req, res) => {
 const reporte5 = async (req, res) => {
 	// const query = {
 	// 	text: `	select (case when cec.departamento||'-'||cc.descripcion isnull then 'T O T A L E S' else cec.departamento||'-'||cc.descripcion end) departamento, count (*) total,
-    //     sum(case when not cec.codigocodif isnull and cec.codigocodif <> '' then 1 else 0 end) codificados,
-    //     (count (*)-sum(case when not cec.codigocodif isnull and cec.codigocodif <> '' then 1 else 0 end)) pendientes_codif,
+	//     sum(case when not cec.codigocodif isnull and cec.codigocodif <> '' then 1 else 0 end) codificados,
+	//     (count (*)-sum(case when not cec.codigocodif isnull and cec.codigocodif <> '' then 1 else 0 end)) pendientes_codif,
 	//     sum(case when not cec.codigocodif_v1 isnull and cec.codigocodif_v1 <> '' then 1 else 0 end) supervisados,
-    //     (count (*) - sum(case when not cec.codigocodif_v1 isnull and cec.codigocodif_v1 <> '' then 1 else 0 end)) pendientes_super
-    //     from codificacion.cod_encuesta_codificacion cec
+	//     (count (*) - sum(case when not cec.codigocodif_v1 isnull and cec.codigocodif_v1 <> '' then 1 else 0 end)) pendientes_super
+	//     from codificacion.cod_encuesta_codificacion cec
 	// 	join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
 	// 	join codificacion.cod_catalogo cc on cec.departamento=cc.codigo and cc.catalogo='cat_departamento'
-    //     GROUP BY GROUPING SETS ( ( cec.departamento||'-'||cc.descripcion),())
-    //     order by departamento`,
+	//     GROUP BY GROUPING SETS ( ( cec.departamento||'-'||cc.descripcion),())
+	//     order by departamento`,
 	// };
 	const query = {
 		text: `	select * from codificacion.fn_reporte_5() `,
@@ -758,67 +758,67 @@ const reporte6 = async (req, res) => {
  * @param {*} res 
  */
 const reporte7 = async (req, res) => {
-/*	const query = {
-		text: `
-		select cec.usucre usuario, (case when cec.usucre isnull then 'TOTAL GENERAL' when not cec.usucre isnull and cv.pregunta isnull then 'TOTAL '||cec.usucre else cec.usucre end) usucre,
-		cec.id_pregunta, cv.pregunta, sum(case when cec.estado = 'VERIFICADO' then 1 else 0 end) supervisado,
-			 sum(case when cec.estado = 'CODIFICADO' or cec.estado = 'ASIGNASUP' then 1 else 0 end) pendiente,
-			 sum(case when cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or cec.estado = 'CODIFICADO' then 1 else 0 end) total
-		from (select id_pregunta, usucre, estado from codificacion.cod_encuesta_codificacion where estado='ASIGNASUP'
-		union all
-		select id_pregunta, usuverificador, estado from codificacion.cod_encuesta_codificacion 
-		where estado='VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
-		union all
-		select id_pregunta, login_sup, estado from codificacion.cod_encuesta_codificacion cec
-		join (select cu.login login_cod, cu2.login login_sup from codificacion.cod_usuario cu 
-		join codificacion.cod_usuario cu2 on cu.cod_supvsr=cu2.id_usuario and cu2.rol_id=5 and cu2.estado ='A'
-		and cu.estado='A')cu on cec.usucre = cu.login_cod 
-		where (cec.estado='CODIFICADO')  
-		union all
-		SELECT cec2.id_pregunta, a.login, cec2.estado
-		FROM (
-			SELECT id_informante, COUNT(*) AS count, cu2.login --login_sup
-			FROM codificacion.cod_encuesta_codificacion cec
-			JOIN codificacion.cod_usuario cu ON cec.usucre = cu.login
-			JOIN codificacion.cod_usuario cu2 ON cu.cod_supvsr = cu2.id_usuario
-			WHERE cu2.rol_id = 5 AND cu2.estado = 'A' AND cu.estado = 'A'
-			AND cec.estado = 'CODIFICADO' AND cec.id_pregunta IN (125, 127)
-			GROUP BY id_informante, cu2.login
-			HAVING COUNT(*) = 1
-		) AS a
-		join codificacion.cod_encuesta_codificacion cec2
-		on a.id_informante=cec2.id_informante and cec2.usucodificador = 'AUTOMATICO_NORMALIZADO' and cec2.id_pregunta IN (125, 127)
-
-		) cec
-		join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
-		GROUP BY ROLLUP ( cec.usucre,(cec.id_pregunta,cv.pregunta ))
-		ORDER BY usuario, usucre,cec.id_pregunta,cv.pregunta
-		`,
-*/
-		/* text: `select cec.usucre usuario, (case when cec.usucre isnull then 'TOTAL GENERAL' when not cec.usucre isnull and cv.pregunta isnull then 'TOTAL '||cec.usucre else cec.usucre end) usucre,
-		cec.id_pregunta, cv.pregunta, sum(case when cec.estado = 'VERIFICADO' then 1 else 0 end) supervisado,
-			 sum(case when cec.estado = 'CODIFICADO' or cec.estado = 'ASIGNASUP' then 1 else 0 end) pendiente,
-			 sum(case when cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or cec.estado = 'CODIFICADO' then 1 else 0 end) total
-		from (select id_pregunta, usucre, estado from codificacion.cod_encuesta_codificacion where estado='ASIGNASUP'
-		union all
-		select id_pregunta, usuverificador, estado from codificacion.cod_encuesta_codificacion 
-		where estado='VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
-		union all
+	/*	const query = {
+			text: `
+			select cec.usucre usuario, (case when cec.usucre isnull then 'TOTAL GENERAL' when not cec.usucre isnull and cv.pregunta isnull then 'TOTAL '||cec.usucre else cec.usucre end) usucre,
+			cec.id_pregunta, cv.pregunta, sum(case when cec.estado = 'VERIFICADO' then 1 else 0 end) supervisado,
+				 sum(case when cec.estado = 'CODIFICADO' or cec.estado = 'ASIGNASUP' then 1 else 0 end) pendiente,
+				 sum(case when cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or cec.estado = 'CODIFICADO' then 1 else 0 end) total
+			from (select id_pregunta, usucre, estado from codificacion.cod_encuesta_codificacion where estado='ASIGNASUP'
+			union all
+			select id_pregunta, usuverificador, estado from codificacion.cod_encuesta_codificacion 
+			where estado='VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
+			union all
+			select id_pregunta, login_sup, estado from codificacion.cod_encuesta_codificacion cec
+			join (select cu.login login_cod, cu2.login login_sup from codificacion.cod_usuario cu 
+			join codificacion.cod_usuario cu2 on cu.cod_supvsr=cu2.id_usuario and cu2.rol_id=5 and cu2.estado ='A'
+			and cu.estado='A')cu on cec.usucre = cu.login_cod 
+			where (cec.estado='CODIFICADO')  
+			union all
+			SELECT cec2.id_pregunta, a.login, cec2.estado
+			FROM (
+				SELECT id_informante, COUNT(*) AS count, cu2.login --login_sup
+				FROM codificacion.cod_encuesta_codificacion cec
+				JOIN codificacion.cod_usuario cu ON cec.usucre = cu.login
+				JOIN codificacion.cod_usuario cu2 ON cu.cod_supvsr = cu2.id_usuario
+				WHERE cu2.rol_id = 5 AND cu2.estado = 'A' AND cu.estado = 'A'
+				AND cec.estado = 'CODIFICADO' AND cec.id_pregunta IN (125, 127)
+				GROUP BY id_informante, cu2.login
+				HAVING COUNT(*) = 1
+			) AS a
+			join codificacion.cod_encuesta_codificacion cec2
+			on a.id_informante=cec2.id_informante and cec2.usucodificador = 'AUTOMATICO_NORMALIZADO' and cec2.id_pregunta IN (125, 127)
+	
+			) cec
+			join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
+			GROUP BY ROLLUP ( cec.usucre,(cec.id_pregunta,cv.pregunta ))
+			ORDER BY usuario, usucre,cec.id_pregunta,cv.pregunta
+			`,
+	*/
+	/* text: `select cec.usucre usuario, (case when cec.usucre isnull then 'TOTAL GENERAL' when not cec.usucre isnull and cv.pregunta isnull then 'TOTAL '||cec.usucre else cec.usucre end) usucre,
+	cec.id_pregunta, cv.pregunta, sum(case when cec.estado = 'VERIFICADO' then 1 else 0 end) supervisado,
+		 sum(case when cec.estado = 'CODIFICADO' or cec.estado = 'ASIGNASUP' then 1 else 0 end) pendiente,
+		 sum(case when cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or cec.estado = 'CODIFICADO' then 1 else 0 end) total
+	from (select id_pregunta, usucre, estado from codificacion.cod_encuesta_codificacion where estado='ASIGNASUP'
+	union all
+	select id_pregunta, usuverificador, estado from codificacion.cod_encuesta_codificacion 
+	where estado='VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
+	union all
 select id_pregunta, login_sup, estado from codificacion.cod_encuesta_codificacion cec
 join (select cu.login login_cod, cu2.login login_sup from codificacion.cod_usuario cu 
 join codificacion.cod_usuario cu2 on cu.cod_supvsr=cu2.id_usuario and cu2.rol_id=5 and cu2.estado ='A'
 and cu.estado='A')cu on cec.usucre = cu.login_cod      --cec.usucodificador = cu.login_cod
 where (cec.estado='CODIFICADO')  -- and not cec.usucodificador ilike 'AUTOMATICO%')
-		) cec
-		join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
-		--where cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or (cec.estado='CODIFICADO')
-		GROUP BY ROLLUP ( cec.usucre,(cec.id_pregunta,cv.pregunta ))
-		ORDER BY usuario, usucre,cec.id_pregunta,cv.pregunta`,
- */
-		const query = {
-			text: ` select * from codificacion.fn_reporte_7() `,
-		};
-	
+	) cec
+	join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
+	--where cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP' or (cec.estado='CODIFICADO')
+	GROUP BY ROLLUP ( cec.usucre,(cec.id_pregunta,cv.pregunta ))
+	ORDER BY usuario, usucre,cec.id_pregunta,cv.pregunta`,
+*/
+	const query = {
+		text: ` select * from codificacion.fn_reporte_7() `,
+	};
+
 	await con
 		.query(query)
 		.then((result) =>
@@ -834,16 +834,16 @@ where (cec.estado='CODIFICADO')  -- and not cec.usucodificador ilike 'AUTOMATICO
  * @param {*} res 
  */
 const reporte8 = async (req, res) => {
-/*	const query = {
-		text: `select date(cec.fecverificador) fecha, (case when date(cec.fecverificador)::text isnull then 'TOTAL GENERAL' when not date(cec.fecverificador)::text isnull and cec.usuverificador isnull then 'TOTAL '||date(cec.fecverificador)::text else date(cec.fecverificador)::text end) fecverificador,
-		cec.usuverificador, sum(case when cec.estado = 'VERIFICADO' and cec.codigocodif = cec.codigocodif_v1 then 1 else 0 end) supervisado,
-			 sum(case when cec.estado = 'VERIFICADO' and cec.codigocodif <> cec.codigocodif_v1 then 1 else 0 end) recodificado,
-			 count(*) total
-		from codificacion.cod_encuesta_codificacion cec
-		where cec.estado = 'VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
-		GROUP BY ROLLUP ( date(cec.fecverificador),cec.usuverificador)
-		ORDER BY fecha,usuverificador`,
-	};*/
+	/*	const query = {
+			text: `select date(cec.fecverificador) fecha, (case when date(cec.fecverificador)::text isnull then 'TOTAL GENERAL' when not date(cec.fecverificador)::text isnull and cec.usuverificador isnull then 'TOTAL '||date(cec.fecverificador)::text else date(cec.fecverificador)::text end) fecverificador,
+			cec.usuverificador, sum(case when cec.estado = 'VERIFICADO' and cec.codigocodif = cec.codigocodif_v1 then 1 else 0 end) supervisado,
+				 sum(case when cec.estado = 'VERIFICADO' and cec.codigocodif <> cec.codigocodif_v1 then 1 else 0 end) recodificado,
+				 count(*) total
+			from codificacion.cod_encuesta_codificacion cec
+			where cec.estado = 'VERIFICADO' and not codigocodif_v1 is null and codigocodif_v1<>''
+			GROUP BY ROLLUP ( date(cec.fecverificador),cec.usuverificador)
+			ORDER BY fecha,usuverificador`,
+		};*/
 	const query = {
 		text: ` select * from codificacion.fn_reporte_8() `,
 	};
@@ -862,21 +862,21 @@ const reporte8 = async (req, res) => {
  * @param {*} res 
  */
 const reporte9 = async (req, res) => {
-/*	const query = {
-		text: `select departamento||'-'||cc.descripcion depto,(case when departamento||'-'||cc.descripcion isnull then 'TOTAL GENERAL' when not departamento||'-'||cc.descripcion isnull and cv.pregunta isnull then 'TOTAL '||(departamento||'-'||cc.descripcion) else departamento||'-'||cc.descripcion end) departamento,
-		cec.id_pregunta, cv.pregunta, sum(case when not cec.codigocodif isnull or cec.codigocodif<>'' then 1 else 0 end) codificado,
-			 sum(case when cec.codigocodif isnull or cec.codigocodif='' then 1 else 0 end) pendiente,
-			 count(*) total
-		from codificacion.cod_encuesta_codificacion cec
-		join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
-		join codificacion.cod_catalogo cc on cec.departamento=cc.codigo and cc.catalogo='cat_departamento'
-		GROUP BY ROLLUP ( departamento||'-'||cc.descripcion,(cec.id_pregunta,cv.pregunta ))
-		ORDER BY depto,departamento,cec.id_pregunta,cv.pregunta`,
-	};*/
+	/*	const query = {
+			text: `select departamento||'-'||cc.descripcion depto,(case when departamento||'-'||cc.descripcion isnull then 'TOTAL GENERAL' when not departamento||'-'||cc.descripcion isnull and cv.pregunta isnull then 'TOTAL '||(departamento||'-'||cc.descripcion) else departamento||'-'||cc.descripcion end) departamento,
+			cec.id_pregunta, cv.pregunta, sum(case when not cec.codigocodif isnull or cec.codigocodif<>'' then 1 else 0 end) codificado,
+				 sum(case when cec.codigocodif isnull or cec.codigocodif='' then 1 else 0 end) pendiente,
+				 count(*) total
+			from codificacion.cod_encuesta_codificacion cec
+			join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
+			join codificacion.cod_catalogo cc on cec.departamento=cc.codigo and cc.catalogo='cat_departamento'
+			GROUP BY ROLLUP ( departamento||'-'||cc.descripcion,(cec.id_pregunta,cv.pregunta ))
+			ORDER BY depto,departamento,cec.id_pregunta,cv.pregunta`,
+		};*/
 	const query = {
 		text: `select * from codificacion.fn_reporte_9()`,
 	};
-	
+
 	await con
 		.query(query)
 		.then((result) =>
@@ -892,17 +892,17 @@ const reporte9 = async (req, res) => {
  * @param {*} res 
  */
 const reporte10 = async (req, res) => {
-/*	const query = {
-		text: `select cec.usucodificador codificador, (case when cec.usucodificador isnull then 'TOTAL GENERAL' when not cec.usucodificador isnull and cv.pregunta isnull then 'TOTAL '||cec.usucodificador else cec.usucodificador end) usucodificador,
-		cec.id_pregunta, cv.pregunta, sum(case when not cec.codigocodif isnull or cec.codigocodif<>'' then 1 else 0 end) codificado,
-			 sum(case when cec.codigocodif isnull or cec.codigocodif='' then 1 else 0 end) pendiente,
-			 count(*) total
-		from codificacion.cod_encuesta_codificacion cec
-		join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
-		where (not cec.codigocodif isnull or cec.codigocodif <>'') and usucodificador <> 'AUTOMATICO_NORMALIZADO' and usucodificador <> 'AUTOMATICO_NORMDOBLE'
-		GROUP BY ROLLUP ( cec.usucodificador,(cec.id_pregunta,cv.pregunta ))
-		ORDER BY codificador, usucodificador,cec.id_pregunta,cv.pregunta`,
-	};*/
+	/*	const query = {
+			text: `select cec.usucodificador codificador, (case when cec.usucodificador isnull then 'TOTAL GENERAL' when not cec.usucodificador isnull and cv.pregunta isnull then 'TOTAL '||cec.usucodificador else cec.usucodificador end) usucodificador,
+			cec.id_pregunta, cv.pregunta, sum(case when not cec.codigocodif isnull or cec.codigocodif<>'' then 1 else 0 end) codificado,
+				 sum(case when cec.codigocodif isnull or cec.codigocodif='' then 1 else 0 end) pendiente,
+				 count(*) total
+			from codificacion.cod_encuesta_codificacion cec
+			join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
+			where (not cec.codigocodif isnull or cec.codigocodif <>'') and usucodificador <> 'AUTOMATICO_NORMALIZADO' and usucodificador <> 'AUTOMATICO_NORMDOBLE'
+			GROUP BY ROLLUP ( cec.usucodificador,(cec.id_pregunta,cv.pregunta ))
+			ORDER BY codificador, usucodificador,cec.id_pregunta,cv.pregunta`,
+		};*/
 
 	const query = {
 		text: `	select * from codificacion.fn_reporte_10()`,
@@ -922,14 +922,14 @@ const reporte10 = async (req, res) => {
  * @param {*} res 
  */
 const reporte11 = async (req, res) => {
-/*	const query = {
-		text: `select date(cec.feccodificador) fecha, (case when date(cec.feccodificador)::text isnull then 'TOTAL GENERAL' when not date(cec.feccodificador)::text isnull and cec.usucodificador isnull then 'TOTAL '||date(cec.feccodificador)::text else date(cec.feccodificador)::text end) feccodificador,
-		cec.usucodificador, count(*) codificado
-		from codificacion.cod_encuesta_codificacion cec
-		where (cec.estado = 'CODIFICADO' or cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP') and not cec.codigocodif isnull and cec.codigocodif<>'' and not usucodificador ilike 'AUTOMATICO%'
-		GROUP BY ROLLUP ( date(cec.feccodificador),cec.usucodificador)
-		ORDER BY fecha,usucodificador`,
-	};*/
+	/*	const query = {
+			text: `select date(cec.feccodificador) fecha, (case when date(cec.feccodificador)::text isnull then 'TOTAL GENERAL' when not date(cec.feccodificador)::text isnull and cec.usucodificador isnull then 'TOTAL '||date(cec.feccodificador)::text else date(cec.feccodificador)::text end) feccodificador,
+			cec.usucodificador, count(*) codificado
+			from codificacion.cod_encuesta_codificacion cec
+			where (cec.estado = 'CODIFICADO' or cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP') and not cec.codigocodif isnull and cec.codigocodif<>'' and not usucodificador ilike 'AUTOMATICO%'
+			GROUP BY ROLLUP ( date(cec.feccodificador),cec.usucodificador)
+			ORDER BY fecha,usucodificador`,
+		};*/
 	const query = {
 		text: `	select * from codificacion.fn_reporte_11()`,
 	};
@@ -969,7 +969,7 @@ const reporte12 = async (req, res) => {
 
 
 const reporte13 = async (req, res) => {
-	const {cod_depto} = req.body;
+	const { cod_depto } = req.body;
 	console.table(req.body);
 
 	// query
@@ -994,9 +994,9 @@ const reporte13 = async (req, res) => {
 	`;
 
 	// ejecutar query
-	const resultado= await (await con.query(consulta)).rows;
-	
-	
+	const resultado = await (await con.query(consulta)).rows;
+
+
 	/* [
 		{
 			departamento: 'ORURO',
@@ -1012,8 +1012,80 @@ const reporte13 = async (req, res) => {
 		datos: resultado
 	});
 
-	
+
 };
+
+
+const download01 = async (req, res) => {
+	// Consulta
+	const resultado = await (await con.query(
+	`
+	SELECT 
+	p49, --ok
+	p51, --ok
+	p26, --ok
+	case 
+			when p41a = 1 then '(1) Ninguno' 
+			when p41a = 2 then '(2) Curso de alfabetización'
+			when p41a = 3 then '(3) Inicial (Pre kinder, kinder)'
+			when p41a = 4 then '(4) Básico'
+			when p41a = 5 then '(5) Intermedio'
+			when p41a = 6 then '(6) Medio'
+			when p41a = 7 then '(7) Primaria'
+			when p41a = 8 then '(8) Secundaria'
+			when p41a = 9 then '(9) Técnico medio'
+			when p41a = 10 then '(10) Técnico superior'
+			when p41a = 11 then '(11) Licenciatura'
+			when p41a = 12 then '(12) Maestría'
+			when p41a = 13 then '(13) Doctorado'
+			when p45 = 99 then '(99) Mas de una opción rellenada'  
+	end as p41a,
+	case 
+			when p41b = 0 then 'Nivel (0)'
+			when p41b = 1 then 'Nivel (1)' 
+			when p41b = 2 then 'Nivel (2)'
+			when p41b = 3 then 'Nivel (3)'
+			when p41b = 4 then 'Nivel (4)'
+			when p41b = 5 then 'Nivel (5)'
+			when p41b = 6 then 'Nivel (6)'
+			when p41b = 7 then 'Nivel (7)'
+			when p41b = 8 then 'Nivel (8)'
+			when p41b = 99 then '(99) Mas de una opción rellenada'  
+	end as p41b,
+
+	case 
+			when p45 = 1 then '(1) Sí' 
+			when p45 = 2 then '(2) No'
+			when p45 = 99 then '(99) Mas de una opción rellenada'  
+	end as p50,	
+	p48esp,   -- ok
+	case 
+			when p50 = 1 then '(1) Trabajadora(or) por cuenta propia' 
+			when p50 = 2 then '(2) Empleada(o) u obrera(o)' 
+			when p50 = 3 then '(3) Empleadora(o) o socia(0)' 
+			when p50 = 4 then '(4) Trabajadora(or) familiar sin remuneración'
+			when p50 = 5 then '(5) Trabajadora(or) del hogar'
+			when p50 = 6 then '(6) Cooperativista de producción'
+			when p50 = 99 then '(99) Mas de una opción rellenada'  
+	end as p50,	
+	case 
+			when p52 = 1 then '(1) Dentro o junto a esta vivienda' 
+			when p52 = 2 then '(2) Fuera de la vivienda, pero en el mismo municipio' 
+			when p52 = 3 then '(3) En otro municipio' 
+			when p52 = 4 then '(4) En otro país' 
+			when p52 = 99 then '(99) Mas de una opción rellenada'  
+	end as p52,	    
+	p52esp -- ok
+	FROM estructuras.inicial1_capitulo_personas
+	WHERE p49 IS NOT NULL OR  p51 IS NOT NULL
+	`
+	)).rows;
+
+	// respuestas 202
+	res.status(200).json({
+		datos: resultado
+	});
+}
 
 module.exports = {
 	repCodificados,
@@ -1033,5 +1105,6 @@ module.exports = {
 	reporte10,
 	reporte11,
 	reporte12,
-	reporte13
+	reporte13,
+	download01
 };

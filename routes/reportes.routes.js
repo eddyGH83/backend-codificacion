@@ -31,7 +31,8 @@ const { repCodificados,
         reporte10,
         reporte11,
         reporte12,
-        reporte13,        
+        reporte13,     
+        download01,   
         
     } = require('../controllers/reportes.controller');
 
@@ -56,6 +57,7 @@ router.get('/reporte10', reporte10);
 router.get('/reporte11', reporte11);
 router.get('/reporte12', reporte12);
 router.post('/reporte13', reporte13);
+router.get('/download01', download01);
 
 /*****************************************
  * ********---------**************
