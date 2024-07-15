@@ -5727,7 +5727,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					codigocodif,
 					usucodificador,
 					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
-					'' var_contexto,
+		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
 				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
