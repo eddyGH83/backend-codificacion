@@ -5627,7 +5627,8 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			) contexto_html
 		FROM codificacion.cod_p49_p51
 		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
-		limit 1000
+		order by codigocodif_act
+		limit 1500
 		`;
 		const registros = await (await con.query(query)).rows;
 
