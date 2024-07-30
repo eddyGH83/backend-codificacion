@@ -257,3 +257,13 @@ INSERT INTO codificacion.cod_num_cuestionarios (secuencial, i00, i001a, cont_cre
 SELECT 
 	secuencial, i00, i001a, 1, now(), cod_depto, null
 FROM estructura.inicial1_capitulo_vivienda from cod_depto = '04';
+
+
+
+---------------------
+SELECT a.i00  FROM estructuras.inicial1_capitulo_personas GROUP BY a.i00 a
+JOIN estructuras.inicial1_capitulo_vivienda v
+ON a.i00 = v.i00
+
+
+
