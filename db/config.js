@@ -92,12 +92,20 @@ const { Pool } = require('pg');
 	port: "5432",
 }); */
 
+/*  const con = new Pool({
+	user: "epaco",
+	host: "10.32.0.119",
+	password: "maced8jG8658",
+	database: "db_digitalizacion_test",
+	port: "5432",
+}); */
+
 
 const con = new Pool({
 	user: "postgres",
 	host: "localhost",
 	password: "toor",
-	database: "db_digitalizacion_1807",
+	database: "db_digitalizacion_0508",
 	port: "5432",
 });
 

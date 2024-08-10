@@ -267,3 +267,69 @@ ON a.i00 = v.i00
 
 
 
+
+---------------------
+-- Crear tabla limites.asignacion
+
+CREATE TABLE limites.asignacion (
+	id_asignacion serial NOT NULL,
+	cod_depto varchar(2) NOT NULL,
+	depto varchar(16) NOT NULL,
+	cod_sector varchar(16) NOT NULL,
+	segmento varchar(16) NOT NULL,
+
+
+
+
+
+	id_usuario int4 NOT NULL,
+	id_rol int4 NOT NULL,
+	id_sistema int4 NOT NULL,
+	estado varchar(20) NOT NULL,
+	usucre varchar(20) NOT NULL,
+	feccre timestamp NOT NULL,
+	usumod varchar(20),
+	fecmod timestamp,
+	unicoid varchar(100) NOT NULL,
+	CONSTRAINT asignacion_pk PRIMARY KEY (id_asignacion)
+);
+
+-- Tabla usuarios
+CREATE TABLE limites.usuarios (
+	id_usuario serial NOT NULL,
+	nombre varchar(100) NOT NULL,
+	apellido_paterno varchar(100) NOT NULL,
+	apellido_materno varchar(100) NOT NULL,	
+	rol int NOT NULL,
+	estado varchar(20) NOT NULL DEFAULT 'ACTIVO',
+	fecha_creacion timestamp NOT NULL DEFAULT now(),	
+	CONSTRAINT usuarios_pk PRIMARY KEY (id_usuario)
+);
+
+-- Tabla roles
+CREATE TABLE limites.roles (
+	id_rol serial NOT NULL,
+	rol varchar(128) NOT NULL,
+	estado BOOLEAN NOT NULL DEFAULT TRUE,
+	fecha_creacion timestamp NOT NULL DEFAULT now(),	
+	CONSTRAINT roles_pk PRIMARY KEY (id_rol)
+);
+
+-- El cod es numerico
+SELECT * from codificacion WHERE cod is numeric;  
+
+
+-----------------------
+
+
+-- como buscar un registro en una tabla por fecha, si el campo es de tipo timestamp: 2024-06-27 11:22:15.287
+
+SELECT * FROM tabla WHERE fecha::date = '2024-06-27';
+
+
+
+-- tengo una tabla llamada cod_p20esp en el esquema codificacion, y tengo otra tabla llamada cod_p20esp_2 en el esquema estructura
+-- crear un trigger cada vez que se actualice un registro en la tabla cod_p20esp, se actualice en la tabla cod_p20esp_2 del esquema estructura
+-- El trigger se llama tr_cod_p20esp
+-- El trigger se ejecuta antes de la actualización
+-- LA consulta es la siguiente:

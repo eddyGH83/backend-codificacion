@@ -91,3 +91,10 @@ SELECT cod.i00, count(cod.i00) FROM (
 	UNION 
 	SELECT  i00, count(i00) cant, 'p52esp' pregunta FROM codificacion.cod_p52esp WHERE estado IN ('CODIFICADO', 'VERIFICADO') AND codigocodif IS NOT NULL GROUP BY i00
 ) AS cod GROUP BY cod.i00
+
+
+
+-- tengo archivos en la carpeta actual, esta carpeta tiene archivos pdf, 
+-- necesito una lista de los archivos pdf que estan en la carpeta actual y guardarlos en un archivo llamado lista_pdf.txt
+-- desde el cmd de windows, en la carpeta actual, ejecutar el siguiente comando
+dir /b *.pdf > lista_pdf.txt

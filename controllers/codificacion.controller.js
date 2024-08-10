@@ -3968,20 +3968,24 @@ const updatePreguntaSimpleCheck = async (req, res) => {
 }
 
 
-// Supervision doble correctos
+// Supervision doble Indiviuales (Recodificación) --> (boton Correcto)
 const updatePreguntaDobleCorreccion = async (req, res) => {
 
 	const {
 		id_usuario,
 		tabla_id,
-		id_registro
+		id_registro,
+		codigocodifOcuItem,
+		codigocodifActItem
 	} = req.body;
-	console.table(req.body);
+	// console.table(req.body);
+
+	// consulta de actualizacion
 
 	await con.query(`
 		UPDATE codificacion.cod_p49_p51
-		SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu = codigocodif_ocu , fecverificador = now(), usuverificador = '${id_usuario}', 
-			estado_act = 'VERIFICADO', codigocodif_v1_act = codigocodif_act
+		SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu = '${codigocodifOcuItem}' , fecverificador = now(), usuverificador = '${id_usuario}', 
+			estado_act = 'VERIFICADO', codigocodif_v1_act = '${codigocodifActItem}'
 		WHERE id_p49_p51 = ${id_registro}
 	`)
 
@@ -6247,6 +6251,7 @@ const updateCargaSupervision = async (req, res) => {
 		registros
 	} = req.body;
 
+	
 	console.log(req.body);
 
 
