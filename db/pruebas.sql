@@ -98,3 +98,163 @@ SELECT cod.i00, count(cod.i00) FROM (
 -- necesito una lista de los archivos pdf que estan en la carpeta actual y guardarlos en un archivo llamado lista_pdf.txt
 -- desde el cmd de windows, en la carpeta actual, ejecutar el siguiente comando
 dir /b *.pdf > lista_pdf.txt
+
+
+--  crear tabla con los capos secuencial, i00, i001a, cont_creacion, fecha_creacion, cod_depto, obs 
+CREATE TABLE codificacion.seg_vivienda (
+  secuencial bigint,
+  i00 varchar(16),
+  i001a varchar(16),  
+  nro bigint,
+  cont_creacion int,  
+  fecha_creacion timestamp DEFAULT CURRENT_TIMESTAMP,  
+  cod_depto varchar(4),
+  obs text
+);
+
+
+CREATE TABLE codificacion.seg_personas (
+  secuencial bigint,
+  i00 varchar(16),
+  i001a varchar(16),  
+  nro bigint,
+  cont_creacion int,  
+  fecha_creacion timestamp DEFAULT CURRENT_TIMESTAMP,  
+  cod_depto varchar(4),
+  obs text
+);
+
+
+CREATE TABLE codificacion.seg_emigracion (
+  secuencial bigint,
+  i00 varchar(16),
+  i001a varchar(16),  
+  nro bigint,
+  cont_creacion int,  
+  fecha_creacion timestamp DEFAULT CURRENT_TIMESTAMP,  
+  cod_depto varchar(4),
+  obs text
+);
+
+-- estructuras.inicial0_capitulo_personas definition
+
+-- Drop table
+
+-- DROP TABLE estructuras.inicial0_capitulo_personas;
+
+CREATE TABLE estructuras.inicial0_capitulo_personas (
+	secuencial int4 NULL,
+	i00 varchar(8) NULL,
+	i001a varchar(8) NULL,
+	nro int4 NULL,
+	nombre varchar(100) NULL,
+	mpo int4 NULL,
+	p24 int4 NULL,
+	p25 int4 NULL,
+	p26 varchar(3) NULL,
+	p27a varchar(2) NULL,
+	p27b varchar(2) NULL,
+	p27c varchar(4) NULL,
+	p28 int4 NULL,
+	p29 int4 NULL,
+	p301 int4 NULL,
+	p302 int4 NULL,
+	p303 int4 NULL,
+	p304 int4 NULL,
+	p305 int4 NULL,
+	p306 int4 NULL,
+	p307 int4 NULL,
+	p31 int4 NULL,
+	p32 int4 NULL,
+	p32esp varchar(18) NULL,
+	p331 varchar(18) NULL,
+	p332 varchar(18) NULL,
+	p333 varchar(18) NULL,
+	p334 int4 NULL,
+	p341 varchar(18) NULL,
+	p342 int4 NULL,
+	p35 int4 NULL,
+	p352a varchar(50) NULL,
+	p352b varchar(18) NULL,
+	p353 varchar(50) NULL,
+	p353b varchar(4) NULL,
+	p36 int4 NULL,
+	p361 varchar(4) NULL,
+	p362a varchar(50) NULL,
+	p362b varchar(18) NULL,
+	p363 varchar(16) NULL,
+	p37 int4 NULL,
+	p372a varchar(16) NULL,
+	p372b int4 NULL,
+	p373 varchar(16) NULL,
+	p38 int4 NULL,
+	p39 int4 NULL,
+	p40 int4 NULL,
+	p41a int4 NULL,
+	p41b int4 NULL,
+	p42a int4 NULL,
+	p42b int4 NULL,
+	p42c int4 NULL,
+	p42d int4 NULL,
+	p43 int4 NULL,
+	p44 int4 NULL,
+	p45 int4 NULL,
+	p46 int4 NULL,
+	p47 int4 NULL,
+	p48 int4 NULL,
+	p48esp varchar(50) NULL,
+	p49 varchar(100) NULL,
+	p50 int4 NULL,
+	p51 varchar(100) NULL,
+	p52 int4 NULL,
+	p52esp varchar(16) NULL,
+	p53 int4 NULL,
+	p54 varchar(2) NULL,
+	p54a varchar(2) NULL,
+	p54b varchar(2) NULL,
+	p55 varchar(2) NULL,
+	p55a varchar(2) NULL,
+	p55b varchar(2) NULL,
+	p56 varchar(2) NULL,
+	p57a int4 NULL,
+	p57b varchar(4) NULL,
+	p58 int4 NULL,
+	p59 int4 NULL,
+	cod_depto varchar(2) NULL,
+	cod_prov varchar(2) NULL,
+	cod_mpio varchar(2) NULL,
+	cod_cd_com varchar(5) NULL,
+	zona varchar(2) NULL,
+	sector varchar(8) NULL,
+	segmento varchar(8) NULL,
+	p25_sexo_aux_01 int4 NULL,
+	p25_sexo_aux_02 int4 NULL,
+	p25_sexo_ocup_aux_01 int4 NULL,
+	p391_tipest_p383_aux int4 NULL,
+	p392_tipest_p385_aux int4 NULL,
+	con_mpio varchar(6) NULL,
+	p32esp_cod varchar(10) NULL,
+	p331_cod varchar(10) NULL,
+	p332_cod varchar(10) NULL,
+	p333_cod varchar(10) NULL,
+	p341_cod varchar(10) NULL,
+	p35a_cod varchar(10) NULL,
+	p353_cod varchar(10) NULL,
+	p36a_cod varchar(10) NULL,
+	p363_cod varchar(10) NULL,
+	p372a_cod varchar(10) NULL,
+	p373_cod varchar(10) NULL,
+	p48esp_cod varchar(10) NULL,
+	p49_cod varchar(10) NULL,
+	p51_cod varchar(10) NULL,
+	p52esp_cod varchar(10) NULL,
+	n2_aux int4 NULL
+);
+
+--- Insertar datos en la tabla seg_personas desde la tabla estructuras.inicial0_capitulo_personas
+INSERT INTO codificacion.seg_personas (secuencial, i00, i001a, nro, cont_creacion, fecha_creacion, cod_depto, obs)
+SELECT secuencial, i00, i001a, nro, 3, now(), cod_depto, ''
+FROM estructuras.inicial0_capitulo_personas  
+where estructuras.cod_depto ='04';
+
+

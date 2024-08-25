@@ -1,335 +1,259 @@
-SELECT
-	'La Paz' AS depto,
-	'20' AS nro_preg,
-	'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
-	count(*) AS total_carga
-FROM codificacion.cod_p20esp WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'32' AS nro_preg,
-	'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p32esp WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'33' AS nro_preg,
-	'Idioma 1' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p331 WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'33' AS nro_preg,
-	'Idioma 2' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'33' AS nro_preg,
-	'Idioma 3' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p332 WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT 
-	'La Paz' AS depto,
-	'34' AS nro_preg,
-	'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
-	0 AS total_carga
-UNION
-
-SELECT 
-	'La Paz' AS depto,
-	'35' AS nro_preg,
-	'¿Dónde nació?' AS variable,
-	0 AS total_carga
-UNION
-SELECT 
-	'La Paz' AS depto,
-	'36' AS nro_preg,
-	'¿Dónde vive habitualmente?' AS variable,
-	0 AS total_carga
-UNION
-SELECT 
-	'La Paz' AS depto,
-	'37' AS nro_preg,
-	'¿Dónde vivía el año 2019?' AS variable,
-	0 AS total_carga
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'48' AS nro_preg,
-	'Las últimas 4 semanas:' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p48esp WHERE estado = 'ELABORADO'
-
-UNION
-
-SELECT 
-	'La Paz' AS depto,
-	'49-51' AS nro_preg,
-	'Ocupación - Actividad Económica' AS variable,
-	count (1) AS total_carga FROM codificacion.cod_p49_p51
-	WHERE estado = 'ELABORADO'                
-UNION
-
-SELECT
-	'La Paz' AS depto,
-	'52' AS nro_preg,
-	'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
-	count(1) AS total_carga
-FROM codificacion.cod_p52esp
-WHERE estado = 'ELABORADO'
-ORDER BY nro_preg;
-
-
-
-
-¿Qué es DevOps?
-
-
-Un lenguaje de programación
-Una metodología ágil de desarrollo de software popular en las organizaciones
-Una combinación de prácticas y herramientas que buscan automatizar y mejorar la colaboración entre desarrollo y operaciones
-Un tipo de software para gestión de proyectos
-
-
-
--- tabla: catalogo_pais
-SELECT codigo, descripcion, nro, unico
-FROM codificacion.catalogo_pais;
-
-
-
--- tabla: cod_catalogo
-SELECT id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico
-FROM codificacion.cod_catalogo;
-
--- Hacer un insert en la tabla cod_catalogo, donde los registros sean de la tabla catalogo_pais
-INSERT INTO codificacion.cod_catalogo (id_catalogo, catalogo, codigo, descripcion, estado, usucre, feccre, usumod, fecmod, descripcion_unida, unico)
-SELECT
-	1 AS id_catalogo,
-	'catalogo_pais' AS catalogo,
-	codigo,
-	descripcion,
-	'ACTIVO' AS estado,
-	'admin' AS usucre,
-	now() AS feccre,
-	'admin' AS usumod,
-	now() AS fecmod,
-	CONCAT(codigo, ' - ', descripcion) AS descripcion_unida,
-	CONCAT(codigo, descripcion) AS unicoid
-FROM codificacion.catalogo_pais;
-
-------------------- tabla: cod_persona, donde el campo img debe se debe almacenar una cadena de caracteres aleatorios unicos de tamaño 8, 
-create table codificacion.cod_persona
-(
-	id_persona serial not null,
-	nombre varchar(100) not null,
-	apellido_paterno varchar(100) not null,
-	apellido_materno varchar(100) not null,
-	ci varchar(20) not null,
-	img varchar(8) not null DEFAULT substr(md5(random()::text), 1, 8),
-	estado varchar(20) not null,
-	usucre varchar(20) not null,
-	feccre timestamp not null,
-	usumod varchar(20),
-	fecmod timestamp,
-	unicoid varchar(100) not null,
-	primary key (id_persona)
-);
-
---- Ejemmplo 1:
-SELECT img substr(md5(random()::text), 1, 8)  from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 8
-
---- Ejemplo 2:
-SELECT md5(random()::text) from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 32
-
---- Ejemplo 3:
-SELECT substr(md5(random()::text), 1, 8) from codificacion.cod_persona;  -- para generar una cadena de caracteres aleatorios unicos de tamaño 8
-
----------------inicial1_capitulo_vivienda---------------
-CREATE TABLE estructura.inicial1_capitulo_vivienda (
-	secuencial int4 NOT NULL,
-	i00 varchar(8) NOT NULL DEFAULT 0,
-	i001a varchar(8) NOT NULL DEFAULT 0,
-	i01 varchar(8) NOT NULL,
-	i02 varchar(4) NULL,
-	i03 varchar(2) NULL,
-	i03a varchar(1) NULL,
-	i04 varchar(2) NULL,
-	i05 varchar(2) NULL,
-	i06 varchar(35) NULL,
-	i07 varchar(35) NULL,
-	i08 varchar(4) NULL,
-	i09 varchar(3) NULL,
-	i10 varchar(4) NULL,
-	i11 varchar(15) NULL,
-	i12 varchar(4) NULL,
-	mco int4 NULL,
-	p01 int4 NULL,
-	p02 int4 NULL,
-	p03 int4 NULL,
-	p04 int4 NULL,
-	p05 int4 NULL,
-	p06 int4 NULL,
-	p07 int4 NULL,
-	p08 int4 NULL,
-	p09 int4 NULL,
-	p10 int4 NULL,
-	p11 int4 NULL,
-	p12 int4 NULL,
-	p13 int4 NULL,
-	p14 int4 NULL,
-	p15 int4 NULL,
-	p16 int4 NULL,
-	p17 int4 NULL,
-	p181 int4 NULL,
-	p182 int4 NULL,
-	p183 int4 NULL,
-	p184 int4 NULL,
-	p185 int4 NULL,
-	p186 int4 NULL,
-	p187 int4 NULL,
-	p188 int4 NULL,
-	p189 int4 NULL,
-	p1810 int4 NULL,
-	p191 int4 NULL,
-	p192 int4 NULL,
-	p193 int4 NULL,
-	p194 int4 NULL,
-	p195 int4 NULL,
-	p196 int4 NULL,
-	p197 int4 NULL,
-	p198 int4 NULL,
-	p20 varchar(4) NULL,
-	p20a varchar(2) NULL,
-	p21 varchar(4) NULL,
-	p21a varchar(2) NULL,
-	p23 varchar(2) NULL,
-	p23a varchar(2) NULL,
-	p23b varchar(2) NULL,
-	p23c varchar(2) NULL,
-	p23d varchar(2) NULL,
-	p23e varchar(2) NULL,
-	cod_depto varchar(2) NULL,
-	cod_prov varchar(2) NULL,
-	cod_mpio varchar(2) NULL,
-	cod_cd_com varchar(5) NULL,
-	zona varchar(2) NULL,
-	sector varchar(6) NULL,
-	segmento varchar(8) NULL,
-	area varchar(2) NULL,
-	con_mpio varchar(6) NULL,
-	g_aforo_viv_colectiva int4 NULL,
-	CONSTRAINT inicial1_capitulo_vivienda_pk PRIMARY KEY (secuencial),
-	CONSTRAINT inicial1_capitulo_vivienda_unique UNIQUE (i00)
-);
-
----------------cod_num_cuestionarios---------------
-CREATE TABLE codificacion.cod_num_cuestionarios (
-	secuencial int4 NOT NULL,
-	i00 varchar(8) NOT NULL DEFAULT 0,
-	i001a varchar(8) NOT NULL DEFAULT 0,
-	cont_creacion int4 NOT NULL,
-	fecha_creacion timestamp NOT NULL DEFAULT now(),
-	cod_depto varchar(2) NOT NULL,
-	obs text NULL,
-	CONSTRAINT inicial1_capitulo_vivienda_pk PRIMARY KEY (secuencial),
-	CONSTRAINT inicial1_capitulo_vivienda_unique UNIQUE (i00)
-);
-
--- insertar datos en la tabla inicial1_capitulo_vivienda en la tabla cod_num_cuestionarios
-INSERT INTO codificacion.cod_num_cuestionarios (secuencial, i00, i001a, cont_creacion, fecha_creacion, cod_depto, obs) 
-SELECT 
-	secuencial, i00, i001a, 1, now(), cod_depto, null
-FROM estructura.inicial1_capitulo_vivienda from cod_depto = '04';
-
-
-
----------------------
-SELECT a.i00  FROM estructuras.inicial1_capitulo_personas GROUP BY a.i00 a
-JOIN estructuras.inicial1_capitulo_vivienda v
-ON a.i00 = v.i00
-
-
-
-
----------------------
--- Crear tabla limites.asignacion
-
-CREATE TABLE limites.asignacion (
-	id_asignacion serial NOT NULL,
-	cod_depto varchar(2) NOT NULL,
-	depto varchar(16) NOT NULL,
-	cod_sector varchar(16) NOT NULL,
-	segmento varchar(16) NOT NULL,
-
-
-
-
-
-	id_usuario int4 NOT NULL,
-	id_rol int4 NOT NULL,
-	id_sistema int4 NOT NULL,
-	estado varchar(20) NOT NULL,
-	usucre varchar(20) NOT NULL,
-	feccre timestamp NOT NULL,
-	usumod varchar(20),
-	fecmod timestamp,
-	unicoid varchar(100) NOT NULL,
-	CONSTRAINT asignacion_pk PRIMARY KEY (id_asignacion)
-);
-
--- Tabla usuarios
-CREATE TABLE limites.usuarios (
-	id_usuario serial NOT NULL,
-	nombre varchar(100) NOT NULL,
-	apellido_paterno varchar(100) NOT NULL,
-	apellido_materno varchar(100) NOT NULL,	
-	rol int NOT NULL,
-	estado varchar(20) NOT NULL DEFAULT 'ACTIVO',
-	fecha_creacion timestamp NOT NULL DEFAULT now(),	
-	CONSTRAINT usuarios_pk PRIMARY KEY (id_usuario)
-);
-
--- Tabla roles
-CREATE TABLE limites.roles (
-	id_rol serial NOT NULL,
-	rol varchar(128) NOT NULL,
-	estado BOOLEAN NOT NULL DEFAULT TRUE,
-	fecha_creacion timestamp NOT NULL DEFAULT now(),	
-	CONSTRAINT roles_pk PRIMARY KEY (id_rol)
-);
-
--- El cod es numerico
-SELECT * from codificacion WHERE cod is numeric;  
-
-
------------------------
-
-
--- como buscar un registro en una tabla por fecha, si el campo es de tipo timestamp: 2024-06-27 11:22:15.287
-
-SELECT * FROM tabla WHERE fecha::date = '2024-06-27';
-
-
-
--- tengo una tabla llamada cod_p20esp en el esquema codificacion, y tengo otra tabla llamada cod_p20esp_2 en el esquema estructura
--- crear un trigger cada vez que se actualice un registro en la tabla cod_p20esp, se actualice en la tabla cod_p20esp_2 del esquema estructura
--- El trigger se llama tr_cod_p20esp
--- El trigger se ejecuta antes de la actualización
--- LA consulta es la siguiente:
+'25220549',
+'25220550',
+'25220551',
+'25220552',
+'25259554',
+'25260988',
+'25261022',
+'25261023',
+'25261087',
+'25800060',
+'25800061',
+'25800062',
+'25800063',
+'25800064',
+'25800065',
+'26200385',
+'26200386',
+'26200387',
+'26200388',
+'26200389',
+'26200390',
+'26200391',
+'26200392',
+'26200393',
+'26200394',
+'26200395',
+'26200396',
+'26300315',
+'26300319',
+'26300320',
+'26300332',
+'26300333',
+'26300338',
+'26300339',
+'26300340',
+'26300341',
+'28900323',
+'28900324',
+'28900325',
+'28900326',
+'28900327',
+'28900328',
+'28900329',
+'28900330',
+'28900331',
+'29000056',
+'29300899',
+'29300900',
+'29300901',
+'29300902',
+'29300903',
+'29300904',
+'29300905',
+'29300906',
+'29300907',
+'29300917',
+'29300918',
+'29300919',
+'29300920',
+'29300921',
+'29300922',
+'29300923',
+'29300924',
+'29300925',
+'29300926',
+'29300927',
+'29300928',
+'29300929',
+'29300930',
+'29300931',
+'29300962',
+'29300963',
+'29300964',
+'29300965',
+'29300966',
+'29300967',
+'29300968',
+'29300969',
+'29300970',
+'29300971',
+'29300972',
+'29300973',
+'29300974',
+'29300975',
+'29300976',
+'29300977',
+'29300978',
+'29300979',
+'29300980',
+'29300981',
+'29300982',
+'29300983',
+'29300984',
+'29300985',
+'29500252',
+'29500253',
+'29500254',
+'29500255',
+'29500257',
+'29500258',
+'29500263',
+'29500264',
+'29800636',
+'30400235',
+'30400240',
+'30400241',
+'25200001',
+'25200047',
+'25500028',
+'25500029',
+'25500057',
+'25500074',
+'25500077',
+'25500078',
+'25500079',
+'25500087',
+'25500088',
+'25500089',
+'25500090',
+'25500091',
+'25500092',
+'25500093',
+'25500094',
+'25500095',
+'25500096',
+'25500102',
+'25500103',
+'25500104',
+'25500105',
+'25500107',
+'25500108',
+'25500109',
+'25500110',
+'25500111',
+'25500113',
+'25500114',
+'25500115',
+'25600097',
+'25700011',
+'25700093',
+'25800039',
+'25900046',
+'26000002',
+'26000005',
+'26000027',
+'26000028',
+'26000029',
+'26000030',
+'26000031',
+'26000032',
+'26000033',
+'26000034',
+'26000035',
+'26000036',
+'26000065',
+'26000113',
+'26200068',
+'26200069',
+'26200071',
+'26200072',
+'26200073',
+'26200074',
+'26200075',
+'26200076',
+'26200077',
+'26200078',
+'26200079',
+'26300041',
+'26300055',
+'26600148',
+'26600360',
+'26600370',
+'26700411',
+'26700420',
+'26800021',
+'26800057',
+'26900023',
+'26900064',
+'27300002',
+'27300062',
+'27300063',
+'27300502',
+'27300504',
+'27400036',
+'27400143',
+'27400241',
+'27600004',
+'27600030',
+'27600081',
+'27600082',
+'27700080',
+'27900014',
+'27900089',
+'27900090',
+'27900125',
+'28000017',
+'28000018',
+'28000019',
+'28100001',
+'28100002',
+'28100038',
+'28200018',
+'28300013',
+'28400001',
+'28400069',
+'28500026',
+'28500035',
+'28500043',
+'28500044',
+'28700007',
+'28700019',
+'28800002',
+'28900001',
+'28900014',
+'28900028',
+'29100013',
+'29300129',
+'29300131',
+'29300151',
+'29300160',
+'29300166',
+'29300169',
+'29300170',
+'29300171',
+'29300172',
+'29300173',
+'29400083',
+'29500008',
+'29500147',
+'29700004',
+'29700019',
+'30000001',
+'30000043',
+'30000062',
+'30000077',
+'30000078',
+'30000079',
+'30000082',
+'30000083',
+'30000103',
+'30000111',
+'30000112',
+'30100001',
+'30100002',
+'30100010',
+'30200034',
+'30500050',
+'30500051',
+'30500103',
+'30500104',
+'30500105',
+'30500127',
+'30500128',
+'30600001',
+'30700077',
+'30700127',
+'30700128',
+'30700149',
+'30700187',
