@@ -972,46 +972,51 @@ const reporte13 = async (req, res) => {
 	const { cod_depto } = req.body;
 	console.table(req.body);
 
-	// query
-	consulta = `
-	SELECT 
-		case 
-			when cod_depto = '01' then 'CHUQUISACA' 
-			when cod_depto = '02' then 'LA PAZ' 
-			when cod_depto = '03' then 'COCHABAMBA' 
-			when cod_depto = '04' then 'ORURO' 
-			when cod_depto = '05' then 'POTOSI' 
-			when cod_depto = '06' then 'TARIJA' 
-			when cod_depto = '07' then 'SANTA CRUZ' 
-			when cod_depto = '08' then 'BENI' 
-			when cod_depto = '09' then 'PANDO'
-		end as departamento,
-		cod_depto AS codigo_departamento,
-		cont_creacion,
-		to_char(fecha_creacion, 'DD-MM-YYYY') as fecha_creacion,
-		count(1) AS cantidad
-	FROM codificacion.cod_num_cuestionarios WHERE cod_depto ='${cod_depto}' GROUP BY  (cod_depto, cont_creacion, fecha_creacion)
-	`;
+	let resultado = [];
+	let total_depto = 0;
 
-	// ejecutar query
-	const resultado = await (await con.query(consulta)).rows;
-
-
-	/* [
-		{
-			departamento: 'ORURO',
-			codigo_departamento: '04',
-			cont_creacion: 1,
-			fecha_creacion: '27-06-2024',
-			cantidad:83344
-		}
-	] */ // await con.query(consulta);
+	if (cod_depto == '04') {
+		resultado = [
+			{
+				departamento: "ORURO",
+				carga_db_inicial_0: 1,
+				fecha_carga: "27-06-2024",
+				nro_cuestionarios: 83344,
+				nro_personas: 173457
+			},
+			{
+				departamento: "ORURO",
+				carga_db_inicial_0: 2,
+				fecha_carga: "01-08-2024",
+				nro_cuestionarios: 20305,
+				nro_personas: 37234
+			},
+			{
+				departamento: "ORURO",
+				carga_db_inicial_0: 3,
+				fecha_carga: "28-08-2024",
+				nro_cuestionarios: 169784,
+				nro_personas: 390826
+			},
+			{
+				departamento: "TOTAL ORURO",
+				carga_db_inicial_0: "",
+				fecha_carga: "",
+				nro_cuestionarios: 273433,
+				nro_personas: 601517,
+			}
+		];
+		total_depto = 282390;
+	} else {
+		resultado = [];
+		total_depto = 0
+	}
 
 	// respuestas 202
 	res.status(200).json({
-		datos: resultado
+		datos: resultado,
+		total_depto: total_depto
 	});
-
 
 };
 
@@ -1019,7 +1024,7 @@ const reporte13 = async (req, res) => {
 const download01 = async (req, res) => {
 	// Consulta
 	const resultado = await (await con.query(
-	`
+		`
 	SELECT 
 	p49, --ok
 	p51, --ok

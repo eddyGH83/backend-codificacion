@@ -357,6 +357,8 @@ const updateMatriz = async (req, res) => {
 			});
 		} else {
 			// Insertar registro
+			console.table(params);
+			
 			await (await con.query(`
 				UPDATE codificacion.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
 				codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
