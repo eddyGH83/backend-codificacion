@@ -1007,24 +1007,11 @@ const codificadoresConCarga = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Lista de supervisores sin carga
 const supervisoresSinCarga = async (req, res) => {
 	let id = req.params.id;
 
-	console.log("supervisoresSinCarga----------------------------------------------------");
+	console.log("Lista de Supsssss!!!!!!!!!!");
 	const query = {
 		text: `
 		SELECT
@@ -1039,7 +1026,7 @@ const supervisoresSinCarga = async (req, res) => {
 		    login,
 			0 total,
     		false activo
-		FROM codificacion.cod_usuario WHERE rol_id =4 AND estado ILIKE 'A' and cod_supvsr = ${id}
+		FROM codificacion.cod_usuario WHERE rol_id =4 AND estado ILIKE 'A'
 		`,
 	};
 	await con
@@ -2302,6 +2289,10 @@ const cargarParaCodificarSimple = async (req, res) => {
 		end as contexto,
 		id_p48esp as id_pregunta, 
 		secuencial,
+		case 
+		when p26 is not null then p26
+		when p26 is null then  '' 
+		end as edad,		
 		i00, i001a, nro, respuesta, p48, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p48esp
 		WHERE estado ='ASIGNADO' and usucre = '${login}';
@@ -3159,12 +3150,12 @@ const updateAsignadoSup = async (req, res) => {
 	} else {
 		// Total de carga
 		var total_carga = 0;
-		parametro.forEach(paramss => { total_carga += paramss.count; });
+		parametro.forEach(paramss => { total_carga += paramss.count; }); 
 
 
 		// Veririfica disponibilidad de carga
 		const queryDisp = `
-		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'CODIFICADO' and departamento = '${parametro[0].departamento}';`
+		SELECT count(1) from codificacion.cod_${tabla_id} where estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento = '${parametro[0].departamento}';`
 		const result = await (await con.query(queryDisp)).rows;
 
 		// Si la cantidad de carga es mayor a la disponible, se retorna un error
@@ -3201,6 +3192,10 @@ const updateAsignadoSup = async (req, res) => {
 	}
 
 };
+
+
+
+
 
 
 // Reasignación de carga a supervisores
