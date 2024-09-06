@@ -220,7 +220,9 @@ const devuelveMatriz = async (req, res) => {
 			to_char(feccre, 'DD-MM-YYYY') as feccre,
 			usucre,
 			to_char(fecmod, 'DD-MM-YYYY') as fecmod,
-			usumod	
+			usumod,
+			desc_ocu_norm,
+			desc_acteco_norm	
 		FROM codificacion.cod_matriz WHERE estado ILIKE 'ACTIVO' order by id_cod_matriz desc 
 		`,
 	};
@@ -304,8 +306,8 @@ const insertarMatriz = async (req, res) => {
 				insert into codificacion.cod_matriz 
 				(codigo_ocupacion, descripcion_ocupacion, codigo_acteco, descripcion_acteco, usucre, feccre, estado,cat_ocupacion, cat_acteco, desc_ocu_norm, desc_acteco_norm) values 
 				('${params.codigo_ocupacion}', '${params.descripcion_ocupacion}', '${params.codigo_acteco}', '${params.descripcion_acteco}', '${params.user}', now(), 'ACTIVO', 
-				'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'),  
-				REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g'))
+				'cat_cob', 'cat_caeb', REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\\w]{1,}','','g'),  
+				REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\\w]{1,}','','g'))
 			`));
 			return res.status(200).json({
 				success: true,
@@ -362,7 +364,8 @@ const updateMatriz = async (req, res) => {
 			await (await con.query(`
 				UPDATE codificacion.cod_matriz SET codigo_ocupacion='${params.codigo_ocupacion}', descripcion_ocupacion='${params.descripcion_ocupacion}',
 				codigo_acteco='${params.codigo_acteco}', descripcion_acteco='${params.descripcion_acteco}', usumod='${params.user}', fecmod=now(), 
-				desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\w]{1,}','','g'), desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\w]{1,}','','g') 
+				desc_ocu_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_ocupacion}')) ,'[^\\w]{1,}','','g'), 
+				desc_acteco_norm=REGEXP_REPLACE(unaccent(lower('${params.descripcion_acteco}')) ,'[^\\w]{1,}','','g') 
 				WHERE id_cod_matriz=${id}
 			`));
 

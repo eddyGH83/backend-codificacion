@@ -3150,7 +3150,7 @@ const updateAsignadoSup = async (req, res) => {
 	} else {
 		// Total de carga
 		var total_carga = 0;
-		parametro.forEach(paramss => { total_carga += paramss.count; }); 
+		parametro.forEach(paramss => { total_carga += paramss.count; });
 
 
 		// Veririfica disponibilidad de carga
@@ -3903,7 +3903,7 @@ const updatePreguntaSimple = async (req, res) => {
 
 
 
-// Supervision simple correctos
+// Supervision simple correctos 
 const updatePreguntaSimpleCorreccion = async (req, res) => {
 	var {
 		id_registro, // id por el cual se modifica
@@ -3915,7 +3915,7 @@ const updatePreguntaSimpleCorreccion = async (req, res) => {
 	// update
 	await con.query(`
 		UPDATE codificacion.cod_${tabla_id} 
-		SET estado = 'VERIFICADO', codigocodif_v1 = codigocodif, fecverificador = now(), usuverificador = '${usuverificador}'			
+		SET estado = 'VERIFICADO', codigocodif_v1 = ${codigocodif}, fecverificador = now(), usuverificador = '${usuverificador}'			
 		WHERE id_${tabla_id} = ${id_registro}
 	`)
 
@@ -5669,7 +5669,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5700,7 +5700,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario}) LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5731,7 +5731,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5762,7 +5762,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5793,7 +5793,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5824,7 +5824,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5867,7 +5867,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					end as var_contexto,
 					departamento
 				FROM codificacion.cod_p352a
-				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -5900,7 +5900,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -5947,7 +5947,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p362a
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -5980,7 +5980,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p363
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6024,7 +6024,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p372a
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6056,7 +6056,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p373
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6064,11 +6064,11 @@ const devuelveCargaParaSupervision = async (req, res) => {
 			SELECT * FROM codificacion.cod_catalogo WHERE estado = 'ACTIVO' and catalogo ='cat_pais';
 		`)).rows;
 
-			// respuesta
-			res.status(200).json({
-				datos: registros,
-				catalogo: catalogo
-			})
+		// respuesta
+		res.status(200).json({
+			datos: registros,
+			catalogo: catalogo
+		})
 		return;
 	}
 
@@ -6088,12 +6088,14 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
 				case 
-					when p48 is not null then '<strong> Descripción: </strong>' || p48
-					when p48 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
+					when p48 is not NULL AND p26 is not null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong>' || p26
+					when p48 is not NULL AND p26 is null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong> NO DEFINIDO'
+					when p48 is NULL AND p26 is NOT null  then '<strong> Descripción: </strong> NO DEFINIDO<br><strong> Edad: </strong>' || P26
+					when p48 is NULL AND p26 is null  then '<strong> Descripción: </strong> NO DEFINIDO <br><strong> Edad: </strong> NO DEFINIDO'
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6104,7 +6106,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		// respuesta
 		res.status(200).json({
 			datos: registros,
-			catalogo: []
+			catalogo: catalogo
 		});
 		// return;
 
@@ -6128,7 +6130,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p52esp
-			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6137,11 +6139,11 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		`)).rows;
 
 
-			// respuesta
-			res.status(200).json({
-				datos: registros,
-				catalogo: catalogo
-			})
+		// respuesta
+		res.status(200).json({
+			datos: registros,
+			catalogo: catalogo
+		})
 		return;
 	}
 
@@ -6246,9 +6248,7 @@ const updateCargaSupervision = async (req, res) => {
 		registros
 	} = req.body;
 
-	
 	console.log(req.body);
-
 
 	// verificar que tabla es
 	if (tabla_id === 'p49_p51') {
@@ -6290,8 +6290,6 @@ const updateCargaSupervision = async (req, res) => {
 			message: 'Carga supervisada correctamente. ' + tabla_id
 		})
 	}
-
-
 }
 /* 
 estado
