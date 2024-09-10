@@ -45,6 +45,7 @@ const {
     devuelvePreguntasCodificado,
     devuelvePreguntasSupervision,
     devuelveCargaParaSupervision,
+    devuelveCargaParaSupervisionAutomatica,
     devuelvePreguntasSup,
     devuelvePreguntaUsrSup,
     muestraCargaDatos,
@@ -56,7 +57,8 @@ const {
 	cargarParaSupervisionDoble,
     updatePreguntaSimpleCorreccion,
     updatePreguntaDobleCorreccion,
-    updatePreguntaSimpleCheck
+    updatePreguntaSimpleCheck,
+    devuelvePreguntasSupervisionAutomatica
 }= require('../controllers/codificacion.controller');
 
 /* router.post('/', usuariosPost)  getCantidadCarga cargarDatosGlobal*/
@@ -110,12 +112,17 @@ router.post('/updateVerificado/:user', updateVerificado);
 router.get('/devuelvePreguntas', devuelvePreguntas);
 router.post('/devuelvePreguntasCodificado', devuelvePreguntasCodificado);
 router.post('/devuelveCargaParaSupervision', devuelveCargaParaSupervision);
+router.post('/devuelveCargaParaSupervisionAutomatica', devuelveCargaParaSupervisionAutomatica);
+
+
 
 router.post('/devuelvePreguntasSupervision', devuelvePreguntasSupervision);
 router.post('/devuelvePreguntasSup', devuelvePreguntasSup);
 router.post('/devuelvePreguntaUsrSup', devuelvePreguntaUsrSup);
 router.post('/updateOcuAct', updateOcuAct);
 router.post('/updateCargaSupervision', updateCargaSupervision);
+
+router.post('/devuelvePreguntasSupervisionAutomatica', devuelvePreguntasSupervisionAutomatica);
 
 router.post('/cargarParaSupervisionSimple', cargarParaSupervisionSimple);
 router.post('/cargarParaSupervisionDoble', cargarParaSupervisionDoble);
