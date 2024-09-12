@@ -3,10 +3,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const con = require('../db/config');
 
+
 const bodyParser = require('body-parser');
 const multiPart = require('connect-multiparty');
 const Excel = require('exceljs');
 const { cargarDatosGlobal } = require('./codificacion.controller');
+
+
+// para el excel
+const fs = require('fs');
+const path = require('path');
+
 
 const esquema = "codificacion";
 /**
@@ -59,12 +66,202 @@ const repHoyAyerMes = async (req, res) => {
  * 
  * @param {*} req 
  * @param {*} res 
- * @param {*} fechaInicial
- * @param {*} fechaFinal
+ * @param {*} fechaInicial 
+ * @param {*} fechaFinal 
  */
 
 
 const repOdbc_npioc = async (req, res) => {
+
+	const query = `
+	---NPIOC
+	
+Select id_p32esp id_p, secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p32esp cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+UNION ALL
+
+Select id_p331,secuencial, nro,'cod_p331' num_preg, departamento, 'Pregunta 33 idioma 1' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p331 cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+UNION ALL
+
+Select id_p332,secuencial, nro,'cod_p332' num_preg, departamento, 'Pregunta 33 idioma 2' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p332 cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+UNION ALL
+
+Select id_p333,secuencial, nro,'cod_p333' num_preg, departamento, 'Pregunta 33 idioma 3' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p333 cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+UNION ALL
+
+Select id_p341,secuencial, nro,'cod_p341' num_preg, departamento, 'Pregunta 34' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p341 cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+UNION ALL
+
+Select id_p48esp,secuencial, nro,'cod_p48esp' num_preg, departamento, 'Pregunta 48' pregunta, --respuesta, codigocodif, 
+cec.respuesta respuestaCampo , 
+cec.codigocodif codigo_codif, 
+cc.descripcion acep_desc_codif, 
+cec.codigocodif_v1 codigo_super, 
+cc_1.descripcion acep_desc_super,
+cec.codigocodif_v2 codigo_jefe,
+cc_2.descripcion acep_desc_jefe,
+cec.usucodificador usuario_codif, 
+cec.usuverificador usuario_super,
+cec.usuverificador2 usuario_jefe,
+'' as cod_rev_jefe, 
+date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+from codificacion.cod_p48esp cec
+left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_cob' 
+left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_cob' 
+left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_cob' 
+where not codigocodif isnull and codigocodif<>'' 
+AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+
+order by pregunta, id_p, secuencial,nro
+	`;
+
+	try {
+		const result = await con.query(query); // Ejecutar la consulta SQL
+
+		const workbook = new Excel.Workbook(); // Crear un nuevo libro de Excel
+		const worksheet = workbook.addWorksheet('Data'); // Crear una nueva hoja de cálculo
+
+		// Añadir encabezados
+		const columns = result.fields.map(field => ({ header: field.name, key: field.name }));
+		worksheet.columns = columns; // Definir las columnas
+
+		// Añadir filas
+		result.rows.forEach(row => {
+			worksheet.addRow(row);
+		});
+
+		// Definir la ruta de salida dentro de la carpeta 'odbc-excel'
+		const outputDir = path.resolve(__dirname, 'odbc-excel');
+		const outputPath = path.join(outputDir, 'npioc.xlsx');
+
+		// Crear el directorio si no existe
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		// Eliminar el archivo si existe
+		if (fs.existsSync(outputPath)) {
+			fs.unlinkSync(outputPath);
+		}
+
+		// Guardar el archivo Excel
+		await workbook.xlsx.writeFile(outputPath);
+		console.log(`Excel file created at ${outputPath}`);
+
+		// solo Enviar el directorio de salida
+		res.status(200).send({
+			datos: "excel creado",
+		});
+
+		console.log(typeof (outputPath));
+
+
+	} catch (error) {
+		console.error('Error generating Excel file:', error);
+		res.status(200).send('Error generating Excel file');
+	}
+
+
+}
+
+
+
+
+const repOdbc_npioc_____ = async (req, res) => {
 	console.log(req.params)
 	// 	const query = `	---NPIOC
 	// select id_informante, cec.id_pregunta,
@@ -565,6 +762,10 @@ WHERE estado_ocu <> 'ELABORADO' AND estado_act <> 'ELABORADO' AND estado_ocu <> 
         (cp.fecha_codificada BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date)
     );
 	`;
+
+	// excel
+
+	// 
 	console.log(query);
 	await con
 		.query(query)
@@ -886,26 +1087,23 @@ const reporte9 = async (req, res) => {
 		)
 		.catch((e) => console.error(e.stack));
 };
+
+
+
 /**
  * 
  * @param {*} req 
  * @param {*} res 
  */
 const reporte10 = async (req, res) => {
-	/*	const query = {
-			text: `select cec.usucodificador codificador, (case when cec.usucodificador isnull then 'TOTAL GENERAL' when not cec.usucodificador isnull and cv.pregunta isnull then 'TOTAL '||cec.usucodificador else cec.usucodificador end) usucodificador,
-			cec.id_pregunta, cv.pregunta, sum(case when not cec.codigocodif isnull or cec.codigocodif<>'' then 1 else 0 end) codificado,
-				 sum(case when cec.codigocodif isnull or cec.codigocodif='' then 1 else 0 end) pendiente,
-				 count(*) total
-			from codificacion.cod_encuesta_codificacion cec
-			join codificacion.cod_variables cv ON cec.id_pregunta=cv.id_pregunta and cv.estado='ACTIVO'
-			where (not cec.codigocodif isnull or cec.codigocodif <>'') and usucodificador <> 'AUTOMATICO_NORMALIZADO' and usucodificador <> 'AUTOMATICO_NORMDOBLE'
-			GROUP BY ROLLUP ( cec.usucodificador,(cec.id_pregunta,cv.pregunta ))
-			ORDER BY codificador, usucodificador,cec.id_pregunta,cv.pregunta`,
-		};*/
+
+	const {
+		login
+	}=req.body
+	console.log(req.body);
 
 	const query = {
-		text: `	select * from codificacion.fn_reporte_10()`,
+		text: `	select * from codificacion.fn_reporte_10_1('${login}')`,
 	};
 	await con
 		.query(query)
@@ -922,16 +1120,12 @@ const reporte10 = async (req, res) => {
  * @param {*} res 
  */
 const reporte11 = async (req, res) => {
-	/*	const query = {
-			text: `select date(cec.feccodificador) fecha, (case when date(cec.feccodificador)::text isnull then 'TOTAL GENERAL' when not date(cec.feccodificador)::text isnull and cec.usucodificador isnull then 'TOTAL '||date(cec.feccodificador)::text else date(cec.feccodificador)::text end) feccodificador,
-			cec.usucodificador, count(*) codificado
-			from codificacion.cod_encuesta_codificacion cec
-			where (cec.estado = 'CODIFICADO' or cec.estado = 'VERIFICADO' or cec.estado = 'ASIGNASUP') and not cec.codigocodif isnull and cec.codigocodif<>'' and not usucodificador ilike 'AUTOMATICO%'
-			GROUP BY ROLLUP ( date(cec.feccodificador),cec.usucodificador)
-			ORDER BY fecha,usucodificador`,
-		};*/
+	const {
+		login
+	}=req.body
+	console.log(req.body);	
 	const query = {
-		text: `	select * from codificacion.fn_reporte_11()`,
+		text: `	select * from codificacion.fn_reporte_11_1('${login}')`,
 	};
 	await con
 		.query(query)
