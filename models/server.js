@@ -5,8 +5,8 @@ class Server {
     constructor() {
         this.app = express()
         // Aumentar el límite de tamaño del cuerpo de la solicitud
-        this.app.use(express.json({ limit: '300mb' })); // Para solicitudes JSON
-        this.app.use(express.urlencoded({ limit: '50mb', extended: true })); // Para solicitudes URL-encoded
+        this.app.use(express.json({ limit: '900mb' })); // Para solicitudes JSON
+        this.app.use(express.urlencoded({ limit: '900mb', extended: true })); // Para solicitudes URL-encoded
 
 
         this.port = process.env.PORT;

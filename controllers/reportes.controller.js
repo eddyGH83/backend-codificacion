@@ -1100,10 +1100,12 @@ const reporte10 = async (req, res) => {
 	const {
 		login
 	}=req.body
+	console.log("sdfsdfsdfsdfs");
+	
 	console.log(req.body);
 
 	const query = {
-		text: `	select * from codificacion.fn_reporte_10_1('${login}')`,
+		text: `	select * from codificacion.fn_reporte_10('${login}')`,
 	};
 	await con
 		.query(query)
@@ -1125,7 +1127,7 @@ const reporte11 = async (req, res) => {
 	}=req.body
 	console.log(req.body);	
 	const query = {
-		text: `	select * from codificacion.fn_reporte_11_1('${login}')`,
+		text: `	select * from codificacion.fn_reporte_11('${login}')`,
 	};
 	await con
 		.query(query)

@@ -7201,7 +7201,7 @@ const updateCargaSupervision = async (req, res) => {
 		registros
 	} = req.body;
 
-	console.log(req.body);
+	//console.log(req.body);
 
 	// verificar que tabla es
 	if (tabla_id === 'p49_p51') {
