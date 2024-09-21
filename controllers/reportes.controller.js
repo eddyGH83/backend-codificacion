@@ -70,143 +70,166 @@ const repHoyAyerMes = async (req, res) => {
  * @param {*} fechaFinal 
  */
 
-
+// odbc_npioc
 const repOdbc_npioc = async (req, res) => {
 
 	const query = `
+
 	---NPIOC
-	
-Select id_p32esp id_p, secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p32esp cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 
+WITH updated_p32esp AS (
+    UPDATE codificacion.cod_p32esp AS p32esp
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p32esp, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super, cc_2.descripcion acep_desc_jefe
+	FROM codificacion.cod_p32esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
+	where not codigocodif isnull and codigocodif<>'' 
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+		AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p32esp.id_p32esp = subquery.id_p32esp
+    RETURNING p32esp.id_p32esp id_p, p32esp.secuencial, p32esp.nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, 
+              p32esp.respuesta respuestaCampo, p32esp.codigocodif codigo_codif, subquery.acep_desc_codif, p32esp.codigocodif_v1 codigo_super, 
+              subquery.acep_desc_super,p32esp.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,p32esp.usucodificador usuario_codif, 
+              p32esp.usuverificador usuario_super,p32esp.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+              date(p32esp.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
+
+updated_p331 AS (
+    UPDATE codificacion.cod_p331 AS p331
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p331, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
+        FROM codificacion.cod_p331 cec
+		left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+		left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+		left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+		where not codigocodif isnull and codigocodif<>'' 
+		--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+               AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p331.id_p331 = subquery.id_p331
+    RETURNING p331.id_p331,p331.secuencial, p331.nro,'cod_p331' num_preg, p331.departamento, 'Pregunta 33 idioma 1' pregunta, 
+                p331.respuesta respuestaCampo , p331.codigocodif codigo_codif, subquery.acep_desc_codif, p331.codigocodif_v1 codigo_super, 
+                subquery.acep_desc_super,p331.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,
+                p331.usucodificador usuario_codif, p331.usuverificador usuario_super,p331.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+                date(p331.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
+
+updated_p332 AS (
+    UPDATE codificacion.cod_p332 AS p332
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p332,cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
+	FROM codificacion.cod_p332 cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+	where not codigocodif isnull and codigocodif<>'' 
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p332.id_p332 = subquery.id_p332
+    RETURNING p332.id_p332,p332.secuencial, p332.nro,'cod_p332' num_preg, p332.departamento, 'Pregunta 33 idioma 2' pregunta, 
+		p332.respuesta respuestaCampo , p332.codigocodif codigo_codif, subquery.acep_desc_codif, p332.codigocodif_v1 codigo_super, 
+		subquery.acep_desc_super,p332.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,p332.usucodificador usuario_codif, 
+		p332.usuverificador usuario_super,p332.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+		date(p332.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
+
+updated_p333 AS (
+    UPDATE codificacion.cod_p333 AS p333
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p333,cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
+	FROM codificacion.cod_p333 cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+	where not codigocodif isnull and codigocodif<>'' 
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p333.id_p333 = subquery.id_p333
+    RETURNING  p333.id_p333,p333.secuencial, p333.nro,'cod_p333' num_preg, p333.departamento, 'Pregunta 33 idioma 3' pregunta, 
+		p333.respuesta respuestaCampo , p333.codigocodif codigo_codif, subquery.acep_desc_codif, 
+		p333.codigocodif_v1 codigo_super, subquery.acep_desc_super,p333.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,
+		p333.usucodificador usuario_codif, p333.usuverificador usuario_super,p333.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+		date(p333.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
+
+updated_p341 AS (
+    UPDATE codificacion.cod_p341 AS p341
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p341, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
+	FROM codificacion.cod_p341 cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
+	where not codigocodif isnull and codigocodif<>'' 
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+		AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p341.id_p341 = subquery.id_p341
+    RETURNING  p341.id_p341, p341.secuencial, p341.nro,'cod_p341' num_preg, p341.departamento, 'Pregunta 34' pregunta, 
+		p341.respuesta respuestaCampo , p341.codigocodif codigo_codif, subquery.acep_desc_codif, p341.codigocodif_v1 codigo_super, 
+		subquery.acep_desc_super,p341.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,p341.usucodificador usuario_codif, 
+		p341.usuverificador usuario_super,p341.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+		date(p341.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
+
+updated_p48esp AS (
+    UPDATE codificacion.cod_p48esp AS p48esp
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p48esp, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
+	FROM codificacion.cod_p48esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_cob' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_cob' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_cob' 
+	where not codigocodif isnull and codigocodif<>'' 
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+   ) subquery
+    WHERE p48esp.id_p48esp = subquery.id_p48esp
+    RETURNING p48esp.id_p48esp,p48esp.secuencial, p48esp.nro,'cod_p48esp' num_preg, p48esp.departamento, 'Pregunta 48' pregunta, 
+		p48esp.respuesta respuestaCampo , p48esp.codigocodif codigo_codif, subquery.acep_desc_codif, p48esp.codigocodif_v1 codigo_super, 
+		subquery.acep_desc_super,p48esp.codigocodif_v2 codigo_jefe,subquery.acep_desc_jefe,p48esp.usucodificador usuario_codif, 
+		p48esp.usuverificador usuario_super,p48esp.usuverificador2 usuario_jefe,'' as cod_rev_jefe, 
+		date(p48esp.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+		
+)
+
+-- Combina los resultados de las tres tablas en una consulta final
+SELECT *
+FROM updated_p32esp
 UNION ALL
-
-Select id_p331,secuencial, nro,'cod_p331' num_preg, departamento, 'Pregunta 33 idioma 1' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p331 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
+SELECT *
+FROM updated_p331
 UNION ALL
-
-Select id_p332,secuencial, nro,'cod_p332' num_preg, departamento, 'Pregunta 33 idioma 2' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p332 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
+SELECT *
+FROM updated_p332
 UNION ALL
-
-Select id_p333,secuencial, nro,'cod_p333' num_preg, departamento, 'Pregunta 33 idioma 3' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p333 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
+SELECT *
+FROM updated_p333
 UNION ALL
-
-Select id_p341,secuencial, nro,'cod_p341' num_preg, departamento, 'Pregunta 34' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p341 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
+SELECT *
+FROM updated_p341
 UNION ALL
-
-Select id_p48esp,secuencial, nro,'cod_p48esp' num_preg, departamento, 'Pregunta 48' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p48esp cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_cob' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_cob' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_cob' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
+SELECT *
+FROM updated_p48esp
 order by pregunta, id_p, secuencial,nro
+
 	`;
 
 	try {
@@ -225,8 +248,8 @@ order by pregunta, id_p, secuencial,nro
 		});
 
 		// Definir la ruta de salida dentro de la carpeta 'odbc-excel'
-		const outputDir = path.resolve(__dirname, 'odbc-excel');
-		const outputPath = path.join(outputDir, 'npioc.xlsx');
+		const outputDir = path.resolve(__dirname, '../odbc-excel');
+		const outputPath = path.join(outputDir, 'odbc_npioc.xlsx');
 
 		// Crear el directorio si no existe
 		if (!fs.existsSync(outputDir)) {
@@ -261,455 +284,334 @@ order by pregunta, id_p, secuencial,nro
 
 
 
-const repOdbc_npioc_____ = async (req, res) => {
-	console.log(req.params)
-	// 	const query = `	---NPIOC
-	// select id_informante, cec.id_pregunta,
-	// (case when cec.id_pregunta in (86) then 'PREGUNTA 32' 
-	// when cec.id_pregunta in (88) then 'PREGUNTA 33. Idioma 1' 
-	// when cec.id_pregunta in (89) then 'PREGUNTA 33. Idioma 2' 
-	// when cec.id_pregunta in (90) then 'PREGUNTA 33. Idioma 3' 
-	// when cec.id_pregunta in (92) then 'PREGUNTA 34' else null end) pregunta,
-	// cec.respuesta respuestaCampo , 
-	// cec.codigocodif codigo_codif, 
-	// cc.descripcion acep_desc_codif, 
-	// cec.codigocodif_v1 codigo_super, 
-	// cc_1.descripcion acep_desc_super,
-	// cec.codigocodif_v2 codigo_jefe,
-	// cc_2.descripcion acep_desc_jefe,
-	// cec.usucodificador usuario_codif, 
-	// cec.usuverificador usuario_super,
-	// cec.usuverificador2 usuario_jefe,
-	// '' as cod_rev_npioc, 
-	// date(cec.feccodificador)::text fecha_codif
-	// from codificacion.cod_encuesta_codificacion cec
-	// left join codificacion.cod_variables cv on cec.id_pregunta=cv.id_pregunta
-	// left join codificacion.cod_catalogo cc on cv.catalogo=cc.catalogo and cec.codigocodif=cc.codigo and cc.unico=1 
-	// left join codificacion.cod_variables cv_1 on cec.id_pregunta=cv_1.id_pregunta
-	// left join codificacion.cod_catalogo cc_1 on cv_1.catalogo=cc_1.catalogo and cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 
-	// left join codificacion.cod_variables cv_2 on cec.id_pregunta=cv_2.id_pregunta
-	// left join codificacion.cod_catalogo cc_2 on cv_2.catalogo=cc_2.catalogo and cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 
-	// where not codigocodif isnull and codigocodif<>'' and cec.id_pregunta in (86,88,89,90,92) 
-	// AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-	// order by pregunta, id_informante`;
 
-	const query = `---NPIOC
-	
-Select id_p32esp id_p, secuencial, nro,'cod_p32esp' num_preg, departamento, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p32esp cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-UNION ALL
-
-Select id_p331,secuencial, nro,'cod_p331' num_preg, departamento, 'Pregunta 33 idioma 1' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p331 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-UNION ALL
-
-Select id_p332,secuencial, nro,'cod_p332' num_preg, departamento, 'Pregunta 33 idioma 2' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p332 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-UNION ALL
-
-Select id_p333,secuencial, nro,'cod_p333' num_preg, departamento, 'Pregunta 33 idioma 3' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p333 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-UNION ALL
-
-Select id_p341,secuencial, nro,'cod_p341' num_preg, departamento, 'Pregunta 34' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p341 cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_idioma' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_idioma' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-UNION ALL
-
-Select id_p48esp,secuencial, nro,'cod_p48esp' num_preg, departamento, 'Pregunta 48' pregunta, --respuesta, codigocodif, 
-cec.respuesta respuestaCampo , 
-cec.codigocodif codigo_codif, 
-cc.descripcion acep_desc_codif, 
-cec.codigocodif_v1 codigo_super, 
-cc_1.descripcion acep_desc_super,
-cec.codigocodif_v2 codigo_jefe,
-cc_2.descripcion acep_desc_jefe,
-cec.usucodificador usuario_codif, 
-cec.usuverificador usuario_super,
-cec.usuverificador2 usuario_jefe,
-'' as cod_rev_jefe, 
-date(cec.feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-from codificacion.cod_p48esp cec
-left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_cob' 
-left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_cob' 
-left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_cob' 
-where not codigocodif isnull and codigocodif<>'' 
-AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-
-order by pregunta, id_p, secuencial,nro`;
-
-
-
-	console.log(query);
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
-};
-
-
-
-
+// odbc_migracion
 const repOdbc_migracion = async (req, res) => {
 	console.log(req.params)
 	const query = `
-	---Migracion
-	select id_p20esp id_p,sec_cuestionario secuencial, p20nro nro,'cod_p20esp' num_preg, 'PREGUNTA 20' pregunta,departamento, '' depto,'' municipio,
-	'' codigo_mun_codif, 
-	'' acep_desc_mun_codif, 
-'' codigo_mun_super,
-'' acep_desc_mun_super,
-'' codigo_mun_jefe, 
-'' acep_desc_mun_jefe, '' cod_rev_mun,
-			cec.respuesta pais, 
-    cec.codigocodif codigo_pais_codif, 
-    cc.descripcion acep_desc_pais_codif, 
-    cec.codigocodif_v1 codigo_pais_super, 
-    cc2.descripcion acep_desc_pais_super,
-    cec.codigocodif_v2 codigo_pais_jefe, 
-    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
-	'' usuario_mun_codif,
-'' usuario_mun_super,
-'' usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+	
+WITH updated_p20esp AS (
+    UPDATE codificacion.cod_p20esp AS p20
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p20esp, cc.descripcion AS acep_desc_pais_codif, 
+               cc2.descripcion AS acep_desc_pais_super, 
+               cc3.descripcion AS acep_desc_pais_jefe
+        FROM codificacion.cod_p20esp cec
+        LEFT JOIN codificacion.cod_catalogo cc ON cec.codigocodif = cc.codigo AND cc.unico = 1 AND cc.catalogo = 'cat_pais'
+        LEFT JOIN codificacion.cod_catalogo cc2 ON cec.codigocodif_v1 = cc2.codigo AND cc2.unico = 1 AND cc2.catalogo = 'cat_pais'
+        LEFT JOIN codificacion.cod_catalogo cc3 ON cec.codigocodif_v2 = cc3.codigo AND cc3.unico = 1 AND cc3.catalogo = 'cat_pais'
+        WHERE NOT cec.codigocodif IS NULL AND cec.codigocodif <> '' 
+         -- AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p20.id_p20esp = subquery.id_p20esp
+    RETURNING p20.id_p20esp AS id_p, p20.sec_cuestionario AS secuencial, p20.p20nro AS nro, 
+              'cod_p20esp' AS num_preg, 'PREGUNTA 20' AS pregunta, departamento, '' AS depto, '' AS municipio, 
+              '' AS codigo_mun_codif, '' AS acep_desc_mun_codif, '' AS codigo_mun_super, '' AS acep_desc_mun_super, 
+              '' AS codigo_mun_jefe, '' AS acep_desc_mun_jefe, '' AS cod_rev_mun, p20.respuesta AS pais, 
+              p20.codigocodif AS codigo_pais_codif, subquery.acep_desc_pais_codif, 
+              p20.codigocodif_v1 AS codigo_pais_super, subquery.acep_desc_pais_super, 
+              p20.codigocodif_v2 AS codigo_pais_jefe, subquery.acep_desc_pais_jefe, 
+              '' AS cod_rev_pais, '' AS usuario_mun_codif, '' AS usuario_mun_super, '' AS usuario_mun_jefe, 
+              p20.usucodificador AS usuario_pais_codif, p20.usuverificador AS usuario_pais_super, 
+              p20.usuverificador2 AS usuario_pais_jefe, date(feccodificador)::text AS fecha_codif, 
+              date(fecverificador2)::text AS fecha_esp_cont
+),
+
+-- Actualización de la segunda tabla (cod_p352a)
+updated_p352a AS (
+    UPDATE codificacion.cod_p352a AS p352a
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p352a, cc.descripcion AS acep_desc_mun_codif, 
+               cc2.descripcion AS acep_desc_mun_super, 
+               cc3.descripcion AS acep_desc_mun_jefe
+        FROM codificacion.cod_p352a cec
+        LEFT JOIN codificacion.cod_catalogo cc ON cec.codigocodif = cc.codigo AND cc.catalogo = 'cat_municipio' AND cc.unico = 1
+        LEFT JOIN codificacion.cod_catalogo cc2 ON cec.codigocodif_v1 = cc2.codigo AND cc2.catalogo = 'cat_municipio' AND cc2.unico = 1
+        LEFT JOIN codificacion.cod_catalogo cc3 ON cec.codigocodif_v2 = cc3.codigo AND cc3.catalogo = 'cat_municipio' AND cc3.unico = 1
+        WHERE NOT cec.codigocodif IS NULL AND cec.codigocodif <> '' 
+          --AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+           AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p352a.id_p352a = subquery.id_p352a
+    RETURNING p352a.id_p352a, p352a.secuencial, p352a.nro, 'cod_p352a' AS num_preg, 
+              'PREGUNTA 35. Municipio. Donde nacio?' AS pregunta, departamento, p352b AS depto, p352a.respuesta AS municipio, 
+              p352a.codigocodif AS codigo_mun_codif, subquery.acep_desc_mun_codif, p352a.codigocodif_v1 AS codigo_mun_super, 
+              subquery.acep_desc_mun_super, p352a.codigocodif_v2 AS codigo_mun_jefe, subquery.acep_desc_mun_jefe, 
+              '' AS cod_rev_mun, '' AS pais, '' AS codigo_pais_codif, '' AS acep_desc_pais_codif, '' AS codigo_pais_super, 
+              '' AS acep_desc_pais_super, '' AS codigo_pais_jefe, '' AS acep_desc_pais_jefe, '' AS cod_rev_pais, 
+              p352a.usucodificador AS usuario_mun_codif, p352a.usuverificador AS usuario_mun_super, 
+              p352a.usuverificador2 AS usuario_mun_jefe, p352a.usucodificador AS usuario_pais_codif, 
+              p352a.usuverificador AS usuario_pais_super, p352a.usuverificador2 AS usuario_pais_jefe, 
+              date(feccodificador)::text AS fecha_codif, date(fecverificador2)::text AS fecha_esp_cont
+),
+
+-- Actualización de la tercera tabla (cod_p353)
+updated_p353 AS (
+    UPDATE codificacion.cod_p353 AS p353
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        --estado_norm=100
+    FROM (
+        SELECT cec.id_p353, cc.descripcion AS acep_desc_pais_codif, 
+               cc2.descripcion AS acep_desc_pais_super, 
+               cc3.descripcion AS acep_desc_pais_jefe
+        FROM codificacion.cod_p353 cec
+        LEFT JOIN codificacion.cod_catalogo cc ON cec.codigocodif = cc.codigo AND cc.unico = 1 AND cc.catalogo = 'cat_pais'
+        LEFT JOIN codificacion.cod_catalogo cc2 ON cec.codigocodif_v1 = cc2.codigo AND cc2.unico = 1 AND cc2.catalogo = 'cat_pais'
+        LEFT JOIN codificacion.cod_catalogo cc3 ON cec.codigocodif_v2 = cc3.codigo AND cc3.unico = 1 AND cc3.catalogo = 'cat_pais'
+        WHERE NOT cec.codigocodif IS NULL AND cec.codigocodif <> '' 
+         --AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p353.id_p353 = subquery.id_p353
+    RETURNING p353.id_p353, p353.secuencial, p353.nro, 'cod_p353' AS num_preg, 
+              'PREGUNTA 35. País. Donde nacio?' AS pregunta, departamento, '' AS depto, '' AS municipio, 
+              '' AS codigo_mun_codif, '' AS acep_desc_mun_codif, '' AS codigo_mun_super, '' AS acep_desc_mun_super, 
+              '' AS codigo_mun_jefe, '' AS acep_desc_mun_jefe, '' AS cod_rev_mun, p353.respuesta AS pais, 
+              p353.codigocodif AS codigo_pais_codif, subquery.acep_desc_pais_codif, p353.codigocodif_v1 AS codigo_pais_super, 
+              subquery.acep_desc_pais_super, p353.codigocodif_v2 AS codigo_pais_jefe, subquery.acep_desc_pais_jefe, 
+              '' AS cod_rev_pais, '' AS usuario_mun_codif, '' AS usuario_mun_super, '' AS usuario_mun_jefe, 
+              p353.usucodificador AS usuario_pais_codif, p353.usuverificador AS usuario_pais_super, 
+              p353.usuverificador2 AS usuario_pais_jefe, date(feccodificador)::text AS fecha_codif,date(fecverificador2)::text AS fecha_esp_cont
+),
+
+updated_p362a AS (
+    UPDATE codificacion.cod_p362a AS p362a
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+	--estado_norm=100
+    FROM(
+	SELECT cec.id_p362a, cc.descripcion AS acep_desc_mun_codif, cc2.descripcion AS acep_desc_mun_super, cc3.descripcion AS acep_desc_mun_jefe
+	FROM codificacion.cod_p362a cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio' and cc.unico=1
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio' and cc2.unico=1
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio' and cc3.unico=1
+	where not codigocodif isnull and codigocodif<>''  
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p362a.id_p362a = subquery.id_p362a
+    RETURNING p362a.id_p362a,p362a.secuencial, p362a.nro, 'cod_p362a' AS num_preg, 
+              'PREGUNTA 36. Municipio. Donde vive?' AS pregunta,departamento, p362a.p362b depto,p362a.respuesta municipio,
+              p362a.codigocodif codigo_mun_codif, subquery.acep_desc_mun_codif, p362a.codigocodif_v1 codigo_mun_super, subquery.acep_desc_mun_super,
+              p362a.codigocodif_v2 codigo_mun_jefe, subquery.acep_desc_mun_jefe, '' cod_rev_mun,'' pais, 
+              '' codigo_pais_codif, '' acep_desc_pais_codif, '' codigo_pais_super, 
+              '' acep_desc_pais_super, '' codigo_pais_jefe, '' acep_desc_pais_jefe, 
+              '' cod_rev_pais, p362a.usucodificador usuario_mun_codif, p362a.usuverificador usuario_mun_super, p362a.usuverificador2 usuario_mun_jefe,
+              p362a.usucodificador usuario_pais_codif, p362a.usuverificador usuario_pais_super,
+              p362a.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
 		
-	from codificacion.cod_p20esp cec
+),
+
+updated_p363 AS (
+    UPDATE codificacion.cod_p363 AS p363
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+	--estado_norm=100
+    FROM (
+        SELECT cec.id_p363, cc.descripcion acep_desc_pais_codif, cc2.descripcion acep_desc_pais_super, cc3.descripcion acep_desc_pais_jefe
+        FROM codificacion.cod_p363 cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
 	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
 	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
-	
 	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p363.id_p363 = subquery.id_p363
+    RETURNING p363.id_p363,p363.secuencial, p363.nro, 'cod_p363' AS num_preg, 
+              'PREGUNTA 36. País. Donde vive?' AS pregunta,p363.departamento, '' depto, '' municipio,
+	      '' codigo_mun_codif, '' acep_desc_mun_codif, '' codigo_mun_super,'' acep_desc_mun_super,'' codigo_mun_jefe, 
+              '' acep_desc_mun_jefe, '' cod_rev_mun, p363.respuesta pais, p363.codigocodif codigo_pais_codif, 
+              subquery.acep_desc_pais_codif, p363.codigocodif_v1 codigo_pais_super, subquery.acep_desc_pais_super,
+              p363.codigocodif_v2 codigo_pais_jefe, subquery.acep_desc_pais_jefe, '' cod_rev_pais,
+              '' usuario_mun_codif,'' usuario_mun_super,'' usuario_mun_jefe,
+              p363.usucodificador usuario_pais_codif, p363.usuverificador usuario_pais_super,p363.usuverificador2 usuario_pais_jefe,
+              date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
 
-UNION ALL
-		
-	select id_p352a,secuencial, nro,'cod_p352a' num_preg, 'PREGUNTA 35. Municipio. Donde nacio?' pregunta,departamento, p352b depto,respuesta municipio,
-	cec.codigocodif codigo_mun_codif, 
-	cc.descripcion acep_desc_mun_codif, 
-cec.codigocodif_v1 codigo_mun_super,
-cc2.descripcion acep_desc_mun_super,
-cec.codigocodif_v2 codigo_mun_jefe, 
-cc3.descripcion acep_desc_mun_jefe, '' cod_rev_mun,
-			'' pais, 
-    '' codigo_pais_codif, 
-    '' acep_desc_pais_codif, 
-    '' codigo_pais_super, 
-    '' acep_desc_pais_super,
-    '' codigo_pais_jefe, 
-    '' acep_desc_pais_jefe, '' cod_rev_pais,
-	cec.usucodificador usuario_mun_codif,
-cec.usuverificador usuario_mun_super,
-cec.usuverificador2 usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p352a cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio'
-	
+updated_p372a AS (
+    UPDATE codificacion.cod_p372a AS p372a
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+	--estado_norm=100
+    FROM (
+        SELECT cec.id_p372a, cc.descripcion acep_desc_mun_codif, cc2.descripcion acep_desc_mun_super,cc3.descripcion acep_desc_mun_jefe
+        FROM codificacion.cod_p372a cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio' and cc.unico=1
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio' and cc2.unico=1
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio' and cc3.unico=1
 	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+                   AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p372a.id_p372a = subquery.id_p372a
+    RETURNING 
+             p372a.id_p372a,p372a.secuencial, p372a.nro, 'cod_p372a' num_preg, 
+             'PREGUNTA 37. Municipio. Donde vivia?' pregunta,p372a.departamento, p372a.p372b depto,p372a.respuesta municipio,
+             p372a.codigocodif codigo_mun_codif, subquery.acep_desc_mun_codif, p372a.codigocodif_v1 codigo_mun_super,
+             subquery.acep_desc_mun_super,p372a.codigocodif_v2 codigo_mun_jefe, subquery.acep_desc_mun_jefe, '' cod_rev_mun,
+             '' pais, '' codigo_pais_codif, '' acep_desc_pais_codif, '' codigo_pais_super, '' acep_desc_pais_super,
+             '' codigo_pais_jefe, '' acep_desc_pais_jefe, '' cod_rev_pais,p372a.usucodificador usuario_mun_codif,
+             p372a.usuverificador usuario_mun_super,p372a.usuverificador2 usuario_mun_jefe,p372a.usucodificador usuario_pais_codif, 
+             p372a.usuverificador usuario_pais_super,p372a.usuverificador2 usuario_pais_jefe,  
+             date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+		
+),
 
-UNION ALL
-		
-	select id_p353,secuencial, nro, 'cod_p353' num_preg, 'PREGUNTA 35. País. Donde nacio?' pregunta,departamento, '' depto, '' municipio,
-	'' codigo_mun_codif, 
-	'' acep_desc_mun_codif, 
-'' codigo_mun_super,
-'' acep_desc_mun_super,
-'' codigo_mun_jefe, 
-'' acep_desc_mun_jefe, '' cod_rev_mun,
-			cec.respuesta pais, 
-    cec.codigocodif codigo_pais_codif, 
-    cc.descripcion acep_desc_pais_codif, 
-    cec.codigocodif_v1 codigo_pais_super, 
-    cc2.descripcion acep_desc_pais_super,
-    cec.codigocodif_v2 codigo_pais_jefe, 
-    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
-	'' usuario_mun_codif,
-'' usuario_mun_super,
-'' usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p353 cec
+updated_p373 AS (
+    UPDATE codificacion.cod_p373 AS p373
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+	--estado_norm=100
+    FROM (
+        SELECT cec.id_p373,cc.descripcion acep_desc_pais_codif, cc2.descripcion acep_desc_pais_super, cc3.descripcion acep_desc_pais_jefe
+        FROM codificacion.cod_p373 cec
 	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
 	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
 	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
-	
 	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-----------------------------
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date      
+	          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p373.id_p373 = subquery.id_p373
+    RETURNING 
+             p373.id_p373,p373.secuencial, p373.nro, 'cod_p373' num_preg, 
+             'PREGUNTA 37. País. Donde vivia?' pregunta,p373.departamento, '' depto, '' municipio,'' codigo_mun_codif, 
+	     '' acep_desc_mun_codif, '' codigo_mun_super,'' acep_desc_mun_super,'' codigo_mun_jefe, '' acep_desc_mun_jefe, '' cod_rev_mun,
+             p373.respuesta pais, p373.codigocodif codigo_pais_codif, subquery.acep_desc_pais_codif, p373.codigocodif_v1 codigo_pais_super, 
+             subquery.acep_desc_pais_super,p373.codigocodif_v2 codigo_pais_jefe, subquery.acep_desc_pais_jefe, '' cod_rev_pais,
+             '' usuario_mun_codif,'' usuario_mun_super,'' usuario_mun_jefe,
+             p373.usucodificador usuario_pais_codif, p373.usuverificador usuario_pais_super,p373.usuverificador2 usuario_pais_jefe,
+             date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+),
 
-UNION ALL
-		
-	select id_p362a,secuencial, nro, 'cod_p362a' num_preg, 'PREGUNTA 36. Municipio. Donde vive?' pregunta,departamento, p362b depto,respuesta municipio,
-	cec.codigocodif codigo_mun_codif, 
-	cc.descripcion acep_desc_mun_codif, 
-cec.codigocodif_v1 codigo_mun_super,
-cc2.descripcion acep_desc_mun_super,
-cec.codigocodif_v2 codigo_mun_jefe, 
-cc3.descripcion acep_desc_mun_jefe, '' cod_rev_mun,
-			'' pais, 
-    '' codigo_pais_codif, 
-    '' acep_desc_pais_codif, 
-    '' codigo_pais_super, 
-    '' acep_desc_pais_super,
-    '' codigo_pais_jefe, 
-    '' acep_desc_pais_jefe, '' cod_rev_pais,
-	cec.usucodificador usuario_mun_codif,
-cec.usuverificador usuario_mun_super,
-cec.usuverificador2 usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p362a cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio'
-	
+updated_p52esp AS (
+    UPDATE codificacion.cod_p52esp AS p52esp
+    SET estado = 'VERIFICADO', cp.usucre='ODBC'
+	--estado_norm=100
+    FROM (
+        SELECT cec.id_p52esp, (case when LENGTH(cec.codigocodif) <> 3 then cc.descripcion else '' end) acep_desc_mun_codif, 
+        (case when LENGTH(cec.codigocodif_v1) <> 3 then cc2.descripcion else '' end) acep_desc_mun_super,
+        (case when LENGTH(cec.codigocodif_v2) <> 3 then cc3.descripcion else '' end) acep_desc_mun_jefe,
+        (case when LENGTH(cec.codigocodif) = 3 then cc.descripcion else '' end) acep_desc_pais_codif,
+        (case when LENGTH(cec.codigocodif_v1) = 3 then cc2.descripcion else '' end) acep_desc_pais_super,
+        (case when LENGTH(cec.codigocodif_v2) = 3 then cc3.descripcion else '' end) acep_desc_pais_jefe
+        FROM codificacion.cod_p52esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc.catalogo='cat_pais' and cc.unico=1 else cc.catalogo='cat_municipio' and cc.unico=1 end)
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc2.catalogo='cat_pais' and cc2.unico=1 else cc2.catalogo='cat_municipio' and cc2.unico=1 end)
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc3.catalogo='cat_pais' and cc3.unico=1 else cc3.catalogo='cat_municipio' and cc3.unico=1 end)
 	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	--AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	          AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 
-UNION ALL
-		
-	select id_p363,secuencial, nro, 'cod_p363' num_preg, 'PREGUNTA 36. País. Donde vive?' pregunta,departamento, '' depto, '' municipio,
-	'' codigo_mun_codif, 
-	'' acep_desc_mun_codif, 
-'' codigo_mun_super,
-'' acep_desc_mun_super,
-'' codigo_mun_jefe, 
-'' acep_desc_mun_jefe, '' cod_rev_mun,
-			cec.respuesta pais, 
-    cec.codigocodif codigo_pais_codif, 
-    cc.descripcion acep_desc_pais_codif, 
-    cec.codigocodif_v1 codigo_pais_super, 
-    cc2.descripcion acep_desc_pais_super,
-    cec.codigocodif_v2 codigo_pais_jefe, 
-    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
-	'' usuario_mun_codif,
-'' usuario_mun_super,
-'' usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p363 cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
-	
-	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+    ) subquery
+    WHERE p52esp.id_p52esp = subquery.id_p52esp
+    RETURNING 
+	p52esp.id_p52esp,p52esp.secuencial, p52esp.nro, 'cod_p52esp' num_preg, 
+	'PREGUNTA 52. Lugar donde trabaja esta ubicado.' pregunta,departamento, '' depto, 
+	(case when LENGTH(p52esp.codigocodif) <> 3 then p52esp.respuesta else '' end) municipio,
+	(case when LENGTH(p52esp.codigocodif) <> 3 then p52esp.codigocodif else '' end) codigo_mun_codif, 
+	subquery.acep_desc_mun_codif, 
+	(case when LENGTH(p52esp.codigocodif_v1) <> 3 then p52esp.codigocodif_v1 else '' end) codigo_mun_super,
+	subquery.acep_desc_mun_super,
+	(case when LENGTH(p52esp.codigocodif_v2) <> 3 then p52esp.codigocodif_v2 else '' end) codigo_mun_jefe, 
+	subquery.acep_desc_mun_jefe, '' cod_rev_mun,
+	(case when LENGTH(p52esp.codigocodif) = 3 then p52esp.respuesta else '' end) pais, 
+	(case when LENGTH(p52esp.codigocodif) = 3 then p52esp.codigocodif else '' end) codigo_pais_codif, 
+	subquery.acep_desc_pais_codif, 
+	(case when LENGTH(p52esp.codigocodif_v1) = 3 then p52esp.codigocodif_v1 else '' end) codigo_pais_super, 
+	subquery.acep_desc_pais_super,
+	(case when LENGTH(p52esp.codigocodif_v2) = 3 then p52esp.codigocodif_v2 else '' end) codigo_pais_jefe, 
+	subquery.acep_desc_pais_jefe, '' cod_rev_pais,
+	p52esp.usucodificador usuario_mun_codif,p52esp.usuverificador usuario_mun_super,p52esp.usuverificador2 usuario_mun_jefe,
+	p52esp.usucodificador usuario_pais_codif, p52esp.usuverificador usuario_pais_super,p52esp.usuverificador2 usuario_pais_jefe, 
+	date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+)
 
-----------------------------
+-- Combina los resultados de las tres tablas en una consulta final
+SELECT *
+FROM updated_p20esp
 UNION ALL
-		
-	select id_p372a,secuencial, nro, 'cod_p372a' num_preg, 'PREGUNTA 37. Municipio. Donde vivia?' pregunta,departamento, p372b depto,respuesta municipio,
-	cec.codigocodif codigo_mun_codif, 
-	cc.descripcion acep_desc_mun_codif, 
-cec.codigocodif_v1 codigo_mun_super,
-cc2.descripcion acep_desc_mun_super,
-cec.codigocodif_v2 codigo_mun_jefe, 
-cc3.descripcion acep_desc_mun_jefe, '' cod_rev_mun,
-			'' pais, 
-    '' codigo_pais_codif, 
-    '' acep_desc_pais_codif, 
-    '' codigo_pais_super, 
-    '' acep_desc_pais_super,
-    '' codigo_pais_jefe, 
-    '' acep_desc_pais_jefe, '' cod_rev_pais,
-	cec.usucodificador usuario_mun_codif,
-cec.usuverificador usuario_mun_super,
-cec.usuverificador2 usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p372a cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio'
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio'
-	
-	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+SELECT *
+FROM updated_p352a
+UNION ALL
+SELECT *
+FROM updated_p353
+UNION ALL
+SELECT *
+FROM updated_p362a
+UNION ALL
+SELECT *
+FROM updated_p363
+UNION ALL
+SELECT *
+FROM updated_p372a
+UNION ALL
+SELECT *
+FROM updated_p373
+UNION ALL
+SELECT *
+FROM updated_p52esp
+order by pregunta, id_p, secuencial,nro
 
-UNION ALL
-		
-	select id_p373,secuencial, nro, 'cod_p373' num_preg, 'PREGUNTA 37. País. Donde vivia?' pregunta,departamento, '' depto, '' municipio,
-	'' codigo_mun_codif, 
-	'' acep_desc_mun_codif, 
-'' codigo_mun_super,
-'' acep_desc_mun_super,
-'' codigo_mun_jefe, 
-'' acep_desc_mun_jefe, '' cod_rev_mun,
-	cec.respuesta pais, 
-    cec.codigocodif codigo_pais_codif, 
-    cc.descripcion acep_desc_pais_codif, 
-    cec.codigocodif_v1 codigo_pais_super, 
-    cc2.descripcion acep_desc_pais_super,
-    cec.codigocodif_v2 codigo_pais_jefe, 
-    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
-	'' usuario_mun_codif,
-'' usuario_mun_super,
-'' usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p373 cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
-	
-	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 
-UNION ALL
-	select id_p52esp,secuencial, nro, 'cod_p52esp' num_preg, 'PREGUNTA 52. Lugar donde trabaja esta ubicado.' pregunta,departamento, '' depto, 
-	(case when LENGTH(cec.codigocodif) <> 3 then cec.respuesta else '' end) municipio,
-	(case when LENGTH(cec.codigocodif) <> 3 then cec.codigocodif else '' end) codigo_mun_codif, 
-	(case when LENGTH(cec.codigocodif) <> 3 then cc.descripcion else '' end) acep_desc_mun_codif, 
-(case when LENGTH(cec.codigocodif_v1) <> 3 then cec.codigocodif_v1 else '' end) codigo_mun_super,
-(case when LENGTH(cec.codigocodif_v1) <> 3 then cc2.descripcion else '' end) acep_desc_mun_super,
-(case when LENGTH(cec.codigocodif_v2) <> 3 then cec.codigocodif_v2 else '' end) codigo_mun_jefe, 
-(case when LENGTH(cec.codigocodif_v2) <> 3 then cc3.descripcion else '' end) acep_desc_mun_jefe, '' cod_rev_mun,
-	(case when LENGTH(cec.codigocodif) = 3 then cec.respuesta else '' end) pais, 
-    (case when LENGTH(cec.codigocodif) = 3 then cec.codigocodif else '' end) codigo_pais_codif, 
-    (case when LENGTH(cec.codigocodif) = 3 then cc.descripcion else '' end) acep_desc_pais_codif, 
-    (case when LENGTH(cec.codigocodif_v1) = 3 then cec.codigocodif_v1 else '' end) codigo_pais_super, 
-    (case when LENGTH(cec.codigocodif_v1) = 3 then cc2.descripcion else '' end) acep_desc_pais_super,
-    (case when LENGTH(cec.codigocodif_v2) = 3 then cec.codigocodif_v2 else '' end) codigo_pais_jefe, 
-    (case when LENGTH(cec.codigocodif_v2) = 3 then cc3.descripcion else '' end) acep_desc_pais_jefe, '' cod_rev_pais,
-	cec.usucodificador usuario_mun_codif,
-cec.usuverificador usuario_mun_super,
-cec.usuverificador2 usuario_mun_jefe,
-cec.usucodificador usuario_pais_codif, 
-cec.usuverificador usuario_pais_super,
-cec.usuverificador2 usuario_pais_jefe, date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-		
-	from codificacion.cod_p52esp cec
-	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc.catalogo='cat_pais' and cc.unico=1 else cc.catalogo='cat_municipio' end)
-	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc2.catalogo='cat_pais' and cc2.unico=1 else cc2.catalogo='cat_municipio' end)
-	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and (case when LENGTH(cec.codigocodif) = 3 then cc3.catalogo='cat_pais' and cc3.unico=1 else cc3.catalogo='cat_municipio' end)
-	
-	where not codigocodif isnull and codigocodif<>''  
-	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
-		
-		
-	order by pregunta, id_p, secuencial,nro
 	`;
-	console.log(query);
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+
+	try {
+		const result = await con.query(query); // Ejecutar la consulta SQL
+
+		const workbook = new Excel.Workbook(); // Crear un nuevo libro de Excel
+		const worksheet = workbook.addWorksheet('Data'); // Crear una nueva hoja de cálculo
+
+		// Añadir encabezados
+		const columns = result.fields.map(field => ({ header: field.name, key: field.name }));
+		worksheet.columns = columns; // Definir las columnas
+
+		// Añadir filas
+		result.rows.forEach(row => {
+			worksheet.addRow(row);
+		});
+
+		// Definir la ruta de salida dentro de la carpeta 'odbc-excel'
+		const outputDir = path.resolve(__dirname, '../odbc-excel');
+		const outputPath = path.join(outputDir, 'odbc_emigracion.xlsx');
+
+		// Crear el directorio si no existe
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		// Eliminar el archivo si existe
+		if (fs.existsSync(outputPath)) {
+			fs.unlinkSync(outputPath);
+		}
+
+		// Guardar el archivo Excel
+		await workbook.xlsx.writeFile(outputPath);
+		console.log(`Excel file created at ${outputPath}`);
+
+		// solo Enviar el directorio de salida
+		res.status(200).send({
+			datos: "excel creado",
+		});
+
+		console.log(typeof (outputPath));
+
+
+	} catch (error) {
+		console.error('Error generating Excel file:', error);
+		res.status(200).send('Error generating Excel file');
+	}
+
+
 };
 
 
+
+
+
+// odbc_ocu_act
 const repOdbc = async (req, res) => {
 	console.log(req.params)
 	/*	const query = ` --- Ocupacion - Actividad ---
@@ -728,7 +630,7 @@ const repOdbc = async (req, res) => {
 		AND feccodificador_ocu::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
 	`;
 	*/
-	const query = ` --- Ocupacion - Actividad ---
+	const query = ` 
 WITH fecha_filtrada AS (
     SELECT 
         cp.*,
@@ -736,47 +638,119 @@ WITH fecha_filtrada AS (
             WHEN cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_ocu::date 
             WHEN cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND NOT cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_act::date 
             WHEN NOT cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_ocu::date 
-			WHEN NOT cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND not cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_act::date 
+            WHEN NOT cp.usucodificador_ocu ILIKE 'AUTOMATICO%' AND NOT cp.usucodificador_act ILIKE 'AUTOMATICO%' THEN cp.feccodificador_act::date 
             ELSE NULL 
         END AS fecha_codificada
     FROM 
         codificacion.cod_p49_p51 cp
 )
-SELECT 
-    id_p49_p51, secuencial, nro, departamento, p26 edad, p41a nivel, p41b curso_anio, p50 categoria, p45 cultiva_cria, p48esp p48_otro, p52esp lugar_trabajo, 
-    respuesta_ocu o_ocupacion, codigocodif_ocu o_codigo_codif, cc_o.descripcion o_acep_desc_codif, codigocodif_v1_ocu o_codigo_super, 
-    cc_o2.descripcion o_acep_desc_super, codigocodif_v2_ocu o_codigo_esp_cont, cc_o3.descripcion o_acep_desc_esp_cont, '' cod_rev_ocupacion,
-    respuesta_act a_actividad, codigocodif_act a_codigo_codif, cc_act.descripcion a_acep_desc_codif , codigocodif_v1_act a_codigo_super, 
-    cc_act2.descripcion a_acep_desc_super, codigocodif_v2_act a_codigo_esp_cont, cc_act3.descripcion a_acep_desc_esp_cont, '' cod_rev_actividad ,
-    usucodificador_ocu o_usuario_codif, usucodificador_act a_usuario_codif, usuverificador usuario_super, usuverificador2 usuario_esp_cont, 
-	date(fecha_codificada)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
-FROM fecha_filtrada cp
-JOIN codificacion.cod_catalogo cc_o ON cp.codigocodif_ocu = cc_o.codigo AND cc_o.catalogo = 'cat_cob' AND cc_o.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_o2 ON cp.codigocodif_v1_ocu = cc_o2.codigo AND cc_o2.catalogo = 'cat_cob' AND cc_o2.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_o3 ON cp.codigocodif_v2_ocu = cc_o3.codigo AND cc_o3.catalogo = 'cat_cob' AND cc_o3.unico = 1
-JOIN codificacion.cod_catalogo cc_act ON cp.codigocodif_act = cc_act.codigo AND cc_act.catalogo = 'cat_caeb' AND cc_act.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_act2 ON cp.codigocodif_v1_act = cc_act2.codigo AND cc_act2.catalogo = 'cat_caeb' AND cc_act2.unico = 1
-LEFT JOIN codificacion.cod_catalogo cc_act3 ON cp.codigocodif_v2_act = cc_act3.codigo AND cc_act3.catalogo = 'cat_caeb' AND cc_act3.unico = 1
-WHERE estado_ocu <> 'ELABORADO' AND estado_act <> 'ELABORADO' AND estado_ocu <> 'ASIGNADO' AND estado_act <> 'ASIGNADO'
+UPDATE codificacion.cod_p49_p51
+SET
+        estado_ocu = 'VERIFICADO', estado_act='VERIFICADO', cp.usucre='ODBC' -- Aquí puedes definir qué columnas deseas actualizar
+	--estado_norm_act=100
+FROM fecha_filtrada
+JOIN codificacion.cod_catalogo cc_o ON fecha_filtrada.codigocodif_ocu = cc_o.codigo AND cc_o.catalogo = 'cat_cob' AND cc_o.unico = 1
+LEFT JOIN codificacion.cod_catalogo cc_o2 ON fecha_filtrada.codigocodif_v1_ocu = cc_o2.codigo AND cc_o2.catalogo = 'cat_cob' AND cc_o2.unico = 1
+LEFT JOIN codificacion.cod_catalogo cc_o3 ON fecha_filtrada.codigocodif_v2_ocu = cc_o3.codigo AND cc_o3.catalogo = 'cat_cob' AND cc_o3.unico = 1
+JOIN codificacion.cod_catalogo cc_act ON fecha_filtrada.codigocodif_act = cc_act.codigo AND cc_act.catalogo = 'cat_caeb' AND cc_act.unico = 1
+LEFT JOIN codificacion.cod_catalogo cc_act2 ON fecha_filtrada.codigocodif_v1_act = cc_act2.codigo AND cc_act2.catalogo = 'cat_caeb' AND cc_act2.unico = 1
+LEFT JOIN codificacion.cod_catalogo cc_act3 ON fecha_filtrada.codigocodif_v2_act = cc_act3.codigo AND cc_act3.catalogo = 'cat_caeb' AND cc_act3.unico = 1
+WHERE codificacion.cod_p49_p51.id_p49_p51 = fecha_filtrada.id_p49_p51
+    AND fecha_filtrada.estado_ocu <> 'ELABORADO' AND fecha_filtrada.estado_act <> 'ELABORADO' 
+    AND fecha_filtrada.estado_ocu <> 'ASIGNADO' AND fecha_filtrada.estado_act <> 'ASIGNADO'
     AND (
-        (cp.fecha_codificada BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date)
-    );
+       (fecha_filtrada.fecha_codificada BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date)
+	-- fecha_filtrada.id_p49_p51 in (372250,372237,372419,372240,372264)
+    )
+RETURNING 
+    cod_p49_p51.id_p49_p51, 
+    cod_p49_p51.secuencial, 
+    cod_p49_p51.nro, 
+    cod_p49_p51.departamento, 
+    cod_p49_p51.p26 AS edad, 
+    cod_p49_p51.p41a AS nivel, 
+    cod_p49_p51.p41b AS curso_anio, 
+    cod_p49_p51.p50 AS categoria, 
+    cod_p49_p51.p45 AS cultiva_cria, 
+    cod_p49_p51.p48esp AS p48_otro, 
+    cod_p49_p51.p52esp AS lugar_trabajo, 
+    fecha_filtrada.respuesta_ocu AS o_ocupacion, 
+    fecha_filtrada.codigocodif_ocu AS o_codigo_codif, 
+    cc_o.descripcion AS o_acep_desc_codif, 
+    fecha_filtrada.codigocodif_v1_ocu AS o_codigo_super, 
+    cc_o2.descripcion AS o_acep_desc_super, 
+    fecha_filtrada.codigocodif_v2_ocu AS o_codigo_esp_cont, 
+    cc_o3.descripcion AS o_acep_desc_esp_cont, 
+    '' AS cod_rev_ocupacion,
+    fecha_filtrada.respuesta_act AS a_actividad, 
+    fecha_filtrada.codigocodif_act AS a_codigo_codif, 
+    cc_act.descripcion AS a_acep_desc_codif , 
+    fecha_filtrada.codigocodif_v1_act AS a_codigo_super, 
+    cc_act2.descripcion AS a_acep_desc_super, 
+    fecha_filtrada.codigocodif_v2_act AS a_codigo_esp_cont, 
+    cc_act3.descripcion AS a_acep_desc_esp_cont, 
+    '' AS cod_rev_actividad,
+    fecha_filtrada.usucodificador_ocu AS o_usuario_codif, 
+    fecha_filtrada.usucodificador_act AS a_usuario_codif, 
+    fecha_filtrada.usuverificador AS usuario_super, 
+    fecha_filtrada.usuverificador2 AS usuario_esp_cont, 
+    date(fecha_filtrada.fecha_codificada)::text AS fecha_codif, 
+    date(fecha_filtrada.fecverificador2)::text AS fecha_esp_cont;
 	`;
 
-	// excel
+	try {
+		const result = await con.query(query); // Ejecutar la consulta SQL
 
-	// 
-	console.log(query);
-	await con
-		.query(query)
-		.then((result) =>
-			res.status(200).json({
-				datos: result,
-			})
-		)
-		.catch((e) => console.error(e.stack));
+		const workbook = new Excel.Workbook(); // Crear un nuevo libro de Excel
+		const worksheet = workbook.addWorksheet('Data'); // Crear una nueva hoja de cálculo
+
+		// Añadir encabezados
+		const columns = result.fields.map(field => ({ header: field.name, key: field.name }));
+		worksheet.columns = columns; // Definir las columnas
+
+		// Añadir filas
+		result.rows.forEach(row => {
+			worksheet.addRow(row);
+		});
+
+		// Definir la ruta de salida dentro de la carpeta 'odbc-excel'
+		const outputDir = path.resolve(__dirname, '../odbc-excel');
+		const outputPath = path.join(outputDir, 'odbc_ocu_act.xlsx');
+
+		// Crear el directorio si no existe
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		// Eliminar el archivo si existe
+		if (fs.existsSync(outputPath)) {
+			fs.unlinkSync(outputPath);
+		}
+
+		// Guardar el archivo Excel
+		await workbook.xlsx.writeFile(outputPath);
+		console.log(`Excel file created at ${outputPath}`);
+
+		// solo Enviar el directorio de salida
+		res.status(200).send({
+			datos: "excel creado",
+		});
+
+		console.log(typeof (outputPath));
+
+
+	} catch (error) {
+		console.error('Error generating Excel file:', error);
+		res.status(200).send('Error generating Excel file');
+	}
+
+
 };
 ////////////////////REPORTES DEL 1 AL 11
+
+
+
+
 
 
 
@@ -1099,9 +1073,9 @@ const reporte10 = async (req, res) => {
 
 	const {
 		login
-	}=req.body
+	} = req.body
 	console.log("sdfsdfsdfsdfs");
-	
+
 	console.log(req.body);
 
 	const query = {
@@ -1124,8 +1098,8 @@ const reporte10 = async (req, res) => {
 const reporte11 = async (req, res) => {
 	const {
 		login
-	}=req.body
-	console.log(req.body);	
+	} = req.body
+	console.log(req.body);
 	const query = {
 		text: `	select * from codificacion.fn_reporte_11('${login}')`,
 	};

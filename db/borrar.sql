@@ -31,3 +31,16 @@ ALTER TABLE codificacion.cod_p48esp ADD segmento	VARCHAR(8);
 ALTER TABLE codificacion.cod_p49_p51 ADD segmento	VARCHAR(8);
 --codificacion.cod_p52esp
 ALTER TABLE codificacion.cod_p52esp ADD segmento	VARCHAR(8);
+
+
+-- crear un campo en la tabla codificacion.cod_p50esp, con el nombre cod_p50esp_pais
+ALTER TABLE codificacion.cod_p50esp ADD cod_p50esp_pais VARCHAR(3);
+
+
+
+ALTER TABLE codificacion.cod_p52esp ADD codigocodif_pais VARCHAR(3);
+ALTER TABLE codificacion.cod_p52esp ADD codigocodif_v1_pais VARCHAR(3);
+ALTER TABLE codificacion.cod_p52esp ADD codigocodif_v2_pais VARCHAR(3);
+
+
+UPDATE codificacion.cod_p52esp set codigocodif_pais = '000' WHERE codigocodif_pais IS NULL;

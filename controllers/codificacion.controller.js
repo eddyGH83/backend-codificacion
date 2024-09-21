@@ -264,7 +264,6 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 
 
 
-
 	const query = {
 		text: `
 			SELECT
@@ -1013,13 +1012,29 @@ const supervisoresConCarga = async (req, res) => {
 	var {
 		id, // id del supervisor
 		tabla_id,
+		pregunta,
 		departamento
 	} = req.body;
+
+	console.table(req.body);
+	
 
 	// averiguar si es supervisor o jefe de turno
 	const rol = await (await con.query(`SELECT rol_id FROM codificacion.cod_usuario WHERE id_usuario = ${id}`)).rows[0].rol_id;
 
 	var total_carga_asignado = 0;
+
+
+	// si es Especialista (Lista solo supervisores)
+
+	if (rol == 2) {
+		if (pregunta === 'p49_p51') {
+			console.log("Doble");
+		} else {
+			console.log("Simple");
+		}
+	}
+
 
 	// si es supervisor (Lista de codificadores de sus codificadores)
 	if (rol == 4) {
@@ -1192,18 +1207,23 @@ const supervisoresSinCarga = async (req, res) => {
 	const query = {
 		text: `
 		SELECT
-		    id_usuario,
-		    nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
-		    nombres,
-		    pr_apellido,
-		    sg_apellido,
-		    turno,
-		    cod_supvsr,
-		    rol_id,
-		    login,
+			id_usuario,
+			nombres || ' ' || pr_apellido || ' ' || sg_apellido nombre_completo,
+			nombres,
+			CASE 
+				WHEN rol_id = 4 THEN 'SUP'
+				WHEN rol_id = 6 THEN 'CONT'
+				WHEN rol_id = 3 THEN 'JT'
+			END AS rol,    
+			pr_apellido,
+			sg_apellido,
+			turno,
+			cod_supvsr,
+			rol_id,
+			login,
 			0 total,
-    		false activo
-		FROM codificacion.cod_usuario WHERE rol_id =4 AND estado ILIKE 'A'
+			false activo
+		FROM codificacion.cod_usuario WHERE rol_id IN (4,6,3) AND estado ILIKE 'A' ORDER BY rol DESC 
 		`,
 	};
 	await con
@@ -3236,9 +3256,11 @@ const updateReAsignado = async (req, res) => {
 const updateAsignadoSup = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
-	console.log("------------------------------------------Nueva asignacion de carga a Supervisor-------------------------------------------");
+	console.log("-------------------------x-----------------Nueva asignacion de carga a Supervisor-------------------------------------------");
 
+	console.table(tabla_id);
 	console.table(parametro);
+
 
 	// Si el parametro es un array y su longitud es 0, se retorna un error
 	if (parametro.length == 0) {
@@ -3254,16 +3276,17 @@ const updateAsignadoSup = async (req, res) => {
 	// Verificamos is es simple o doble
 	if (tabla_id == 'p49_p51') {
 
+		console.log("Asignacion de carga a Supervisor <-----");
+
+
 		// Total de carga que llega del front 
 		var total_carga = 0;
 		parametro.forEach(paramss => { total_carga += paramss.count; });
 
-
 		// Carga disponible 
 		const result = await (await con.query(
-			`SELECT count(1) FROM codificacion.cod_p49_p51 WHERE (estado_ocu='CODIFICADO' OR estado_act = 'CODIFICADO') and departamento = '${parametro[0].departamento}';`
+			`SELECT count(1) FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'CODIFICADO' AND usucodificador_act ilike 'AUTOMATICO_%') and departamento = '${parametro[0].departamento}';`
 		)).rows;
-
 
 		// Si la cantidad de carga es mayor a la disponible, se retorna un error
 		if (total_carga > result[0].count) {
@@ -3296,7 +3319,7 @@ const updateAsignadoSup = async (req, res) => {
 						usucodificador_act,
 						usucre
 					FROM codificacion.cod_p49_p51
-					WHERE (estado_ocu = 'CODIFICADO' OR estado_act = 'CODIFICADO') and departamento='${parametro[0].departamento}'
+					WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'CODIFICADO' AND usucodificador_act ilike 'AUTOMATICO_%') and departamento='${parametro[0].departamento}'
 					LIMIT ${params.count}
 				) x
 			WHERE cecupd.id_p49_p51 = x.id_p49_p51; 
@@ -5758,9 +5781,9 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		login // id_usuario del supervisor
 	} = req.body;
 
-	console.log("####################devuelvePreguntasSupervisionAutomatica####################");	
+	console.log("####################devuelvePreguntasSupervisionAutomatica-----------####################");
 	console.table(req.body);
-	
+
 
 	// query
 	const query = `
@@ -5941,7 +5964,8 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		false btn_simple
 	FROM codificacion.cod_p49_p51
-	WHERE estado_ocu = 'ASIGNASUP' and  estado_act = 'ASIGNASUP' AND usucre='${login}'
+	WHERE (estado_ocu = 'ASIGNASUP' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'ASIGNASUP' AND usucodificador_act ilike 'AUTOMATICO_%') 
+	AND usucre='${login}'
 
 	UNION
 
@@ -7192,8 +7216,7 @@ const updateOcuAct = async (req, res) => {
 
 };
 
-
-// 
+//   
 const updateCargaSupervision = async (req, res) => {
 	const {
 		id_usuario,

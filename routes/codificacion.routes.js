@@ -78,7 +78,7 @@ router.post('/cargarParaCodificarDoble', cargarParaCodificarDoble);
 router.get('/codificadores/:id', codificadores);
 router.post('/codificadoresConCarga', codificadoresConCarga);
 router.get('/supervisoresSinCarga/:id', supervisoresSinCarga);
-router.get('/supervisoresConCarga/:id', supervisoresConCarga);
+router.post('/supervisoresConCarga', supervisoresConCarga);
 
 router.get('/supervisores', supervisores);
 router.post('/reasignar', reasignar);
