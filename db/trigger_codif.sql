@@ -1,4 +1,3 @@
-
 ------------------------------------------ TRIGGER: trgr_p20esp ------------------------------------------
 CREATE OR REPLACE FUNCTION codificacion.trgr_p20esp() RETURNS TRIGGER -- Función que se ejecuta
 AS
@@ -7,27 +6,31 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_emigracion
         SET p202esp_cod = NEW.codigocodif_v2
-        WHERE sec_cuestionario = NEW.sec_cuestionario
-          AND i00 = NEW.i00
-          AND p20nro = NEW.p20nro;
+        WHERE 
+          i00 = NEW.i00
+          AND p20nro = NEW.p20nro
+          AND trim(p202esp) = trim(NEW.respuesta); -- NEW.respuesta es el valor de la columna respuesta de la tabla codificacion.cod_p20esp
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_emigracion
         SET p202esp_cod = NEW.codigocodif_v1
-        WHERE sec_cuestionario = NEW.sec_cuestionario
-          AND i00 = NEW.i00
-          AND p20nro = NEW.p20nro;
+        WHERE 
+          i00 = NEW.i00
+          AND p20nro = NEW.p20nro
+          AND trim(p202esp) = trim(NEW.respuesta);
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_emigracion
         SET p202esp_cod = NEW.codigocodif
-        WHERE sec_cuestionario = NEW.sec_cuestionario
-          AND i00 = NEW.i00
-          AND p20nro = NEW.p20nro;
+        WHERE 
+          i00 = NEW.i00
+          AND p20nro = NEW.p20nro
+          AND trim(p202esp) = trim(NEW.respuesta);
     ELSE
         UPDATE estructuras.inicial0_capitulo_emigracion
         SET p202esp_cod = NULL
-        WHERE sec_cuestionario = NEW.sec_cuestionario
-          AND i00 = NEW.i00
-          AND p20nro = NEW.p20nro;
+        WHERE 
+          i00 = NEW.i00
+          AND p20nro = NEW.p20nro
+          AND trim(p202esp) = trim(NEW.respuesta);
     END IF;
     RETURN NEW;
 END;
@@ -36,9 +39,24 @@ LANGUAGE plpgsql;
 
 -- Crear el trigger
 CREATE TRIGGER trgr_p20esp -- Nombre del trigger
-AFTER UPDATE ON codificacion.cod_p20esp -- Tabla que dispara el trigger
+AFTER UPDATE OF codigocodif, codigocodif_v1, codigocodif_v2 ON codificacion.cod_p20esp -- Tabla que dispara el trigger, 
+                                                                                       -- se dispara cuando se actualiza los campos codigocodif, codigocodif_v1, codigocodif_v2 
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p20esp(); -- Función que se ejecuta
+
+-----------------------------------------------------------------------
+AFTER UPDATE OF codigocodif, codigocodif_v1, codigocodif_v2 ON codificacion.cod_p20esp
+
+
+-- comando between ejemplo sql
+-- SELECT * FROM codificacion.cod_p20esp WHERE secuencial BETWEEN 1 AND 10;
+
+
+
+
+
+
+
 
 
 
@@ -59,27 +77,19 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p32esp_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p32esp
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p32esp_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p32esp_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p32esp_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
@@ -91,6 +101,8 @@ CREATE TRIGGER trgr_p32esp -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p32esp -- Tabla que dispara el trigger
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p32esp(); -- Función que se ejecuta
+
+
 
 
 -- Coonsultas
@@ -115,27 +127,19 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p331_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p331
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p331_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p331_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p331_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
@@ -163,27 +167,19 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p332_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p332
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE  nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p332_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE  nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p332_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE  nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p332_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE  nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
@@ -210,32 +206,27 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p333_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p333
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p333_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p333_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p333_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
+
+
+
 
 -- Crear el trigger
 CREATE TRIGGER trgr_p333 -- Nombre del trigger
@@ -268,33 +259,24 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p341_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p341
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p341_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p341_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p341_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p341 -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p341 -- Tabla que dispara el trigger
@@ -325,33 +307,24 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p35a_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p35a
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p35a_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p35a_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p35a_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p352a -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p352a -- Tabla que dispara el trigger
@@ -374,33 +347,24 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p353_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p353_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p353_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p353_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p353 -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p353 -- Tabla que dispara el trigger
@@ -430,33 +394,24 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p36a_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p36a_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p36a_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p36a_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p362a -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p362a -- Tabla que dispara el trigger
@@ -488,38 +443,32 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p363_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p363_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p363_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p363_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p363 -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p363 -- Tabla que dispara el trigger
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p363(); -- Función que se ejecuta
+
+
+
 
 
 -- Consultas
@@ -547,38 +496,33 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p372a_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p372a_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p372a_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p372a_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p372a -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p372a -- Tabla que dispara el trigger
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p372a(); -- Función que se ejecuta
+
+
+
+
 
 
 -- Consultas
@@ -611,33 +555,24 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p373_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p373_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p373_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p373_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p373 -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p373 -- Tabla que dispara el trigger
@@ -659,7 +594,7 @@ ON cpe.secuencial =icp.secuencial
 
 
 
-
+-- TRIGGER: OK
 ------------------------------------------ TRIGGER: trgr_p48esp ------------------------------------------
 CREATE OR REPLACE FUNCTION codificacion.trgr_p48esp() RETURNS TRIGGER -- Función que se ejecuta
 AS
@@ -668,38 +603,34 @@ BEGIN
     IF NEW.codigocodif_v2 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p48esp_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p48esp_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSIF NEW.codigocodif IS NOT NULL THEN
         UPDATE estructuras.inicial0_capitulo_personas
         SET p48esp_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
         SET p48esp_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        WHERE nro = NEW.nro;
     END IF;
     RETURN NEW;
 END;
 $$
 LANGUAGE plpgsql;
-
 -- Crear el trigger
 CREATE TRIGGER trgr_p48esp -- Nombre del trigger
 AFTER UPDATE ON codificacion.cod_p48esp -- Tabla que dispara el trigger
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p48esp(); -- Función que se ejecuta
+
+
+
+
+
 
 
 
@@ -711,6 +642,169 @@ UPDATE codificacion.cod_p48esp SET codigocodif_v2='5' WHERE  secuencial =85259  
 SELECT * FROM codificacion.cod_p48esp cpe
 INNER JOIN estructuras.inicial0_capitulo_personas icp 
 ON cpe.secuencial =icp.secuencial
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------ TRIGGER: trgr_p49 ------------------------------------------
+CREATE OR REPLACE FUNCTION codificacion.trgr_p49() RETURNS TRIGGER -- Función que se ejecuta
+AS
+$$
+BEGIN
+    IF NEW.codigocodif_v2_ocu IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p49_cod = NEW.codigocodif_v2_ocu
+        WHERE nro = NEW.nro;
+    ELSIF NEW.codigocodif_v1_ocu IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p49_cod = NEW.codigocodif_v1_ocu
+        WHERE nro = NEW.nro;
+    ELSIF NEW.codigocodif_ocu IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p49_cod = NEW.codigocodif_ocu
+        WHERE nro = NEW.nro;
+    ELSE
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p49_cod = NULL
+        WHERE nro = NEW.nro;
+    END IF;
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+-- Crear el trigger
+CREATE TRIGGER trgr_p49 -- Nombre del trigger
+AFTER UPDATE OF codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu ON codificacion.cod_p49_p51 -- Tabla que dispara el trigger
+FOR EACH ROW -- Por cada fila
+EXECUTE FUNCTION codificacion.trgr_p49(); -- Función que se ejecuta
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Consultas
+SELECT codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu FROM codificacion.cod_p49_p51 cpp WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101'
+SELECT p49_cod FROM estructuras.inicial0_capitulo_personas WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101'
+UPDATE codificacion.cod_p49_p51 SET codigocodif_v2_ocu='1195' WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101' -- update
+-- 
+SELECT * FROM codificacion.cod_p49_p51  cpe
+INNER JOIN estructuras.inicial0_capitulo_personas icp 
+ON cpe.secuencial =icp.secuencial
+
+
+
+
+
+SELECT 
+	CASE p41a 
+	WHEN 'Ninguno' THEN 1
+ WHEN 'Curso de alfabetizacion'  THEN 2
+ WHEN 'Inicial'  THEN 3
+ WHEN 'Basico' THEN 4
+ WHEN 'Intermedio' THEN 5
+ WHEN 'Medio' THEN 6
+ WHEN 'Primaria' THEN 7
+ WHEN 'Secundaria' THEN 8
+ WHEN 'Tecnico Medio' THEN 9
+ WHEN 'Tecnico Superior' THEN 10
+ WHEN 'Licenciatura' THEN 11
+ WHEN 'Maestria' THEN 12
+ WHEN 'Doctorado' THEN 13
+ 
+ 
+ 
+	ELSE NULL END p41a 
+FROM codificacion.cod_p49_p51
+
+
+
+
+
+
+
+------------------------------------------ TRIGGER: trgr_p51 ------------------------------------------
+CREATE OR REPLACE FUNCTION codificacion.trgr_p51() RETURNS TRIGGER -- Función que se ejecuta
+AS
+$$
+BEGIN
+    IF NEW.codigocodif_v2_act IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p51_cod = NEW.codigocodif_v2_act
+        WHERE nro = NEW.nro;
+    ELSIF NEW.codigocodif_v1_act IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p51_cod = NEW.codigocodif_v1_act
+        WHERE nro = NEW.nro;
+    ELSIF NEW.codigocodif_act IS NOT NULL THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p51_cod = NEW.codigocodif_act
+        WHERE nro = NEW.nro;
+    ELSE
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p51_cod = NULL
+        WHERE nro = NEW.nro;
+    END IF;
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+-- Crear el trigger
+CREATE TRIGGER trgr_p51 -- Nombre del trigger
+AFTER UPDATE OF codigocodif_act, codigocodif_v1_act, codigocodif_v2_act ON codificacion.cod_p49_p51 -- Tabla que dispara el trigger
+FOR EACH ROW -- Por cada fila
+EXECUTE FUNCTION codificacion.trgr_p51(); -- Función que se ejecuta
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Consultas
+SELECT codigocodif_act, codigocodif_v1_act, codigocodif_v2_act FROM codificacion.cod_p49_p51 cpp WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'
+SELECT p49 p51_cod FROM estructuras.inicial0_capitulo_personas WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'
+UPDATE codificacion.cod_p49_p51 SET codigocodif_v2_act='1195' WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'-- update
+-- 
+SELECT * FROM codificacion.cod_p49_p51  cpe
+INNER JOIN estructuras.inicial0_capitulo_personas icp 
+ON cpe.secuencial =icp.secuencial
+
+
+
 
 
 
@@ -772,135 +866,6 @@ INNER JOIN estructuras.inicial0_capitulo_personas icp
 ON cpe.secuencial =icp.secuencial
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------- TRIGGER: trgr_p49 ------------------------------------------
-CREATE OR REPLACE FUNCTION codificacion.trgr_p49() RETURNS TRIGGER -- Función que se ejecuta
-AS
-$$
-BEGIN
-    IF NEW.codigocodif_v2_ocu IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p49_cod = NEW.codigocodif_v2_ocu
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif_v1_ocu IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p49_cod = NEW.codigocodif_v1_ocu
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif_ocu IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p49_cod = NEW.codigocodif_ocu
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSE
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p49_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    END IF;
-    RETURN NEW;
-END;
-$$
-LANGUAGE plpgsql;
-
--- Crear el trigger
-CREATE TRIGGER trgr_p49 -- Nombre del trigger
-AFTER UPDATE ON codificacion.cod_p49_p51 -- Tabla que dispara el trigger
-FOR EACH ROW -- Por cada fila
-EXECUTE FUNCTION codificacion.trgr_p49(); -- Función que se ejecuta
-
-
-
--- Consultas
-SELECT codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu FROM codificacion.cod_p49_p51 cpp WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101'
-SELECT p49_cod FROM estructuras.inicial0_capitulo_personas WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101'
-UPDATE codificacion.cod_p49_p51 SET codigocodif_v2_ocu='1195' WHERE secuencial =91575157  AND i00='02813915' AND nro='91576101' -- update
--- 
-SELECT * FROM codificacion.cod_p49_p51  cpe
-INNER JOIN estructuras.inicial0_capitulo_personas icp 
-ON cpe.secuencial =icp.secuencial
-
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------- TRIGGER: trgr_p51 ------------------------------------------
-CREATE OR REPLACE FUNCTION codificacion.trgr_p51() RETURNS TRIGGER -- Función que se ejecuta
-AS
-$$
-BEGIN
-    IF NEW.codigocodif_v2_act IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p51_cod = NEW.codigocodif_v2_act
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif_v1_act IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p51_cod = NEW.codigocodif_v1_act
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif_act IS NOT NULL THEN
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p51_cod = NEW.codigocodif_act
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSE
-        UPDATE estructuras.inicial0_capitulo_personas
-        SET p51_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    END IF;
-    RETURN NEW;
-END;
-$$
-LANGUAGE plpgsql;
-
--- Crear el trigger
-CREATE TRIGGER trgr_p51 -- Nombre del trigger
-AFTER UPDATE ON codificacion.cod_p49_p51 -- Tabla que dispara el trigger
-FOR EACH ROW -- Por cada fila
-EXECUTE FUNCTION codificacion.trgr_p51(); -- Función que se ejecuta
-
-
--- Consultas
-SELECT codigocodif_act, codigocodif_v1_act, codigocodif_v2_act FROM codificacion.cod_p49_p51 cpp WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'
-SELECT p49 p51_cod FROM estructuras.inicial0_capitulo_personas WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'
-UPDATE codificacion.cod_p49_p51 SET codigocodif_v2_act='1195' WHERE secuencial =91315968  AND i00='01524303' AND nro='91316435'-- update
--- 
-SELECT * FROM codificacion.cod_p49_p51  cpe
-INNER JOIN estructuras.inicial0_capitulo_personas icp 
-ON cpe.secuencial =icp.secuencial
 
 
 

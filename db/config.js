@@ -104,7 +104,7 @@ const con = new Pool({
 	user: "postgres",
 	host: "localhost",
 	password: "toor",
-	database: "db_digitalizacion_19092024",
+	database: "db_digitalizacion_27092024",
 	port: "5432",
 });
 

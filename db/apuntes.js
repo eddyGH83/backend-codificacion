@@ -562,3 +562,8 @@ grupo 8 TARIJA
 25100043
 25100062
 
+
+
+
+// comando nvm para cambair de version de node
+nvm use 12.18.3

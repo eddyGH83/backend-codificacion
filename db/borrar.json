@@ -1,3 +1,4 @@
+/* SUP */
 [
     {
         "label": "Dashboard",
@@ -72,3 +73,82 @@
         ]
     }
 ]
+
+/* JT */
+
+[
+    {
+        "label": "Dashboard",
+        "icon": "pi pi-fw pi-microsoft",
+        "items": [
+            {
+                "label": "Dashboard",
+                "icon": "pi pi-fw pi-microsoft",
+                "routerLink": [
+                    "/dashboard"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Asignación",
+        "icon": "pi pi-fw pi-arrows-h",
+        "items": [
+            {
+                "label": "Asignar Carga - Cod.",
+                "icon": "pi pi-fw pi-sort-numeric-down",
+                "routerLink": [
+                    "/asignacion/carga-cod"
+                ]
+            },
+            {
+                "label": "Asignar Carga - Sup.",
+                "icon": "pi pi-fw pi-sort-numeric-down",
+                "routerLink": [
+                    "/asignacion/carga-sup"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Supervisión",
+        "icon": "pi pi-fw pi-eye",
+        "items": [
+            {
+                "label": "Supervisión automática",
+                "icon": "pi pi-fw pi-check",
+                "routerLink": [
+                    "/codificacion/supervisar-codificacion-automatica"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Reportes",
+        "icon": "pi pi-fw pi-search",
+        "items": [
+            {
+                "label": "Reportes",
+                "icon": "pi pi-fw pi-table",
+                "routerLink": [
+                    "/reportes"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Gestion de usuarios",
+        "icon": "pi pi-fw pi-cog",
+        "items": [
+            {
+                "label": "Usuarios",
+                "icon": "pi pi-fw pi-user-edit",
+                "routerLink": [
+                    "/usuarios/admin-jturno"
+                ]
+            }
+        ]
+    }
+]
+
+
