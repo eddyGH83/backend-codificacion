@@ -450,8 +450,8 @@ const preguntasPorDepartamentoCod = async (req, res) => {
 // Asignacion de carga a Supervisores por departamento
 const preguntasPorDepartamentoSup = async (req, res) => {
 
-	const { departamento } = req.body;
-	console.log(":: Carga para supervisión del departamento: ", departamento);
+	const { depto } = req.body;
+	console.log(":: Carga para supervisión del departamento: ", depto);
 
 	const query = {
 		text: `
@@ -461,7 +461,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'20' AS nro_preg,
 				'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
 				count(*) AS total_carga
-			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p20esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
@@ -471,7 +471,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'32' AS nro_preg,
 				'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p32esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
@@ -481,7 +481,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'33' AS nro_preg,
 				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p331 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 			
@@ -491,7 +491,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'33' AS nro_preg,
 				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p332 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
@@ -501,7 +501,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'33' AS nro_preg,
 				'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p333 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
@@ -511,7 +511,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'34' AS nro_preg,
 				'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${departamento}'
+			FROM codificacion.cod_p341 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO' and departamento='${depto}'
 
 			UNION
 
@@ -521,7 +521,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p352a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -531,7 +531,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'35' AS nro_preg,
 				'¿Dónde nació? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p353 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -541,7 +541,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p362a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -551,7 +551,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'36' AS nro_preg,
 				'¿Dónde vive habitualmente? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p363 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -561,7 +561,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p372a WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -571,7 +571,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'37' AS nro_preg,
 				'¿Dónde vivía el año 2019? ¿País?' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p373 WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -581,7 +581,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'48' AS nro_preg,
 				'Las últimas 4 semanas:' AS variable,
 				count(1) AS total_carga
-			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p48esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 
 			UNION
 
@@ -592,7 +592,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 				'Ocupación - Actividad Económica' AS variable,
 				count (1) AS total_carga 
 			FROM codificacion.cod_p49_p51 
-			WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'CODIFICADO' AND usucodificador_act ilike 'AUTOMATICO_%') and departamento='${departamento}'
+			WHERE (estado_ocu = 'CODIFICADO' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'CODIFICADO' AND usucodificador_act ilike 'AUTOMATICO_%') and departamento='${depto}'
 
 			UNION
 			
@@ -602,7 +602,7 @@ const preguntasPorDepartamentoSup = async (req, res) => {
 			    '52' AS nro_preg,
 			    'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
 			    count(1) AS total_carga
-			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${departamento}'
+			FROM codificacion.cod_p52esp WHERE estado = 'CODIFICADO' AND usucodificador = 'AUTOMATICO_NORMALIZADO'  and departamento='${depto}'
 			ORDER BY orden asc
 		`
 	};
@@ -2052,10 +2052,12 @@ const cargarParaSupervisionDoble = async (req, res) => {
 
 const cargarParaCodificarSimple = async (req, res) => {
 
-	const { tabla_id, id_usuario, login, departamento } = req.body;
+	const { tabla_id, id_usuario, login } = req.body;
 
-	console.log("cargar Para Codificar Simple <----------------------");
+
+	console.log("cargar Para Codificar Simple");
 	console.log(req.body);
+
 
 	// si tabla_id es p20esp
 	if (tabla_id === 'p20esp') {
@@ -2086,7 +2088,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 			departamento, 
 			orden
 		FROM codificacion.cod_p20esp
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_pais
@@ -2116,7 +2118,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 			secuencial,
 			id_p32esp, secuencial, i00, i001a, nro, respuesta, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 			FROM codificacion.cod_p32esp
-			WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+			WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 
@@ -2146,7 +2148,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 			secuencial,
 			i00, i001a, nro, respuesta, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 			FROM codificacion.cod_p331
-			WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+			WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_idioma
@@ -2179,7 +2181,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 			secuencial,
 			i00, i001a, nro, respuesta, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 			FROM codificacion.cod_p332
-			WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+			WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 
@@ -2209,7 +2211,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 			secuencial,
 			i00, i001a, nro, respuesta, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 			FROM codificacion.cod_p333
-			WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+			WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_idioma
@@ -2238,7 +2240,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p341 
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_idioma
@@ -2279,7 +2281,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p352b, p353, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden, apoyo
 		FROM codificacion.cod_p352a
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_municipio
@@ -2310,7 +2312,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p352a, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p353
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_pais
@@ -2351,7 +2353,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p362b, p363, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p362a
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_municipio
@@ -2381,7 +2383,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p362a, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p363
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_pais
@@ -2422,7 +2424,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p372b, p373, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p372a
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_municipio
@@ -2454,7 +2456,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p372a, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p373
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_pais
@@ -2492,7 +2494,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		end as edad,		
 		i00, i001a, nro, respuesta, p48, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p48esp
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: catalogo_cob
@@ -2533,7 +2535,7 @@ const cargarParaCodificarSimple = async (req, res) => {
 		secuencial,
 		i00, i001a, nro, respuesta, p52, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
 		FROM codificacion.cod_p52esp
-		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
+		WHERE estado ='ASIGNADO' and usucre = '${login}';
 		`)).rows;
 
 		// Clasificacion a utilizar: cod_catalogo
@@ -2555,9 +2557,9 @@ const cargarParaCodificarSimple = async (req, res) => {
 }
 
 const cargarParaCodificarDoble = async (req, res) => {
-	const { tabla_id, id_usuario, login, departamento} = req.body;
+	const { tabla_id, id_usuario, login } = req.body;
 
-	console.log("cargar Para Codificar Doble <------------------");
+	console.log("cargar Para Codificar Simple");
 	console.log(req.body);
 
 	// consulta
@@ -2573,7 +2575,7 @@ const cargarParaCodificarDoble = async (req, res) => {
 		'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
 	) contexto,	
 	id_p49_p51, secuencial, i00, i001a, nro, p26, p41a, p41b, p45, p48esp, respuesta_ocu, p50, respuesta_act, p52, p52esp, codigocodif_ocu, codigocodif_v1_ocu, codigocodif_v2_ocu, estado_ocu, usucodificador_ocu, feccodificador_ocu, respuesta_normalizada_ocu, codigocodif_act, codigocodif_v1_act, codigocodif_v2_act, estado_act, usucodificador_act, feccodificador_act, respuesta_normalizada_act, usucre, feccre, usuverificador, fecverificador, usuverificador2, fecverificador2, orden_ocu, orden_act, departamento
-	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}' and departamento='${departamento}' ORDER BY id_p49_p51 asc;
+	FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or estado_act ='ASIGNADO') AND usucre='${login}' and departamento='POTOSI'  ORDER BY id_p49_p51 asc;
 	`)).rows;
 
 
@@ -5504,10 +5506,6 @@ const devuelvePreguntaUsrSup = async (req, res) => {
 
 const devuelvePreguntasCodificado = async (req, res) => {
 	var params = req.body;
-	console.log('devuelvePreguntasCodificado<-----------------------');
-	
-	console.table(req.body);
-	
 	const query = {
 		text: `
 		SELECT
@@ -5517,7 +5515,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'20' AS nro_preg,
 			'¿Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' AS variable,
 			count(*) AS total_carga
-		FROM codificacion.cod_p20esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p20esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5528,7 +5526,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'32' AS nro_preg,
 			'¿Se autoidentifica con alguna nación, pueblo indígena originario campesino o afroboliviano?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p32esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p32esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5539,7 +5537,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'33' AS nro_preg,
 			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 1' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p331 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p331 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5550,7 +5548,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'33' AS nro_preg,
 			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 2' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p332 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5561,7 +5559,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'33' AS nro_preg,
 			'¿Qué idiomas o lenguas habla?, según el mayor uso: idioma 3' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p333 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p333 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5572,7 +5570,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'34' AS nro_preg,
 			'¿Cuál es el primer idioma o lengua en el que aprendió a hablar en su niñez?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p341 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p341 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5583,7 +5581,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'35' AS nro_preg,
 			'¿Dónde nació? ¿Municipio?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p352a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p352a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5594,7 +5592,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'35' AS nro_preg,
 			'¿Dónde nació? ¿País?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p353 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p353 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5605,7 +5603,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'36' AS nro_preg,
 			'¿Dónde vive habitualmente? ¿Municipio?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p362a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p362a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5616,7 +5614,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'36' AS nro_preg,
 			'¿Dónde vive habitualmente? ¿País?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p363 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p363 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5627,7 +5625,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'37' AS nro_preg,
 			'¿Dónde vivía el año 2019? ¿Municipio?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p372a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p372a WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5638,7 +5636,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'37' AS nro_preg,
 			'¿Dónde vivía el año 2019? ¿País?' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p373 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p373 WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5649,7 +5647,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'48' AS nro_preg,
 			'Las últimas 4 semanas:' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p48esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p48esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 
 		UNION
 
@@ -5660,7 +5658,7 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'49-51' AS nro_preg,
 			'Ocupación - Actividad Económica' AS variable,
 			count (1) AS total_carga
-		FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or  estado_act = 'ASIGNADO')  AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p49_p51 WHERE (estado_ocu = 'ASIGNADO' or  estado_act = 'ASIGNADO')  AND usucre = $1  and departamento = 'POTOSI'
 
 		UNION
 
@@ -5671,12 +5669,11 @@ const devuelvePreguntasCodificado = async (req, res) => {
 			'52' AS nro_preg,
 			'Principalmente, el lugar donde trabaja está ubicado:' AS variable,
 			count(1) AS total_carga
-		FROM codificacion.cod_p52esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = $2
+		FROM codificacion.cod_p52esp WHERE estado = 'ASIGNADO' AND usucre = $1 and departamento = 'POTOSI'
 		ORDER BY orden asc
 		`,
 		values: [
 			params.usucre,
-			params.departamento
 		],
 	};
 	await con
@@ -5694,8 +5691,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 	//var params = req.body;
 
 	const {
-		id_usuario, // id_usuario del supervisor
-		departamento
+		id_usuario // id_usuario del supervisor
 	} = req.body;
 
 	// query
@@ -5709,7 +5705,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p20esp 
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5722,7 +5718,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p32esp
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN (SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 	UNION
 
 	SELECT
@@ -5734,7 +5730,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p331
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5747,7 +5743,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p332
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5760,7 +5756,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p333
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5773,7 +5769,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p341
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5786,7 +5782,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p352a
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5799,7 +5795,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p353
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5812,7 +5808,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p362a
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5825,7 +5821,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p363
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5838,7 +5834,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p372a
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5851,7 +5847,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p373
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5864,7 +5860,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p48esp
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5877,7 +5873,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		false btn_simple
 	FROM codificacion.cod_p49_p51
-	WHERE (estado_ocu = 'CODIFICADO' AND departamento='${departamento}' and  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})
+	WHERE (estado_ocu = 'CODIFICADO' and  estado_act = 'CODIFICADO') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) and departamento = 'POTOSI'
 
 	UNION
 
@@ -5890,7 +5886,7 @@ const devuelvePreguntasSupervision = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p52esp
-	WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})	
+	WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})	 and departamento = 'POTOSI'
 	ORDER BY orden asc
 	`;
 
@@ -5912,12 +5908,11 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 
 	const {
 		id_usuario,
-		login, // id_usuario del supervisor
-		departamento
+		login // id_usuario del supervisor
 	} = req.body;
 
 	console.log("####################devuelvePreguntasSupervisionAutomatica-----------####################");
-	//  console.table(req.body);
+	console.table(req.body);
 
 
 	// query
@@ -5931,7 +5926,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p20esp 
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -5944,7 +5939,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p32esp
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 	UNION
 
 	SELECT
@@ -5956,7 +5951,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p331
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -5969,7 +5964,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p332
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -5982,7 +5977,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p333
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -5995,7 +5990,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p341
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6008,7 +6003,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p352a
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6021,7 +6016,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p353
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6034,7 +6029,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p362a
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6047,7 +6042,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p363
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6060,7 +6055,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p372a
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6073,7 +6068,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p373
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6086,7 +6081,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p48esp
-	WHERE estado ='ASIGNASUP' AND usucre='${login}' and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'
 
 	UNION
 
@@ -6100,7 +6095,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		false btn_simple
 	FROM codificacion.cod_p49_p51
 	WHERE (estado_ocu = 'ASIGNASUP' AND usucodificador_ocu ilike 'AUTOMATICO_%' AND estado_act = 'ASIGNASUP' AND usucodificador_act ilike 'AUTOMATICO_%') 
-	AND usucre='${login}' and departamento='${departamento}'
+	AND usucre='${login}'
 
 	UNION
 
@@ -6113,14 +6108,14 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 		0 totalAut,
 		true btn_simple
 	FROM codificacion.cod_p52esp
-	WHERE estado ='ASIGNASUP' AND usucre='${login}'	 and departamento='${departamento}'
+	WHERE estado ='ASIGNASUP' AND usucre='${login}'	
 	ORDER BY orden asc
 	`;
 
 	// ejecutar query
 	const registros = await (await con.query(query)).rows;
 
-	// console.table(registros);
+	console.table(registros);
 
 	res.status(200).json({
 		datos: registros
@@ -6133,8 +6128,7 @@ const devuelvePreguntasSupervisionAutomatica = async (req, res) => {
 const devuelveCargaParaSupervision = async (req, res) => {
 	const {
 		id_usuario, // id_usuario del supervisor	
-		tabla_id, // tabla_id
-		departamento
+		tabla_id // tabla_id
 	} = req.body;
 
 	// p49_p51
@@ -6171,7 +6165,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
 			) contexto_html
 		FROM codificacion.cod_p49_p51
-		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND departamento='${departamento}'  AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario})		
+		WHERE (estado_ocu = 'CODIFICADO' AND  estado_act = 'CODIFICADO') AND (usucodificador_ocu NOT  LIKE 'AUTOMATICO_%' OR usucodificador_act NOT LIKE 'AUTOMATICO_%') AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr= ${id_usuario}) AND departamento='POTOSI'		
 		order by codigocodif_act
 		limit 1500
 		`;
@@ -6215,7 +6209,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6246,7 +6240,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario}) LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario}) LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6277,7 +6271,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6308,7 +6302,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6339,7 +6333,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6370,7 +6364,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6413,7 +6407,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					end as var_contexto,
 					departamento
 				FROM codificacion.cod_p352a
-				WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+				WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6446,7 +6440,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6493,7 +6487,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p362a
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6526,7 +6520,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p363
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6570,7 +6564,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p372a
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6602,7 +6596,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p373
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6641,7 +6635,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6676,7 +6670,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p52esp
-			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
+			WHERE estado ='CODIFICADO' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -6701,8 +6695,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 	const {
 		id_usuario, // id_usuario del supervisor	
 		tabla_id, // tabla_id
-		login,
-		departamento
+		login
 	} = req.body;
 
 	// p49_p51
@@ -6739,7 +6732,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				'<strong style=''font-weight: normal; color:rgb(14, 149, 83);''>Lugar donde trabaja: </strong> ',p52esp,'<br>'
 			) contexto_html
 		FROM codificacion.cod_p49_p51
-		WHERE (estado_ocu = 'ASIGNASUP' AND  estado_act = 'ASIGNASUP') AND (usucodificador_ocu ILIKE 'AUTOMATICO_%' AND usucodificador_act ILIKE 'AUTOMATICO_%') AND usucre='${login}' AND departamento='${departamento}'  		
+		WHERE (estado_ocu = 'ASIGNASUP' AND  estado_act = 'ASIGNASUP') AND (usucodificador_ocu ILIKE 'AUTOMATICO_%' AND usucodificador_act ILIKE 'AUTOMATICO_%') AND usucre='${login}'		
 		order by codigocodif_act
 		limit 1500
 		`;
@@ -6783,7 +6776,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6814,7 +6807,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6845,7 +6838,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6876,7 +6869,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6907,7 +6900,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6938,7 +6931,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -6981,7 +6974,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					end as var_contexto,
 					departamento
 				FROM codificacion.cod_p352a
-				WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+				WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 			`)).rows;
 
 		// Catalogo
@@ -7014,7 +7007,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7061,7 +7054,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p362a
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7094,7 +7087,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p363
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7138,7 +7131,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p372a
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7170,7 +7163,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p373
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7209,7 +7202,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7244,7 +7237,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				end as var_contexto,
 				departamento
 			FROM codificacion.cod_p52esp
-			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
+			WHERE estado ='ASIGNASUP' AND usucre='${login}' LIMIT 1500
 		`)).rows;
 
 		// Catalogo
@@ -7361,61 +7354,47 @@ const updateCargaSupervision = async (req, res) => {
 		registros
 	} = req.body;
 
-	//console.table(registros);
+	//console.log(req.body);
 
 	// verificar que tabla es
 	if (tabla_id === 'p49_p51') {
 
-		try {
-			// recorrer registros
-			for (let i = 0; i < registros.length; i++) {
-				const element = registros[i];
-				await con.query(`
+		console.log('------------------------------------p49_p51--------------------------------------------');
+
+		// recorrer registros
+		for (let i = 0; i < registros.length; i++) {
+			const element = registros[i];
+
+			await con.query(`
 			UPDATE codificacion.cod_p49_p51
 			SET estado_ocu = 'VERIFICADO', codigocodif_v1_ocu ='${element.codigocodif_ocu}', fecverificador = now(), usuverificador = '${id_usuario}', 
 				estado_act = 'VERIFICADO', codigocodif_v1_act ='${element.codigocodif_act}'
 			WHERE id_p49_p51 = ${element.id_registro}
 			`)
-			}
-
-			// respuesta
-			res.status(200).json({
-				success: true,
-				message: 'Carga supervisada correctamente. ' + tabla_id
-			})
-
-		} catch (error) {
-			res.status(200).json({
-				success: false,
-				message: 'Error al supervisar carga. ' + tabla_id
-			})
 		}
 
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Carga supervisada correctamente. ' + tabla_id
+		})
 	} else {
-
-		try {
-			// recorrer registros
-			for (let i = 0; i < registros.length; i++) {
-				const element = registros[i];
-				await con.query(`
+		console.log('------------------------------------cod_' + tabla_id + '--------------------------------------------');
+		// recorrer registros
+		for (let i = 0; i < registros.length; i++) {
+			const element = registros[i];
+			await con.query(`
 			UPDATE codificacion.cod_${tabla_id}
 			SET estado = 'VERIFICADO', codigocodif_v1 ='${element.codigocodif}', fecverificador = now(), usuverificador = '${id_usuario}'			
 			WHERE id_${tabla_id} = ${element.id_registro}
 			`)
-			}
-
-			// respuesta
-			res.status(200).json({
-				success: true,
-				message: 'Carga supervisada correctamente. ' + tabla_id
-			})
-		} catch (error) {
-			res.status(200).json({
-				success: false,
-				message: 'Error al supervisar carga. ' + tabla_id
-			})
 		}
 
+		// respuesta
+		res.status(200).json({
+			success: true,
+			message: 'Carga supervisada correctamente. ' + tabla_id
+		})
 	}
 }
 /* 

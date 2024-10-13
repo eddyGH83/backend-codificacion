@@ -49,6 +49,7 @@ class Server {
         this.app.use('/api/login', require('../routes/login.routes'));
         this.app.use('/api/codificacion', require('../routes/codificacion.routes'));
         this.app.use('/api/reportes', require('../routes/reportes.routes'));
+        this.app.use('/api/automatica', require('../routes/automatica.routes'));
     }
     listen() {
         this.app.listen(this.port, () => {

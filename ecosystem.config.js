@@ -3,7 +3,7 @@ module.exports = {
     {
     name: "codificacion", // Nombre de la aplicación: pm2 restart codificacion
     script: "app.js", // Nombre del archivo que se ejecutará
-    instances: 1, // 0: tomará el número de núcleos del procesador, -1: no se creará cluster, 1: se creará un solo proceso ... etc
+    instances: 0, // 0: tomará el número de núcleos del procesador, -1: no se creará cluster, 1: se creará un solo proceso ... etc
     exec_mode: "cluster", // cluster: se creará un cluster, fork: se creará un proceso
     },
     ],

@@ -811,6 +811,9 @@ ON cpe.secuencial =icp.secuencial
 
 
 
+-- funcion sql de postgresql para averiguar el tamaño de una cadena
+SELECT LENGTH('hola mundo') AS longitud; -- 10
+
 
 
 
@@ -819,31 +822,42 @@ CREATE OR REPLACE FUNCTION codificacion.trgr_p52esp() RETURNS TRIGGER -- Funció
 AS
 $$
 BEGIN
-    IF NEW.codigocodif_v2 IS NOT NULL THEN
+    IF NEW.codigocodif_v2 IS NOT NULL AND LENGTH(NEW.codigocodif_v2) = 3 THEN
         UPDATE estructuras.inicial0_capitulo_personas
-        SET p52esp_cod = NEW.codigocodif_v2
-        WHERE secuencial = NEW.secuencial -- NEW.sec_cuestionario es el valor de la columna sec_cuestionario de la tabla codificacion.cod_p353
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif_v1 IS NOT NULL THEN
+        SET p52esp_cod = NEW.codigocodif_v2, p52_pais_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+
+    ELSIF NEW.codigocodif_v2 IS NOT NULL AND LENGTH(NEW.codigocodif_v2) <> 3 THEN
         UPDATE estructuras.inicial0_capitulo_personas
-        SET p52esp_cod = NEW.codigocodif_v1
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
-    ELSIF NEW.codigocodif IS NOT NULL THEN
+        SET p52esp_cod = NEW.codigocodif_v2, p52_mun_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+    
+    ELSIF NEW.codigocodif_v1 IS NOT NULL AND LENGTH(NEW.codigocodif_v1) = 3 THEN
         UPDATE estructuras.inicial0_capitulo_personas
-        SET p52esp_cod = NEW.codigocodif
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        SET p52esp_cod = NEW.codigocodif_v1, p52_pais_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+
+    ELSIF NEW.codigocodif_v1 IS NOT NULL AND LENGTH(NEW.codigocodif_v1) <> 3 THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p52esp_cod = NEW.codigocodif_v1, p52_mun_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+
+    ELSIF NEW.codigocodif IS NOT NULL AND LENGTH(NEW.codigocodif) = 3 THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p52esp_cod = NEW.codigocodif, p52_pais_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+
+    ELSIF NEW.codigocodif IS NOT NULL AND LENGTH(NEW.codigocodif) <> 3 THEN
+        UPDATE estructuras.inicial0_capitulo_personas
+        SET p52esp_cod = NEW.codigocodif, p52_mun_cod = NEW.respuesta
+        WHERE nro = NEW.nro;
+
     ELSE
         UPDATE estructuras.inicial0_capitulo_personas
-        SET p52esp_cod = NULL
-        WHERE secuencial = NEW.secuencial
-          AND i00 = NEW.i00
-          AND nro = NEW.nro;
+        SET p52esp_cod = NULL, p52_pais_cod = NULL, p52_mun_cod = NULL
+        WHERE nro = NEW.nro;
     END IF;
+
     RETURN NEW;
 END;
 $$
@@ -851,9 +865,18 @@ LANGUAGE plpgsql;
 
 -- Crear el trigger
 CREATE TRIGGER trgr_p52esp -- Nombre del trigger
-AFTER UPDATE ON codificacion.cod_p52esp -- Tabla que dispara el trigger
+AFTER UPDATE OF codigocodif, codigocodif_v1, codigocodif_v2 ON codificacion.cod_p52esp -- Tabla que dispara el trigger
 FOR EACH ROW -- Por cada fila
 EXECUTE FUNCTION codificacion.trgr_p52esp(); -- Función que se ejecuta
+
+
+
+
+
+
+
+
+
 
 
 -- Consultas

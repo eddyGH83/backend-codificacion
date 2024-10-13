@@ -1140,6 +1140,8 @@ const reporte12 = async (req, res) => {
 
 const reporte13 = async (req, res) => {
 	const { cod_depto } = req.body;
+	console.log("----------------------------------------------------------FFFFF");
+
 	console.table(req.body);
 
 	let resultado = [];
@@ -1177,9 +1179,36 @@ const reporte13 = async (req, res) => {
 			}
 		];
 		total_depto = 282390;
-	} else {
+	} /* else {
 		resultado = [];
 		total_depto = 0
+	} */
+
+	/* 
+-- Departamento = POTOTSI
+-- Cantidad de personas = 800.778
+-- Cantidad de Cuestionarios = 370.561 
+-- Carga 4
+	*/
+
+	if (cod_depto == '05') {
+		resultado = [
+			{
+				departamento: "POTOSI",
+				carga_db_inicial_0: 4,
+				fecha_carga: "08-10-2024",
+				nro_cuestionarios: 370561,
+				nro_personas: 800778
+			},
+			{
+				departamento: "TOTAL POTOSI",
+				carga_db_inicial_0: "",
+				fecha_carga: "",
+				nro_cuestionarios: 370561,
+				nro_personas: 800778,
+			}
+		];
+		total_depto = 370561;
 	}
 
 	// respuestas 202
