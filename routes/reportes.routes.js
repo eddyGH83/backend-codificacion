@@ -33,7 +33,7 @@ const { repCodificados,
         reporte12,
         reporte13,     
         download01,   
-        
+        generarExcelp32esp
     } = require('../controllers/reportes.controller');
 
     /////Definir las rutas Aqui
@@ -58,6 +58,7 @@ router.post('/reporte11', reporte11);
 router.get('/reporte12', reporte12);
 router.post('/reporte13', reporte13);
 router.get('/download01', download01);
+router.post('/generarExcelp32esp', generarExcelp32esp);
 
 /*****************************************
  * ********---------**************

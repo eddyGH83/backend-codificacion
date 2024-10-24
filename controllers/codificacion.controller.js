@@ -2480,18 +2480,15 @@ const cargarParaCodificarSimple = async (req, res) => {
 		// consulta
 		const qr = await (await con.query(`
 		SELECT  
-		case 
-		when p48 is not null then '<strong> Descripción: </strong>' || p48
-		when p48 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
-		end as contexto,
+		'<strong> Edad: </strong>' || COALESCE(p26 , '')  || '<br><strong> Nivel: </strong>' || COALESCE(p41a , '') || '<br><strong> Curso: </strong>' || COALESCE(p41b , '')  contexto,
 		id_p48esp as id_pregunta, 
 		secuencial,
 		case 
-		when p26 is not null then p26
-		when p26 is null then  '' 
+			when p26 is not null then p26
+			when p26 is null then  '' 
 		end as edad,		
 		i00, i001a, nro, respuesta, p48, codigocodif, codigocodif_v1, codigocodif_v2, estado, usucre, feccre, usucodificador, feccodificador, usuverificador, fecverificador, usuverificador2, fecverificador2, respuesta_normalizada, departamento, orden
-		FROM codificacion.cod_p48esp
+		FROM codificacion.cod_p48esp		
 		WHERE estado ='ASIGNADO' and usucre = '${login}' and departamento = '${departamento}';
 		`)).rows;
 
@@ -4228,10 +4225,12 @@ const updatePreguntaSimpleCorreccion = async (req, res) => {
 		usuverificador
 	} = req.body;
 
+	
+
 	// update
 	await con.query(`
 		UPDATE codificacion.cod_${tabla_id} 
-		SET estado = 'VERIFICADO', codigocodif_v1 = ${codigocodif}, fecverificador = now(), usuverificador = '${usuverificador}'			
+		SET estado = 'VERIFICADO', codigocodif_v1 = '${codigocodif}', fecverificador = now(), usuverificador = '${usuverificador}'			
 		WHERE id_${tabla_id} = ${id_registro}
 	`)
 
@@ -4251,8 +4250,7 @@ const updatePreguntaSimpleCheck = async (req, res) => {
 		usuverificador,
 	} = req.body;
 
-	console.log("------------->Hola desde updatePreguntaSimpleCheck");
-	console.log(req.body);
+
 
 	// Tabla_id
 	if (tabla_id !== 'p49_p51') {
@@ -6633,12 +6631,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				case 
-					when p48 is not NULL AND p26 is not null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong>' || p26
-					when p48 is not NULL AND p26 is null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong> NO DEFINIDO'
-					when p48 is NULL AND p26 is NOT null  then '<strong> Descripción: </strong> NO DEFINIDO<br><strong> Edad: </strong>' || P26
-					when p48 is NULL AND p26 is null  then '<strong> Descripción: </strong> NO DEFINIDO <br><strong> Edad: </strong> NO DEFINIDO'
-				end as var_contexto,
+				'<strong> Edad: </strong>' || COALESCE(p26 , '')  || '<br><strong> Nivel: </strong>' || COALESCE(p41a , '') || '<br><strong> Curso: </strong>' || COALESCE(p41b , '')  var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
 			WHERE estado ='CODIFICADO' AND departamento='${departamento}' AND usucre  IN ( SELECT login FROM codificacion.cod_usuario WHERE cod_supvsr = ${id_usuario})  LIMIT 1500
@@ -7201,12 +7194,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				codigocodif,
 				usucodificador,
 				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
-				case 
-					when p48 is not NULL AND p26 is not null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong>' || p26
-					when p48 is not NULL AND p26 is null  then '<strong> Descripción: </strong>' || p48 || '<br><strong> Edad: </strong> NO DEFINIDO'
-					when p48 is NULL AND p26 is NOT null  then '<strong> Descripción: </strong> NO DEFINIDO<br><strong> Edad: </strong>' || P26
-					when p48 is NULL AND p26 is null  then '<strong> Descripción: </strong> NO DEFINIDO <br><strong> Edad: </strong> NO DEFINIDO'
-				end as var_contexto,
+				'<strong> Edad: </strong>' || COALESCE(p26 , '')  || '<br><strong> Nivel: </strong>' || COALESCE(p41a , '') || '<br><strong> Curso: </strong>' || COALESCE(p41b , '')  var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
 			WHERE estado ='ASIGNASUP' AND usucre='${login}' AND departamento='${departamento}' LIMIT 1500
@@ -7424,6 +7412,10 @@ codigocodif_v1
 fecverificador
 usuverificador
 */
+
+
+
+
 
 
 module.exports = {

@@ -79,8 +79,8 @@ const repOdbc_npioc = async (req, res) => {
 
 WITH updated_p32esp AS (
     UPDATE codificacion.cod_p32esp AS p32esp
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+    SET estado_norm=100
     FROM (
         SELECT cec.id_p32esp, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super, cc_2.descripcion acep_desc_jefe
 	FROM codificacion.cod_p32esp cec
@@ -101,8 +101,8 @@ WITH updated_p32esp AS (
 
 updated_p331 AS (
     UPDATE codificacion.cod_p331 AS p331
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+    SET estado_norm=100
     FROM (
         SELECT cec.id_p331, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
         FROM codificacion.cod_p331 cec
@@ -123,8 +123,8 @@ updated_p331 AS (
 
 updated_p332 AS (
     UPDATE codificacion.cod_p332 AS p332
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        SET estado_norm=100
     FROM (
         SELECT cec.id_p332,cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
 	FROM codificacion.cod_p332 cec
@@ -145,8 +145,8 @@ updated_p332 AS (
 
 updated_p333 AS (
     UPDATE codificacion.cod_p333 AS p333
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        SET estado_norm=100
     FROM (
         SELECT cec.id_p333,cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
 	FROM codificacion.cod_p333 cec
@@ -167,8 +167,8 @@ updated_p333 AS (
 
 updated_p341 AS (
     UPDATE codificacion.cod_p341 AS p341
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        SET estado_norm=100
     FROM (
         SELECT cec.id_p341, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
 	FROM codificacion.cod_p341 cec
@@ -189,8 +189,8 @@ updated_p341 AS (
 
 updated_p48esp AS (
     UPDATE codificacion.cod_p48esp AS p48esp
-    SET estado = 'VERIFICADO', cp.usucre='ODBC'
-        --estado_norm=100
+    --SET estado = 'VERIFICADO', cp.usucre='ODBC'
+        SET estado_norm=100
     FROM (
         SELECT cec.id_p48esp, cc.descripcion acep_desc_codif, cc_1.descripcion acep_desc_super,cc_2.descripcion acep_desc_jefe
 	FROM codificacion.cod_p48esp cec
@@ -286,7 +286,9 @@ order by pregunta, id_p, secuencial,nro
 
 
 // odbc_migracion
-const repOdbc_migracion = async (req, res) => {
+const repOdbc_migracion_anterior = async (req, res) => {
+	console.log("---------------repOdbc_migracion----------------:)");
+	
 	console.log(req.params)
 	const query = `
 	
@@ -555,6 +557,170 @@ SELECT *
 FROM updated_p52esp
 order by pregunta, id_p, secuencial,nro
 
+
+	`;
+
+	try {
+		const result = await con.query(query); // Ejecutar la consulta SQL
+
+		const workbook = new Excel.Workbook(); // Crear un nuevo libro de Excel
+		const worksheet = workbook.addWorksheet('Data'); // Crear una nueva hoja de cálculo
+
+		// Añadir encabezados
+		const columns = result.fields.map(field => ({ header: field.name, key: field.name }));
+		worksheet.columns = columns; // Definir las columnas
+
+		// Añadir filas
+		result.rows.forEach(row => {
+			worksheet.addRow(row);
+		});
+
+		// Definir la ruta de salida dentro de la carpeta 'odbc-excel'
+		const outputDir = path.resolve(__dirname, '../odbc-excel');
+		const outputPath = path.join(outputDir, 'odbc_emigracion.xlsx');
+
+		// Crear el directorio si no existe
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		// Eliminar el archivo si existe
+		if (fs.existsSync(outputPath)) {
+			fs.unlinkSync(outputPath);
+		}
+
+		// Guardar el archivo Excel
+		await workbook.xlsx.writeFile(outputPath);
+		console.log(`Excel file created at ${outputPath}`);
+
+		// solo Enviar el directorio de salida
+		res.status(200).send({
+			datos: "excel creado",
+		});
+
+		console.log(typeof (outputPath));
+
+
+	} catch (error) {
+		console.error('Error generating Excel file:', error);
+		res.status(200).send('Error generating Excel file');
+	}
+
+
+};
+
+
+
+
+
+
+
+
+
+// odbc_migracion
+const repOdbc_migracion = async (req, res) => {
+	console.log("---------------repOdbc_migracion----------------:)");
+	
+	console.log(req.params)
+	const query = `
+	---Migracion
+	select id_p20esp id_p,sec_cuestionario secuencial, p20nro nro,'cod_p20esp' num_preg, 'PREGUNTA 20' pregunta,departamento, '' depto,'' municipio,
+	'' codigo_mun_codif, 
+	'' acep_desc_mun_codif, 
+'' codigo_mun_super,
+'' acep_desc_mun_super,
+'' codigo_mun_jefe, 
+'' acep_desc_mun_jefe, '' cod_rev_mun,
+			cec.respuesta pais, 
+    cec.codigocodif codigo_pais_codif, 
+    cc.descripcion acep_desc_pais_codif, 
+    cec.codigocodif_v1 codigo_pais_super, 
+    cc2.descripcion acep_desc_pais_super,
+    cec.codigocodif_v2 codigo_pais_jefe, 
+    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
+	'' usuario_mun_codif,
+'' usuario_mun_super,
+'' usuario_mun_jefe,
+cec.usucodificador usuario_pais_codif, 
+cec.usuverificador usuario_pais_super,
+cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+		
+	from codificacion.cod_p20esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
+	
+	where not codigocodif isnull and codigocodif<>''  
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+--AND feccodificador::date BETWEEN '2024-10-08 00:00:00'::date AND '2024-10-08 23:59:00'::date
+		
+UNION ALL
+		
+	select id_p352a,secuencial, nro,'cod_p352a' num_preg, 'PREGUNTA 35. Municipio. Donde nacio?' pregunta,departamento, p352b depto,respuesta municipio,
+	cec.codigocodif codigo_mun_codif, 
+	cc.descripcion acep_desc_mun_codif, 
+cec.codigocodif_v1 codigo_mun_super,
+cc2.descripcion acep_desc_mun_super,
+cec.codigocodif_v2 codigo_mun_jefe, 
+cc3.descripcion acep_desc_mun_jefe, '' cod_rev_mun,
+			'' pais, 
+    '' codigo_pais_codif, 
+    '' acep_desc_pais_codif, 
+    '' codigo_pais_super, 
+    '' acep_desc_pais_super,
+    '' codigo_pais_jefe, 
+    '' acep_desc_pais_jefe, '' cod_rev_pais,
+	cec.usucodificador usuario_mun_codif,
+cec.usuverificador usuario_mun_super,
+cec.usuverificador2 usuario_mun_jefe,
+cec.usucodificador usuario_pais_codif, 
+cec.usuverificador usuario_pais_super,
+cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+		
+	from codificacion.cod_p352a cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.catalogo='cat_municipio' and cc.unico=1
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.catalogo='cat_municipio' and cc2.unico=1
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.catalogo='cat_municipio' and cc3.unico=1
+	
+	where not codigocodif isnull and codigocodif<>''  
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+--AND feccodificador::date BETWEEN '2024-10-08 00:00:00'::date AND '2024-10-08 23:59:00'::date
+		
+UNION ALL
+		
+	select id_p353,secuencial, nro, 'cod_p353' num_preg, 'PREGUNTA 35. País. Donde nacio?' pregunta,departamento, '' depto, '' municipio,
+	'' codigo_mun_codif, 
+	'' acep_desc_mun_codif, 
+'' codigo_mun_super,
+'' acep_desc_mun_super,
+'' codigo_mun_jefe, 
+'' acep_desc_mun_jefe, '' cod_rev_mun,
+			cec.respuesta pais, 
+    cec.codigocodif codigo_pais_codif, 
+    cc.descripcion acep_desc_pais_codif, 
+    cec.codigocodif_v1 codigo_pais_super, 
+    cc2.descripcion acep_desc_pais_super,
+    cec.codigocodif_v2 codigo_pais_jefe, 
+    cc3.descripcion acep_desc_pais_jefe, '' cod_rev_pais,
+	'' usuario_mun_codif,
+'' usuario_mun_super,
+'' usuario_mun_jefe,
+cec.usucodificador usuario_pais_codif, 
+cec.usuverificador usuario_pais_super,
+cec.usuverificador2 usuario_pais_jefe,  date(feccodificador)::text fecha_codif, date(fecverificador2)::text fecha_esp_cont
+		
+	from codificacion.cod_p353 cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_pais'
+	left join codificacion.cod_catalogo cc2 on cec.codigocodif_v1=cc2.codigo and cc2.unico=1 and cc2.catalogo='cat_pais'
+	left join codificacion.cod_catalogo cc3 on cec.codigocodif_v2=cc3.codigo and cc3.unico=1 and cc3.catalogo='cat_pais'
+	
+	where not codigocodif isnull and codigocodif<>''  
+	AND feccodificador::date BETWEEN '${req.params.fechaInicial}'::date AND '${req.params.fechaFinal}'::date
+	--	AND feccodificador::date BETWEEN '2024-10-08 00:00:00'::date AND '2024-10-08 23:59:00'::date
+----------------------------
+
+		
+	order by pregunta, id_p, secuencial,nro
 
 	`;
 
@@ -1291,6 +1457,155 @@ const download01 = async (req, res) => {
 	});
 }
 
+
+
+/* 
+
+	
+	Select id_p32esp,secuencial, nro, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
+	cec.respuesta respuestaCampo , 
+	cec.codigocodif codigo_codif, 
+	cc.descripcion acep_desc_codif, 
+	cec.codigocodif_v1 codigo_super, 
+	cc_1.descripcion acep_desc_super,
+	cec.codigocodif_v2 codigo_jefe,
+	cc_2.descripcion acep_desc_jefe,
+	cec.usucodificador usuario_codif, 
+	cec.usuverificador usuario_super,
+	cec.usuverificador2 usuario_jefe,
+	'' as cod_rev_npioc, 
+	date(cec.feccodificador)::text fecha_codif
+	from codificacion.cod_p32esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
+	WHERE verificado BETWEEN   4400001 AND 4800000 ORDER BY verificado ASC
+*/
+
+
+/* REPORTES p32esp */
+const generarExcelp32esp = async (req, res) => {
+	
+	const query = ` 
+	SELECT 
+    id_p32esp,
+    secuencial, 
+    nro, 
+    'Pregunta 32' AS pregunta, 
+    cec.respuesta AS respuestaCampo, 
+    cec.codigocodif AS codigo_codif, 
+    cc.descripcion AS acep_desc_codif, 
+    cec.codigocodif_v1 AS codigo_super, 
+    cc_1.descripcion AS acep_desc_super,
+    cec.codigocodif_v2 AS codigo_jefe,
+    cc_2.descripcion AS acep_desc_jefe,
+    cec.usucodificador AS usuario_codif, 
+    cec.usuverificador AS usuario_super,
+    cec.usuverificador2 AS usuario_jefe,
+    '' AS cod_rev_npioc, 
+    date(cec.feccodificador)::text AS fecha_codif
+FROM 
+    codificacion.cod_p32esp cec
+LEFT JOIN 
+    codificacion.cod_catalogo cc 
+    ON cec.codigocodif = cc.codigo 
+    AND cc.unico = 1 
+    AND cc.catalogo = 'cat_npioc' 
+LEFT JOIN 
+    codificacion.cod_catalogo cc_1 
+    ON cec.codigocodif_v1 = cc_1.codigo 
+    AND cc_1.unico = 1 
+    AND cc_1.catalogo = 'cat_npioc' 
+LEFT JOIN 
+    codificacion.cod_catalogo cc_2 
+    ON cec.codigocodif_v2 = cc_2.codigo 
+    AND cc_2.unico = 1 
+    AND cc_2.catalogo = 'cat_npioc' 
+WHERE 
+    cec.usucodificador <> 'AUTOMATICO_NORMALIZADO' 
+    AND date(cec.feccodificador) = '2024-10-14' 
+ORDER BY 
+    codigo_codif, respuestacampo  ASC;
+	`;
+
+// WHERE verificado BETWEEN   1 AND  400000 ORDER BY verificado ASC     ok 01
+// WHERE verificado BETWEEN   400001 AND 800000 ORDER BY verificado ASC  ok 02 
+// WHERE verificado BETWEEN   800001 AND 1200000 ORDER BY verificado ASC  ok 03
+// WHERE verificado BETWEEN   1200001 AND 1600000 ORDER BY verificado ASC  ok 04
+// WHERE verificado BETWEEN   1600001 AND 2000000 ORDER BY verificado ASC  ok 05
+// WHERE verificado BETWEEN   2000001 AND 2400000 ORDER BY verificado ASC  ok 06
+// WHERE verificado BETWEEN   2400001 AND 2800000 ORDER BY verificado ASC  ok 07
+// WHERE verificado BETWEEN   2800001 AND 3200000 ORDER BY verificado ASC  ok 08
+// WHERE verificado BETWEEN   3200001 AND 3600000 ORDER BY verificado ASC  ok 09
+// WHERE verificado BETWEEN   3600001 AND 4000000 ORDER BY verificado ASC  ok 10
+// WHERE verificado BETWEEN   4000001 AND 4400000 ORDER BY verificado ASC  ok 11
+// WHERE verificado BETWEEN   4400001 AND 4800000 ORDER BY verificado ASC  ok 12
+// WHERE verificado BETWEEN   4800001 AND 5200000 ORDER BY verificado ASC
+// WHERE verificado BETWEEN   5200001 AND 5600000 ORDER BY verificado ASC
+// WHERE verificado BETWEEN   5600001 AND 6000000 ORDER BY verificado ASC
+
+
+	const Excel = require('exceljs');
+const fs = require('fs');
+const path = require('path');
+
+try {
+    const result = await con.query(query); // Ejecutar la consulta SQL
+
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('Data', {
+        properties: { tabColor: { argb: 'FFC0000' } },
+        pageSetup: { paperSize: 9, orientation: 'landscape' }
+    });
+
+    // Añadir encabezados
+    const columns = result.fields.map(field => ({ header: field.name, key: field.name }));
+    worksheet.columns = columns;
+
+    // Añadir filas en lotes
+    const batchSize = 1000;
+    for (let i = 0; i < result.rows.length; i += batchSize) {
+        const batch = result.rows.slice(i, i + batchSize);
+        worksheet.addRows(batch);
+    }
+
+    // Definir la ruta de salida dentro de la carpeta 'odbc-excel'
+    const outputDir = path.resolve(__dirname, '../odbc-excel');
+    const outputPath = path.join(outputDir, 'p32esp_asistida_14102024_2.xlsx');
+
+    // Crear el directorio si no existe
+    if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    // Eliminar el archivo si existe
+    if (fs.existsSync(outputPath)) {
+        fs.unlinkSync(outputPath);
+    }
+
+    // Guardar el archivo Excel usando stream
+    const stream = fs.createWriteStream(outputPath);
+    await workbook.xlsx.write(stream);
+    stream.on('finish', () => {
+        console.log(`Excel file created at ${outputPath}`);
+        res.status(200).send({ datos: "excel creado" });
+    });
+
+    stream.on('error', (error) => {
+        console.error('Error generating Excel file:', error);
+        res.status(500).send('Error generating Excel file');
+    });
+
+} catch (error) {
+    console.error('Error generating Excel file:', error);
+    res.status(500).send('Error generating Excel file');
+}
+
+};
+
+
+
+
 module.exports = {
 	repCodificados,
 	repHoyAyerMes,
@@ -1310,5 +1625,6 @@ module.exports = {
 	reporte11,
 	reporte12,
 	reporte13,
-	download01
+	download01,
+	generarExcelp32esp
 };
