@@ -2962,8 +2962,7 @@ const updateAsignado_ = async (req, res) => {
 const updateAsignado = async (req, res) => {
 	let tabla_id = req.params.id;
 	let parametro = req.body;
-	console.log("------------------------------------------Nueva asignacion-------------------------------------------");
-
+	console.log(":: Asignación de carga a codificadores ::");
 	console.table(parametro);
 
 	// Si el parametro es un array y su longitud es 0, se retorna un error
@@ -6209,7 +6208,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
@@ -6240,7 +6239,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
@@ -6271,7 +6270,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
@@ -6302,7 +6301,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
@@ -6333,7 +6332,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
@@ -6364,7 +6363,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
@@ -6396,7 +6395,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif  limit 1) as descripcion,
 					case 
 						when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
 						when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
@@ -6440,7 +6439,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
@@ -6476,7 +6475,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif limit 1) as descripcion,
 				case 
 					when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
 					when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
@@ -6520,7 +6519,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p363
@@ -6553,7 +6552,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif limit 1) as descripcion,
 				case 
 					when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
 					when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
@@ -6596,7 +6595,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p373
@@ -6630,7 +6629,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 				'<strong> Edad: </strong>' || COALESCE(p26 , '')  || '<br><strong> Nivel: </strong>' || COALESCE(p41a , '') || '<br><strong> Curso: </strong>' || COALESCE(p41b , '')  var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
@@ -6662,7 +6661,7 @@ const devuelveCargaParaSupervision = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio_pais' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 				case 
 					when p52 is not null then '<strong> Descripción: </strong>' || p52
 					when p52 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 
@@ -6772,7 +6771,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif  limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p20esp
@@ -6803,7 +6802,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_npioc' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p32esp
@@ -6834,7 +6833,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 		 			'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p331
@@ -6865,7 +6864,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p332
@@ -6896,7 +6895,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p333
@@ -6927,7 +6926,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_idioma' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 					'' var_contexto,
 					departamento		
 				FROM codificacion.cod_p341
@@ -6959,7 +6958,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 					respuesta,
 					codigocodif,
 					usucodificador,
-					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif) as descripcion,
+					(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio' AND codigo =codigocodif limit 1) as descripcion,
 					case 
 						when apoyo = '01' then '<strong> ¿En qué departamento?</strong>' || ' CHUQUISACA' 
 						when apoyo = '02' then '<strong> ¿En qué departamento?</strong>' || ' LA PAZ' 
@@ -7003,7 +7002,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 				'' var_contexto,
 				departamento		
 			FROM codificacion.cod_p353
@@ -7083,7 +7082,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p363
@@ -7159,7 +7158,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_pais' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 				'- -' var_contexto,
 				departamento		
 			FROM codificacion.cod_p373
@@ -7193,7 +7192,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_cob' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 				'<strong> Edad: </strong>' || COALESCE(p26 , '')  || '<br><strong> Nivel: </strong>' || COALESCE(p41a , '') || '<br><strong> Curso: </strong>' || COALESCE(p41b , '')  var_contexto,
 				departamento
 			FROM codificacion.cod_p48esp
@@ -7225,7 +7224,7 @@ const devuelveCargaParaSupervisionAutomatica = async (req, res) => {
 				respuesta,
 				codigocodif,
 				usucodificador,
-				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio_pais' AND unico ='1' AND codigo =codigocodif) as descripcion,
+				(SELECT descripcion FROM codificacion.cod_catalogo WHERE  catalogo ='cat_municipio_pais' AND unico ='1' AND codigo =codigocodif limit 1) as descripcion,
 				case 
 					when p52 is not null then '<strong> Descripción: </strong>' || p52
 					when p52 is null then  '<strong> Descripción: </strong>' || ' NO DEFINIDO' 

@@ -10,10 +10,29 @@ const esquema = "codificacion";
  */
 const login = async (req, res) => {
     var { usu, pass } = req.body;
+    console.log('🐧:: Se logueó el Usuario: ', usu);
 
-    console.log("----------------LOGIN-----------------");
-    console.table(req.body);
-
+    // tipos de console
+    // console.log('Mensaje');
+    // console.error('Error');
+    // console.warn('Advertencia');
+    // console.info('Información');
+    // console.table('Información en tabla');
+    // console.time('Inicio');
+    // console.timeEnd('Fin');
+    // console.group('Grupo');
+    // console.groupEnd('Fin Grupo');
+    // console.count('Contador');
+    // console.clear();
+    // console.dir('Directorio');
+    // console.trace('Traza');
+    // console.assert('Expresión', 'Mensaje');
+    // console.profile('Perfil');
+    // console.profileEnd('Fin Perfil');
+    // console.timeLog('Inicio', 'Mensaje');
+    // console.timeStamp('Marca de tiempo');
+    // console.memory;
+    // console.debug('Depuración');
 
     const query = `
         SELECT * FROM codificacion.cod_usuario u 

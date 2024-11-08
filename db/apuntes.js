@@ -567,3 +567,32 @@ grupo 8 TARIJA
 
 // comando nvm para cambair de version de node
 nvm use 12.18.3
+
+// ------------------------------------------------------------------
+codificacion.vm_p20esp_codif_avance_ac
+codificacion.vm_p32esp_codif_avance_jc_nal
+codificacion.vm_p331_codif_avance_ac
+codificacion.vm_p332_codif_avance_ac
+codificacion.vm_p333_codif_avance_ac
+codificacion.vm_p341_codif_avance_ac
+codificacion.vm_p352a_codif_avance_ac
+codificacion.vm_p353_codif_avance_ac
+codificacion.vm_p362a_codif_avance_ac
+codificacion.vm_p363_codif_avance_ac
+codificacion.vm_p372a_codif_avance_ac
+codificacion.vm_p373_codif_avance_ac
+codificacion.vm_p48esp_codif_avance_ac
+codificacion.vm_p49_p51_codif_avance_ac
+codificacion.vm_p52esp_codif_avance_ac
+
+
+
+
+
+
+
+
+
+
+
+

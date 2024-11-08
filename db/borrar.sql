@@ -59,3 +59,12 @@ INSERT INTO codificacion.cod_p49_p51(respuesta_ocu, respuesta_act) VALUES
 
 -- adicionar una campo a una tabla
 ALTER TABLE codificacion.cod_p49_p51 ADD COLUMN id_cod_err_corr INT;
+
+-- sql para ver version de postgres
+SELECT version();
+
+
+
+-- extensiones de postgres
+-- address_standardizer, se usa para estandarizar direcciones. ejemplo: 123 calle 45, ciudad
+-- adminpack, se usa para administrar la base de datos.

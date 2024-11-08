@@ -35,3 +35,11 @@ CREATE TABLE codificacion.cod_p32esp_temp3 (
 	CONSTRAINT cod_p32esp_pkey PRIMARY KEY (id_p32esp),
 	CONSTRAINT cod_p32esp_secuencial_i00_i001a_nro_key UNIQUE (secuencial, i00, i001a, nro)
 );
+
+
+
+select 'p20' id_pregunta, '20. Alguna persona que vivía con usted(es) en este hogar, ¿actualmente vive en otro país?' pregunta,
+		(case when cec.usucodificador ilike 'AUTOMATICO%' then 1 else 0 end) automatica,
+		(case when not cec.usucodificador ilike 'AUTOMATICO%' and not cec.usucodificador isnull then 1 else 0 end) asistida,
+		(case when cec.codigocodif isnull then 1 else 0 end) pendiente, cec.departamento
+		from codificacion.cod_p20esp  cec WHERE feccodificador::date ='2024-08-01'

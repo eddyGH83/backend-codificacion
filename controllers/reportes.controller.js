@@ -1487,62 +1487,30 @@ const download01 = async (req, res) => {
 const generarExcelp32esp = async (req, res) => {
 	
 	const query = ` 
-	SELECT 
-    id_p32esp,
-    secuencial, 
-    nro, 
-    'Pregunta 32' AS pregunta, 
-    cec.respuesta AS respuestaCampo, 
-    cec.codigocodif AS codigo_codif, 
-    cc.descripcion AS acep_desc_codif, 
-    cec.codigocodif_v1 AS codigo_super, 
-    cc_1.descripcion AS acep_desc_super,
-    cec.codigocodif_v2 AS codigo_jefe,
-    cc_2.descripcion AS acep_desc_jefe,
-    cec.usucodificador AS usuario_codif, 
-    cec.usuverificador AS usuario_super,
-    cec.usuverificador2 AS usuario_jefe,
-    '' AS cod_rev_npioc, 
-    date(cec.feccodificador)::text AS fecha_codif
-FROM 
-    codificacion.cod_p32esp cec
-LEFT JOIN 
-    codificacion.cod_catalogo cc 
-    ON cec.codigocodif = cc.codigo 
-    AND cc.unico = 1 
-    AND cc.catalogo = 'cat_npioc' 
-LEFT JOIN 
-    codificacion.cod_catalogo cc_1 
-    ON cec.codigocodif_v1 = cc_1.codigo 
-    AND cc_1.unico = 1 
-    AND cc_1.catalogo = 'cat_npioc' 
-LEFT JOIN 
-    codificacion.cod_catalogo cc_2 
-    ON cec.codigocodif_v2 = cc_2.codigo 
-    AND cc_2.unico = 1 
-    AND cc_2.catalogo = 'cat_npioc' 
-WHERE 
-    cec.usucodificador <> 'AUTOMATICO_NORMALIZADO' 
-    AND date(cec.feccodificador) = '2024-10-14' 
-ORDER BY 
-    codigo_codif, respuestacampo  ASC;
+		Select id_p32esp,secuencial, nro, 'Pregunta 32' pregunta, --respuesta, codigocodif, 
+	cec.respuesta respuestaCampo , 
+	cec.codigocodif codigo_codif, 
+	cc.descripcion acep_desc_codif, 
+	cec.codigocodif_v1 codigo_super, 
+	cc_1.descripcion acep_desc_super,
+	cec.codigocodif_v2 codigo_jefe,
+	cc_2.descripcion acep_desc_jefe,
+	cec.usucodificador usuario_codif, 
+	cec.usuverificador usuario_super,
+	cec.usuverificador2 usuario_jefe,
+	'' as cod_rev_npioc, 
+	date(cec.feccodificador)::text fecha_codif
+	from codificacion.cod_p32esp cec
+	left join codificacion.cod_catalogo cc on cec.codigocodif=cc.codigo and cc.unico=1 and cc.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_1 on cec.codigocodif_v1=cc_1.codigo and cc_1.unico=1 and cc_1.catalogo='cat_npioc' 
+	left join codificacion.cod_catalogo cc_2 on cec.codigocodif_v2=cc_2.codigo and cc_2.unico=1 and cc_2.catalogo='cat_npioc' 
+	WHERE id_p32esp  BETWEEN 250000 AND 494281 ORDER BY id_p32esp asc
+
+--SELECT * FROM codificacion.cod_p32esp WHERE  verificado  BETWEEN 1 AND 50
 	`;
 
-// WHERE verificado BETWEEN   1 AND  400000 ORDER BY verificado ASC     ok 01
-// WHERE verificado BETWEEN   400001 AND 800000 ORDER BY verificado ASC  ok 02 
-// WHERE verificado BETWEEN   800001 AND 1200000 ORDER BY verificado ASC  ok 03
-// WHERE verificado BETWEEN   1200001 AND 1600000 ORDER BY verificado ASC  ok 04
-// WHERE verificado BETWEEN   1600001 AND 2000000 ORDER BY verificado ASC  ok 05
-// WHERE verificado BETWEEN   2000001 AND 2400000 ORDER BY verificado ASC  ok 06
-// WHERE verificado BETWEEN   2400001 AND 2800000 ORDER BY verificado ASC  ok 07
-// WHERE verificado BETWEEN   2800001 AND 3200000 ORDER BY verificado ASC  ok 08
-// WHERE verificado BETWEEN   3200001 AND 3600000 ORDER BY verificado ASC  ok 09
-// WHERE verificado BETWEEN   3600001 AND 4000000 ORDER BY verificado ASC  ok 10
-// WHERE verificado BETWEEN   4000001 AND 4400000 ORDER BY verificado ASC  ok 11
-// WHERE verificado BETWEEN   4400001 AND 4800000 ORDER BY verificado ASC  ok 12
-// WHERE verificado BETWEEN   4800001 AND 5200000 ORDER BY verificado ASC
-// WHERE verificado BETWEEN   5200001 AND 5600000 ORDER BY verificado ASC
-// WHERE verificado BETWEEN   5600001 AND 6000000 ORDER BY verificado ASC
+
+
 
 
 	const Excel = require('exceljs');
@@ -1563,7 +1531,7 @@ try {
     worksheet.columns = columns;
 
     // Añadir filas en lotes
-    const batchSize = 1000;
+    const batchSize = 2000;
     for (let i = 0; i < result.rows.length; i += batchSize) {
         const batch = result.rows.slice(i, i + batchSize);
         worksheet.addRows(batch);
@@ -1571,7 +1539,7 @@ try {
 
     // Definir la ruta de salida dentro de la carpeta 'odbc-excel'
     const outputDir = path.resolve(__dirname, '../odbc-excel');
-    const outputPath = path.join(outputDir, 'p32esp_asistida_14102024_2.xlsx');
+    const outputPath = path.join(outputDir, 'p32esp_06112024_02.xlsx');
 
     // Crear el directorio si no existe
     if (!fs.existsSync(outputDir)) {
